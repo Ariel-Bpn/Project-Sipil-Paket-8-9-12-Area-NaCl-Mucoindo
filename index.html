@@ -147,6 +147,8 @@ table.t tfoot td{font-weight:700;background:#f6f8fb}
 </div>
 <div id="toast"></div><div id="cetak"></div>
 <script>
+/* qrcode-generator 1.4.4 — Copyright (c) 2009 Kazuhiko Arase — MIT License */
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
 'use strict';
 /* ================= INTI ================= */
 const APP_VER = '1.0';
@@ -258,27 +260,30 @@ const USERS_DEF = [
   { id: 'U3', nama: 'Fery Padly', peran: 'SPV', pin: '571248' },
   { id: 'U4', nama: 'Hiskia', peran: 'ADM', pin: '219864' },
   { id: 'U5', nama: 'Ibu Vivi', peran: 'FIN', pin: '648301' },
-  { id: 'U6', nama: 'Bapak Victor', peran: 'DIR', pin: '930527' }
+  { id: 'U6', nama: 'Bapak Victor', peran: 'DIR', pin: '930527' },
+  { id: 'U7', nama: 'Habel', peran: 'HSE', pin: '705318' }
 ];
-const PERAN = { PC: 'Project Control', SM: 'Site Manager', SPV: 'Supervisor Sipil', ADM: 'Admin Project', FIN: 'Finance', DIR: 'Direktur' };
+const PERAN = { PC: 'Project Control', SM: 'Site Manager', SPV: 'Supervisor Sipil', ADM: 'Admin Project', FIN: 'Finance', DIR: 'Direktur', HSE: 'Safety Officer' };
 const MENU = [
   ['Pantauan', [['dash', 'Dashboard'], ['peta', 'Peta Titik'], ['kurva', 'Progress & Kurva S']]],
   ['Lapangan', [['harian', 'Laporan Harian'], ['mingguan', 'Laporan Mingguan'], ['keputusan', 'Keputusan Lapangan'], ['inspeksi', 'Inspeksi & Approval'], ['cor', 'Log Pengecoran'], ['foto', 'Dokumentasi Foto']]],
   ['Tenaga kerja', [['absen', 'Absensi & Lembur'], ['pekerja', 'Pekerja & ID Badge'], ['upah', 'Rekap Upah']]],
   ['Biaya & sumber daya', [['kas', 'Keuangan'], ['alat', 'Alat & BBM'], ['material', 'Material'], ['inventaris', 'Inventaris Tools']]],
-  ['Administrasi', [['hse', 'HSE'], ['surat', 'Surat & Dokumen']]],
+  ['Administrasi', [['hse', 'HSE & K3'], ['surat', 'Surat & Dokumen']]],
   ['Sistem', [['master', 'Master Titik & Tie Beam'], ['atur', 'Pengaturan'], ['audit', 'Jejak Audit']]]
 ];
 const VIEW = {
   PC: '*', SM: '*,-atur,-audit,-upah', DIR: '*,-atur',
   FIN: 'dash,peta,kurva,absen,pekerja,upah,kas,alat,material,inventaris',
   SPV: 'dash,peta,kurva,harian,mingguan,keputusan,inspeksi,cor,foto,alat,material,master',
-  ADM: 'dash,absen,pekerja,kas,inventaris,mingguan'
+  ADM: 'dash,absen,pekerja,kas,inventaris,mingguan',
+  HSE: 'dash,peta,harian,mingguan,hse,pekerja,absen'
 };
 const EDIT = {
-  PC: '*', SM: 'hse,pekerja,kas,keputusan,surat,inspeksi,foto',
+  PC: '*', SM: 'pekerja,kas,keputusan,surat,inspeksi,foto',
   SPV: 'titik,tb,progres,rencana,harian,foto,cor,alat,material,inspeksi,keputusan',
-  ADM: 'absen,pekerja,kas,inventaris', FIN: 'kas,anggaran', DIR: ''
+  ADM: 'absen,pekerja,kas,inventaris', FIN: 'kas,anggaran', DIR: '',
+  HSE: 'hse,permit,tbm,izin,apd,mcu'
 };
 function bisaLihat(m) { if (!ME) return false; const v = VIEW[ME.peran] || ''; const l = v.split(','); if (l.includes('-' + m)) return false; return l.includes('*') || l.includes(m); }
 // Anggaran, sisa anggaran, nilai kontrak & margin hanya untuk Project Control, Finance, Direktur
@@ -422,6 +427,7 @@ function semai() {
   if (!Object.keys(TB_('titik')).length) { SEED.titik.forEach(r => { TB_('titik')[r.id] = Object.assign({}, r, { _ubah: 1, _oleh: 'sistem' }); S.dirty['titik|' + r.id] = 1; }); ada = true; }
   if (!Object.keys(TB_('tb')).length) { SEED.tb.forEach(r => { TB_('tb')[r.id] = Object.assign({}, r, { _ubah: 1, _oleh: 'sistem' }); S.dirty['tb|' + r.id] = 1; }); ada = true; }
   if (!Object.keys(TB_('users')).length) { USERS_DEF.forEach(r => { TB_('users')[r.id] = Object.assign({ aktif: '1' }, r, { _ubah: 1, _oleh: 'sistem' }); S.dirty['users|' + r.id] = 1; }); ada = true; }
+  else USERS_DEF.forEach(r => { if (!TB_('users')[r.id] && !rows('users').some(u => u.pin === r.pin)) { TB_('users')[r.id] = Object.assign({ aktif: '1' }, r, { _ubah: 1, _oleh: 'sistem' }); S.dirty['users|' + r.id] = 1; ada = true; } });
   if (ada) persist();
   return ada;
 }
@@ -604,10 +610,10 @@ const SK = {
     ], kol: ['kode', 'nama', 'jml', 'satuan', 'kondisi', 'pj', 'tgl', 'ket', 'foto']
   },
   hse: {
-    judul: 'HSE', ket: 'Safety talk, temuan, near miss, insiden, permit kerja.',
+    judul: 'Temuan & Insiden HSE', ket: 'Temuan unsafe act/condition, near miss, insiden, inspeksi APD.',
     f: [
       { k: 'tgl', l: 'Tanggal', t: 'date', req: 1, def: () => today() },
-      { k: 'jenis', l: 'Jenis', t: 'sel', o: ['Safety talk / toolbox', 'Temuan unsafe act/condition', 'Near miss', 'Insiden / kecelakaan', 'Permit kerja', 'Inspeksi APD'] },
+      { k: 'jenis', l: 'Jenis', t: 'sel', o: ['Temuan unsafe act/condition', 'Near miss', 'Insiden / kecelakaan', 'Inspeksi APD', 'Inspeksi alat', 'Lainnya'] },
       { k: 'uraian', l: 'Uraian', t: 'area', req: 1, w: 1 },
       { k: 'peserta', l: 'Jumlah peserta', t: 'num' },
       { k: 'noPermit', l: 'No. permit', t: 'text' }, { k: 'berlaku', l: 'Permit berlaku s/d', t: 'date' },
@@ -633,6 +639,9 @@ const SK = {
     judul: 'Pekerja & ID Badge', ket: 'Data personel. Pekerja resign boleh diberi status Resign (riwayat absen tetap) atau dihapus.',
     f: [
       { k: 'nama', l: 'Nama', t: 'text', req: 1 },
+      { k: 'kode', l: 'Kode pekerja (isi barcode/QR)', t: 'text', def: () => kodePekerjaBaru(), ph: 'otomatis' },
+      { k: 'fotoWajah', l: 'Foto wajah', t: 'foto', cap: 'user' },
+      { k: 'perusahaan', l: 'Perusahaan', t: 'sel', o: ['AEN', 'MPJ', 'MP', 'Lainnya'], def: 'AEN' },
       { k: 'jabatan', l: 'Jabatan', t: 'selx', o: JABATAN, req: 1 },
       { k: 'kategori', l: 'Kategori', t: 'sel', o: ['Pekerja', 'Staf (Foreman/SPV/Safety/Admin)'], def: 'Pekerja' },
       { k: 'upah', l: 'Upah harian (Rp)', t: 'rp' },
@@ -643,7 +652,7 @@ const SK = {
       { k: 'status', l: 'Status', t: 'sel', o: ['Aktif', 'Resign', 'Keluar'], def: 'Aktif' },
       { k: 'keluar', l: 'Tanggal keluar', t: 'date' },
       { k: 'hp', l: 'No. HP', t: 'text' }, { k: 'ket', l: 'Keterangan', t: 'text' }
-    ], kol: ['nama', 'jabatan', 'kategori', 'upah', 'lembur', 'badge', 'badgeS', '_badge', 'masuk', 'status', 'hp'], urut: 'nama', asc: 1
+    ], kol: ['fotoWajah', 'kode', 'nama', 'jabatan', 'kategori', 'upah', 'lembur', 'badge', 'badgeS', '_badge', 'masuk', 'status', 'hp'], urut: 'nama', asc: 1
   },
   titik: {
     judul: 'Master Titik Pondasi', ket: 'Kode titik = tipe + grid drawing SAKIED-026-CIV-DWG-002-01 Rev.2. Bobot antartitik = volume beton.',
@@ -692,6 +701,8 @@ function sebelumObj(t) {
 SK.titik.cek = cekObj('titik'); SK.titik.sebelum = sebelumObj('titik');
 SK.tb.cek = cekObj('tb'); SK.tb.sebelum = sebelumObj('tb');
 
+const jsonArr = v => { if (Array.isArray(v)) return v; try { const a = JSON.parse(v || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+
 /* ---- format sel ---- */
 function selNilai(t, k, r) {
   const f = (SK[t]?.f || []).find(x => x.k === k);
@@ -700,6 +711,7 @@ function selNilai(t, k, r) {
   if (k === '_waste') { const a = num(r.volT), b = num(r.volD); if (!a || !b) return ''; const w = (b - a) / a * 100; return `<span class="b ${w > 5 ? 'bad' : w > 2 ? 'warn' : 'ok'}">${fmtN(w, 1)}%</span>`; }
   if (k === '_badge') return badgeSt(r);
   if (k === 'paket') return bPaket(v);
+  if (t === 'pekerja' && k === 'kode') return `<a href="#" onclick="event.preventDefault();lihatQR('${esc(r.id)}')">${esc(kodePek(r))}</a>`;
   if (!f) return esc(v);
   if (f.t === 'date') return esc(fD(v));
   if (f.t === 'rp') return v === '' || v == null ? '' : fmtRp(v);
@@ -753,7 +765,9 @@ function opsiObj(sel, kosong = true) {
 function formTabel(t, row, preset = {}, after) {
   const sk = SK[t], baru = !row;
   const r = Object.assign({}, row || {});
-  if (baru) { for (const f of sk.f) if (f.def !== undefined && r[f.k] === undefined) r[f.k] = typeof f.def === 'function' ? f.def() : f.def; Object.assign(r, preset); }
+  if (baru) { for (const f of sk.f) if (f.def !== undefined && r[f.k] === undefined) r[f.k] = typeof f.def === 'function' ? f.def(r) : f.def; Object.assign(r, preset); }
+  if (!r.id) r.id = uid(t.slice(0, 2).toUpperCase());
+  const komp = {};
   const el = document.createElement('div');
   let h = '<div class="fgrid">';
   for (const f of sk.f) {
@@ -763,27 +777,40 @@ function formTabel(t, row, preset = {}, after) {
     else if (f.t === 'sel') { const oo = typeof f.o === 'function' ? f.o(r) : f.o; h += `<select id="${id}"><option value=""></option>${oo.map(o => `<option ${o === v ? 'selected' : ''}>${esc(o)}</option>`).join('')}${v && !oo.includes(v) ? `<option selected>${esc(v)}</option>` : ''}</select>`; }
     else if (f.t === 'selx') { const oo = typeof f.o === 'function' ? f.o(r) : f.o; h += `<input id="${id}" list="dl_${f.k}" value="${esc(v)}"><datalist id="dl_${f.k}">${oo.map(o => `<option value="${esc(o)}">`).join('')}</datalist>`; }
     else if (f.t === 'obj') h += `<select id="${id}">${opsiObj(v)}</select>`;
-    else if (f.t === 'foto') h += `<div class="row">${v ? `<img class="thumb" src="${fotoSrc(v, 120)}">` : ''}<input id="${id}" type="file" accept="image/*" capture="environment" style="max-width:220px">${v ? `<label class="small"><input type="checkbox" id="${id}_x"> hapus foto</label>` : ''}</div>`;
+    else if (f.t === 'foto') h += `<div class="row">${v ? `<img class="thumb" src="${fotoSrc(v, 120)}">` : ''}<input id="${id}" type="file" accept="image/*" capture="${f.cap || 'environment'}" style="max-width:220px">${v ? `<label class="small"><input type="checkbox" id="${id}_x"> hapus foto</label>` : ''}</div>`;
+    else if (f.t === 'multi') { const sel = jsonArr(v); const oo = typeof f.o === 'function' ? f.o(r) : f.o; const lain = sel.filter(x => !oo.includes(x)); h += `<div id="${id}" class="objlist" style="max-height:none">${oo.map(o => `<label><input type="checkbox" value="${esc(o)}" ${sel.includes(o) ? 'checked' : ''}>${esc(o)}</label>`).join('')}<input class="inp sm" data-lain placeholder="Lainnya (pisah koma)" value="${esc(lain.join(', '))}" style="margin-top:4px;width:100%"></div>`; }
+    else if (f.t === 'baris' || f.t === 'peserta') h += `<div id="${id}"></div>`;
     else h += `<input id="${id}" type="${f.t === 'date' ? 'date' : f.t === 'time' ? 'time' : (f.t === 'num' || f.t === 'rp') ? 'number' : 'text'}" ${f.t === 'num' ? 'step="any"' : ''} ${f.t === 'rp' ? 'step="1"' : ''} value="${esc(v)}" placeholder="${esc(f.ph || '')}">`;
     h += '</div>';
   }
   h += '</div><div class="row end" style="margin-top:6px">' + (baru ? '' : '<span class="small mut" style="flex:1">' + (num(r._ubah) < 1e10 ? 'Data awal dari drawing' : 'Terakhir diubah ' + esc(fW(r._ubah)) + ' oleh ' + esc(r._oleh || '-')) + '</span>') + '<button class="btn" data-a="batal">Batal</button><button class="btn pri" data-a="simpan">Simpan</button></div>';
   el.innerHTML = h;
-  modal((baru ? 'Tambah — ' : 'Ubah — ') + sk.judul, el, { lekat: true, wide: sk.f.length > 8 });
+  modal((baru ? 'Tambah — ' : 'Ubah — ') + sk.judul, el, { lekat: true, wide: sk.f.length > 8 || sk.f.some(f => f.t === 'baris' || f.t === 'peserta') });
+  for (const f of sk.f) {
+    if (f.t === 'baris') komp[f.k] = editorBaris($('#f_' + f.k, el), f.kol, jsonArr(r[f.k]));
+    if (f.t === 'peserta') komp[f.k] = editorPeserta($('#f_' + f.k, el), jsonArr(r[f.k]), f.opt || {});
+  }
+  if (sk.siap) sk.siap(el, r, komp);
   $('[data-a=batal]', el).onclick = tutupModal;
+  let sibuk = false;
   $('[data-a=simpan]', el).onclick = async () => {
-    const n = Object.assign({}, r, { id: r.id || uid(t.slice(0, 2).toUpperCase()) });
+    if (sibuk) return; sibuk = true;
+    const tb = $('[data-a=simpan]', el); tb.disabled = true;
+    const gagal = m => { if (m) toast(m, 'err'); sibuk = false; tb.disabled = false; };
+    const n = Object.assign({}, r);
     for (const f of sk.f) {
       const inp = $('#f_' + f.k, el);
+      if (f.t === 'multi') { const a = $$('input[type=checkbox]', inp).filter(c => c.checked).map(c => c.value).concat($('[data-lain]', inp).value.split(',').map(x => x.trim()).filter(Boolean)); n[f.k] = JSON.stringify(a); if (f.req && !a.length) return gagal('Pilih minimal satu "' + f.l + '"'); continue; }
+      if (f.t === 'baris' || f.t === 'peserta') { const a = komp[f.k](); n[f.k] = JSON.stringify(a); if (f.req && !a.length) return gagal('Isi minimal satu baris "' + f.l + '"'); continue; }
       if (f.t === 'foto') {
         if ($('#f_' + f.k + '_x', el)?.checked) n[f.k] = '';
         if (inp.files && inp.files[0]) { try { n[f.k] = await simpanFotoBaru(inp.files[0], t, n.id, f.k, n.tgl); } catch (e) { toast('Foto gagal dibaca', 'err'); } }
         continue;
       }
       n[f.k] = inp.value.trim();
-      if (f.req && !n[f.k]) { toast('Isian "' + f.l + '" wajib diisi', 'err'); inp.focus(); return; }
+      if (f.req && !n[f.k]) { gagal('Isian "' + f.l + '" wajib diisi'); inp.focus(); return; }
     }
-    if (sk.cek) { const e = sk.cek(n); if (e) { toast(e, 'err'); return; } }
+    if (sk.cek) { const e = sk.cek(n); if (e) return gagal(e); }
     if (sk.sebelum) sk.sebelum(n, baru);
     put(t, n); if (sk.sesudah) sk.sesudah(n, baru); tutupModal(); toast('Tersimpan'); if (after) after(n); else render();
   };
@@ -937,7 +964,7 @@ function vDash() {
   const tanpaVol = all.filter(o => !(num(o.vol) > 0)).length;
   const konf = objAll().filter(o => o.status === 'KONFIRMASI');
   let h = `<h1>Dashboard</h1><p class="mut small" style="margin-top:-8px">${esc(p.pekerjaan)} · ${fDH(t)} · ${hk < 1 ? 'mulai ' + fD(p.mulai) : 'hari ke-' + hk + ' dari ' + dur}</p>`;
-  if (tanpaVol) h += `<div class="alert warn">${tanpaVol} titik/segmen belum punya volume beton. Sementara dianggap 1 m³ untuk pembobotan — isi di <a onclick="buka('master')">Master Titik</a> setelah BOQ diterima.</div>`;
+  if (tanpaVol && bisaLihat('master')) h += `<div class="alert warn">${tanpaVol} titik/segmen belum punya volume beton. Sementara dianggap 1 m³ untuk pembobotan — isi di <a onclick="buka('master')">Master Titik</a> setelah BOQ diterima.</div>`;
   if (konf.length) h += `<div class="alert info">${konf.length} objek berstatus KONFIRMASI (${esc(konf.map(o => o.kode).join(', '))}) belum dihitung ke progress.</div>`;
   h += `<div class="kpis">
     <div class="kpi"><div class="l">Progress fisik</div><div class="v">${pct(tot)}</div><div class="s">rencana ${pct(ren)}</div></div>
@@ -946,6 +973,7 @@ function vDash() {
     <div class="kpi"><div class="l">Tie beam selesai</div><div class="v">${fmtN(mSel, 1)} m</div><div class="s">dari ${fmtN(mTot, 1)} m</div></div>
     <div class="kpi ${sisa < 14 ? 'warn' : ''}"><div class="l">Sisa waktu</div><div class="v">${Math.max(0, sisa)} hari</div><div class="s">selesai ${fD(p.selesai)}</div></div>
     <div class="kpi ${mpr && mp.pek < mpr ? 'warn' : ''}"><div class="l">Manpower hari ini</div><div class="v">${mp.pek} <span style="font-size:14px">+${mp.staf} staf</span></div><div class="s">rencana ${mpr} pekerja</div></div>
+    <div class="kpi ok"><div class="l">Hari tanpa kecelakaan</div><div class="v">${hariTanpaKecelakaan()}</div><div class="s">TBM hari ini: ${rows('tbm').some(r => r.tgl === t) ? 'sudah' : 'belum'}</div></div>
     <div class="kpi"><div class="l">Hari ada hujan</div><div class="v">${hujan}</div><div class="s">dari laporan harian</div></div>
     <div class="kpi ${tunggu ? 'warn' : ''}"><div class="l">Keputusan menunggu</div><div class="v">${tunggu}</div><div class="s">keputusan lapangan</div></div>
     <div class="kpi ${badgeBad ? 'bad' : ''}"><div class="l">ID badge bermasalah</div><div class="v">${badgeBad}</div><div class="s">dari ${aktifP.length} personel aktif</div></div>
@@ -1135,7 +1163,7 @@ function dataHarian(d) {
   const pm = progMap(d), B = cfg('bobot');
   const pg = rows('progres').filter(r => r.tgl === d).sort((a, b) => String(objGet(a.obj)?.urut || objGet(a.obj)?.no || '').localeCompare(String(objGet(b.obj)?.urut || objGet(b.obj)?.no || ''), 'id', { numeric: true }));
   const rcB = rows('rencana').filter(r => r.tgl === addD(d, 1)), rcH = rows('rencana').filter(r => r.tgl === d);
-  return { pm, B, pg, rcB, rcH, H: get('harian', 'H' + d) || {}, mp: manpowerHari(d), alat: rows('alat').filter(r => r.tgl === d), cor: rows('cor').filter(r => r.tgl === d), kep: rows('keputusan').filter(r => r.tgl === d), ft: rows('foto').filter(r => r.tgl === d), mat: rows('material').filter(r => r.tgl === d), hse: rows('hse').filter(r => r.tgl === d) };
+  return { pm, B, pg, rcB, rcH, H: get('harian', 'H' + d) || {}, mp: manpowerHari(d), alat: rows('alat').filter(r => r.tgl === d), cor: rows('cor').filter(r => r.tgl === d), kep: rows('keputusan').filter(r => r.tgl === d), ft: rows('foto').filter(r => r.tgl === d), mat: rows('material').filter(r => r.tgl === d), hse: rows('hse').filter(r => r.tgl === d), tbm: rows('tbm').filter(r => r.tgl === d), permit: rows('permit').filter(r => r.tgl === d) };
 }
 function vHarian() {
   HD = HD || today(); const d = HD, D = dataHarian(d), p = cfg('proyek');
@@ -1188,6 +1216,7 @@ function teksWA(d) {
   const L = [`*LAPORAN HARIAN — PONDASI NaCl PAKET 8, 9, 12*`, `${fDH(d)} (hari ke-${diffD(p.mulai, d) + 1} dari ${diffD(p.mulai, p.selesai) + 1})`, ''];
   L.push(`Cuaca: pagi ${D.H.pagi || '-'}, siang ${D.H.siang || '-'}, sore ${D.H.sore || '-'}${D.H.jamHujan ? ' (hujan ' + D.H.jamHujan + ')' : ''}`);
   L.push(`Manpower: ${D.mp.pek} pekerja + ${D.mp.staf} staf (rencana ${mpRencana(d)} pekerja)`);
+  L.push(`HSE: ${D.tbm.length ? D.tbm.map(r => (r.jenis || 'TBM') + ' ' + jsonArr(r.peserta).length + ' org').join(', ') : 'TBM belum dicatat'}${D.permit.length ? ' · Permit: ' + [...new Set(D.permit.flatMap(r => jsonArr(r.jenis)))].join(', ') : ''}`);
   L.push('', '*Progress hari ini:*');
   if (D.pg.length) D.pg.forEach(r => { const o = objGet(r.obj) || {}; L.push(`• ${o.no || ''} ${o.kode || r.obj} — ${tahapNama(r.tahap)} ${fmtN(r.pct, 0)}%${r.org ? ' (' + r.org + ' org)' : ''}${r.ket ? ' — ' + r.ket : ''}`); }); else L.push('• -');
   L.push('', `*Kumulatif:* ${pct(tot)} (rencana ${pct(ren)}, deviasi ${fmtN(tot - ren, 1)}%)`);
@@ -1203,7 +1232,7 @@ function docHarian(d, kopJ) {
   const D = dataHarian(d), p = cfg('proyek'), tot = agregat(D.pm), ren = rencanaPct(d);
   let h = kop(kopJ) + `<div class="jd">LAPORAN HARIAN (DAILY REPORT)</div>
   <table><tr><td style="width:18%">Proyek</td><td>${esc(p.nama)}</td><td style="width:14%">Tanggal</td><td style="width:22%">${fDH(d)}</td></tr><tr><td>Pekerjaan</td><td>${esc(p.pekerjaan)}</td><td>Hari ke</td><td>${diffD(p.mulai, d) + 1} dari ${diffD(p.mulai, p.selesai) + 1}</td></tr><tr><td>No. kontrak</td><td>${esc(p.noKontrak)}</td><td>Cuaca</td><td>Pagi ${esc(D.H.pagi || '-')}, siang ${esc(D.H.siang || '-')}, sore ${esc(D.H.sore || '-')}${D.H.jamHujan ? '<br>Hujan ' + esc(D.H.jamHujan) : ''}</td></tr></table>`;
-  h += `<h3>I. MANPOWER</h3><table><tr><th>Jabatan</th><th style="width:15%">Jumlah</th></tr>${Object.entries(D.mp.per).map(([j, n]) => `<tr><td>${esc(j)}</td><td class="n">${n}</td></tr>`).join('') || '<tr><td colspan="2">-</td></tr>'}<tr><th>Total (pekerja ${D.mp.pek} + staf ${D.mp.staf}; rencana ${mpRencana(d)} pekerja)</th><th class="n">${D.mp.tot}</th></tr></table>`;
+  h += `<h3>I. MANPOWER</h3><table><tr><th>Jabatan</th><th style="width:15%">Jumlah</th></tr>${Object.entries(D.mp.per).map(([j, n]) => `<tr><td>${esc(j)}</td><td class="n">${n}</td></tr>`).join('') || '<tr><td colspan="2">-</td></tr>'}<tr><th>Total (pekerja ${D.mp.pek} + staf ${D.mp.staf}; rencana ${mpRencana(d)} pekerja)</th><th class="n">${D.mp.tot}</th></tr></table><p>HSE: ${D.tbm.length ? D.tbm.map(r => esc(r.jenis || 'TBM') + ' — ' + jsonArr(r.peserta).length + ' peserta, topik: ' + esc(r.topik || '-')).join('; ') : 'TBM belum dicatat'}${D.permit.length ? ' · E-Permit: ' + esc([...new Set(D.permit.flatMap(r => jsonArr(r.jenis)))].join(', ')) + ' (' + esc(D.permit.map(r => r.status).join(', ')) + ')' : ''}</p>`;
   h += `<h3>II. PROGRESS HARI INI</h3><table><tr><th>No.</th><th>Kode titik</th><th>Paket</th><th>Tahap pekerjaan</th><th>S/d hari ini</th><th>Org</th><th>Keterangan</th></tr>${D.pg.map(r => { const o = objGet(r.obj) || {}; return `<tr><td>${esc(o.no || '')}</td><td>${esc(o.kode || '')}</td><td>${esc(o.paket || '')}</td><td>${esc(tahapNama(r.tahap))}</td><td class="n">${fmtN(r.pct, 0)}%</td><td class="n">${esc(r.org || '')}</td><td>${esc(r.ket || '')}</td></tr>`; }).join('') || '<tr><td colspan="7">-</td></tr>'}</table>`;
   h += `<h3>III. PROGRESS KUMULATIF</h3><table><tr><th>Lingkup</th><th>Rencana</th><th>Realisasi</th><th>Deviasi</th></tr>${['9', '8', '12'].map(pk => { const a = agregat(D.pm, o => o.paket === pk), r = rencanaPct(d, pk); return `<tr><td>Paket ${pk}</td><td class="n">${pct(r)}</td><td class="n">${pct(a)}</td><td class="n">${fmtN(a - r, 1)}%</td></tr>`; }).join('')}<tr><th>Total</th><th class="n">${pct(ren)}</th><th class="n">${pct(tot)}</th><th class="n">${fmtN(tot - ren, 1)}%</th></tr></table>`;
   h += `<h3>IV. ALAT & PENGECORAN</h3><table><tr><th>Alat</th><th>Pemilik</th><th>Jam</th><th>BBM (L)</th><th>Keterangan</th></tr>${D.alat.map(r => `<tr><td>${esc(r.alat)}</td><td>${esc(r.pemilik || '')}</td><td class="n">${esc(r.jam || '')}</td><td class="n">${esc(r.bbm || '')}</td><td>${esc(r.ket || '')}</td></tr>`).join('') || '<tr><td colspan="5">-</td></tr>'}</table>`;
@@ -1306,12 +1335,12 @@ function vAbsen() {
 function absInput() {
   const d = AB.tgl, ed = bisaEdit('absen'), P = pekerjaPada(d);
   const cur = Object.fromEntries(rows('absen').filter(r => r.tgl === d).map(r => [r.pek, r]));
-  let h = `<div class="row" style="margin-bottom:10px"><button class="btn" id="aPrev">◀</button><input type="date" class="inp sm" id="aTgl" value="${d}"><button class="btn" id="aNext">▶</button><span class="small mut">${fDH(d)}</span><span style="flex:1"></span>${ed ? '<button class="btn" id="aAllH">Kosong → H</button><button class="btn pri" id="aSave">Simpan absensi</button>' : ''}</div>`;
+  let h = `<div class="row" style="margin-bottom:10px"><button class="btn" id="aPrev">◀</button><input type="date" class="inp sm" id="aTgl" value="${d}"><button class="btn" id="aNext">▶</button><span class="small mut">${fDH(d)}</span><span style="flex:1"></span>${ed ? '<button class="btn" id="aAllH">Kosong → H</button><button class="btn pri" id="aSave">Simpan absensi</button>' : ''}</div>${ed ? `<div class="row" id="abScan" style="margin-bottom:10px"><input class="inp" id="abKode" style="max-width:260px" placeholder="Scan / ketik kode pekerja lalu Enter">${'BarcodeDetector' in window ? '<button class="btn" id="abCam">Scan QR dengan kamera</button>' : ''}<span class="small mut">Pemindai barcode USB/Bluetooth juga bisa dipakai di kotak ini.</span></div>` : ''}`;
   if (!P.length) h += `<div class="alert info">Belum ada pekerja aktif. Tambahkan di menu <a onclick="buka('pekerja')">Pekerja & ID Badge</a>.</div>`;
-  h += `<div class="tw tall"><table class="t"><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>ID badge</th><th>Kode</th><th class="small">Diisi</th></tr></thead><tbody>${P.map((p, i) => { const r = cur[p.id]; return `<tr><td>${i + 1}</td><td>${esc(p.nama)}</td><td class="small">${esc(p.jabatan || '')}</td><td>${badgeSt(p)}</td><td><select class="inp sm" data-p="${esc(p.id)}" ${ed ? '' : 'disabled'}><option value=""></option>${KODE_AB.map(k => `<option ${r && r.kode === k[0] ? 'selected' : ''}>${k[0]}</option>`).join('')}</select></td><td class="small mut">${r ? esc(r._oleh || '') : ''}</td></tr>`; }).join('')}</tbody></table></div><div id="abSum" class="small" style="margin-top:8px"></div>`;
+  h += `<div class="tw tall"><table class="t"><thead><tr><th>No</th><th></th><th>Nama</th><th>Jabatan</th><th>ID badge</th><th>Kode</th><th class="small">Diisi</th></tr></thead><tbody>${P.map((p, i) => { const r = cur[p.id]; return `<tr><td>${i + 1}</td><td>${p.fotoWajah ? `<img class="thumb" style="width:36px;height:36px;border-radius:50%" src="${fotoSrc(p.fotoWajah, 120)}" onclick="lihatFoto('${esc(p.fotoWajah)}')">` : ''}</td><td>${esc(p.nama)}<div class="small mut">${esc(kodePek(p))}</div></td><td class="small">${esc(p.jabatan || '')}</td><td>${badgeSt(p)}</td><td><select class="inp sm" data-p="${esc(p.id)}" ${ed ? '' : 'disabled'}><option value=""></option>${KODE_AB.map(k => `<option ${r && r.kode === k[0] ? 'selected' : ''}>${k[0]}</option>`).join('')}</select></td><td class="small mut">${r ? esc(r._oleh || '') : ''}</td></tr>`; }).join('')}</tbody></table></div><div id="abSum" class="small" style="margin-top:8px"></div>`;
   $('#abBox').innerHTML = h;
   const sum = () => { const c = {}; $$('[data-p]').forEach(s => { if (s.value) c[s.value] = (c[s.value] || 0) + 1; }); const hadir = Object.entries(c).filter(([k]) => /^H/.test(k)).reduce((a, [, n]) => a + n, 0); $('#abSum').innerHTML = `Hadir <b>${hadir}</b> dari ${P.length} · ` + Object.entries(c).map(([k, n]) => `${k}: ${n}`).join(' · ') + ` · rencana pekerja ${mpRencana(d)}`; };
-  $$('[data-p]').forEach(s => s.onchange = sum); sum();
+  $$('[data-p]').forEach(s => s.onchange = sum); sum(); pasangScanAbsen();
   $('#aTgl').onchange = e => { AB.tgl = e.target.value || today(); absInput(); };
   $('#aPrev').onclick = () => { AB.tgl = addD(d, -1); absInput(); }; $('#aNext').onclick = () => { AB.tgl = addD(d, 1); absInput(); };
   if (ed) {
@@ -1489,7 +1518,7 @@ function vAtur() {
   <div class="card"><h2>Bobot tahap (%)</h2><div class="grid g2">${[['std', 'Pondasi umum (F1A, F4, F2A, F3A, conveyor)'], ['f1', 'F1 — one-time casting'], ['tb', 'Tie beam']].map(([s, l]) => `<div><h3>${l}</h3><table class="t">${TAHAP[s].map(([k, n]) => `<tr><td>${esc(n)}</td><td class="n"><input type="number" class="inp sm" style="width:70px" data-b="${s}|${k}" value="${B[s][k] ?? 0}"></td></tr>`).join('')}<tfoot><tr><td>Jumlah</td><td class="n" data-bs="${s}"></td></tr></tfoot></table></div>`).join('')}</div><div class="row end"><button class="btn pri" id="bSv">Simpan bobot</button></div></div>
   <div class="card"><h2>Kode biaya</h2><p class="small mut">Satu kode per baris. Transaksi lama tetap memakai nama kode yang tersimpan.</p><textarea class="inp" id="kbT" style="height:200px">${esc(cfg('kodeBiaya').join('\n'))}</textarea><div class="row end" style="margin-top:6px"><button class="btn pri" id="kbSv">Simpan kode biaya</button></div></div>
   <div class="card"><h2>Pengguna & PIN</h2><div class="tw"><table class="t"><thead><tr><th>Nama</th><th>Peran</th><th>PIN (6 angka)</th><th>Aktif</th></tr></thead><tbody>${U.map(u => `<tr data-u="${esc(u.id)}"><td><input class="inp sm" data-k="nama" value="${esc(u.nama)}"></td><td><select class="inp sm" data-k="peran">${Object.entries(PERAN).map(([k, l]) => `<option value="${k}" ${u.peran === k ? 'selected' : ''}>${l}</option>`).join('')}</select></td><td><input class="inp sm" data-k="pin" value="${esc(u.pin)}" style="width:90px"></td><td><input type="checkbox" data-k="aktif" ${u.aktif !== '0' ? 'checked' : ''}></td></tr>`).join('')}</tbody></table></div><div class="row" style="margin-top:8px"><button class="btn" id="uAdd">+ Pengguna</button><span style="flex:1"></span><button class="btn pri" id="uSv">Simpan pengguna</button></div>
-  <p class="small mut">Hak per peran: <b>Project Control</b> penuh · <b>Site Manager</b> semua menu kecuali Rekap Upah; input nota pemasukan/pengeluaran, HSE, ID badge, keputusan, inspeksi, surat; rekap biaya hanya kode & aktual · <b>Supervisor Sipil</b> master titik, laporan harian, progress, foto, pengecoran, alat & BBM, material, inspeksi, keputusan · <b>Admin Project</b> absensi, pekerja & ID badge, nota pemasukan/pengeluaran, inventaris; rekap biaya hanya kode & aktual · <b>Finance</b> menu Pantauan, Tenaga kerja, Biaya & sumber daya; input kas, anggaran · <b>Direktur</b> semua menu, hanya lihat.</p></div>
+  <p class="small mut">Hak per peran: <b>Project Control</b> penuh · <b>Site Manager</b> semua menu kecuali Rekap Upah; input nota pemasukan/pengeluaran, ID badge, keputusan, inspeksi, surat; rekap biaya hanya kode & aktual · <b>Supervisor Sipil</b> master titik, laporan harian, progress, foto, pengecoran, alat & BBM, material, inspeksi, keputusan · <b>Admin Project</b> absensi, pekerja & ID badge, nota pemasukan/pengeluaran, inventaris; rekap biaya hanya kode & aktual · <b>Finance</b> menu Pantauan, Tenaga kerja, Biaya & sumber daya; input kas, anggaran · <b>Direktur</b> semua menu, hanya lihat · <b>Safety Officer</b> menu HSE & K3 (E-Permit, TBM & absensinya, izin masuk material/alat, APD, MCU & narkoba, temuan), lihat pekerja, absensi & laporan harian.</p></div>
   <div class="card"><h2>Cadangan data</h2><div class="row"><button class="btn" id="bkDl">Unduh cadangan (.json)</button><label class="btn">Pulihkan dari cadangan<input type="file" id="bkUp" accept=".json" hidden></label></div><p class="small mut">Pulihkan menggabungkan data cadangan sebagai perubahan terbaru lalu mengirimnya ke server.</p></div>`;
   $('#main').innerHTML = h;
   $('#pKop').value = cfg('kop');
@@ -1547,9 +1576,9 @@ function vAudit() {
 /* ================= NAVIGASI, LOGIN, BOOT ================= */
 const VIEWS = {
   dash: vDash, peta: vPeta, kurva: vKurva, harian: vHarian, mingguan: vMingguan, foto: vFoto, absen: vAbsen, upah: vUpah, kas: vKas, master: vMaster, atur: vAtur, audit: vAudit,
-  keputusan: () => viewTabel('keputusan'), inspeksi: () => viewTabel('inspeksi'), cor: () => viewTabel('cor'), pekerja: () => viewTabel('pekerja', { atas: rs => `<div class="row" style="margin-bottom:8px"><span class="small">Aktif: <b>${rs.filter(r => r.status === 'Aktif' && !/Staf/.test(r.kategori || '')).length}</b> pekerja + <b>${rs.filter(r => r.status === 'Aktif' && /Staf/.test(r.kategori || '')).length}</b> staf · rencana hari ini ${mpRencana(today())} pekerja</span></div>` }),
+  keputusan: () => viewTabel('keputusan'), inspeksi: () => viewTabel('inspeksi'), cor: () => viewTabel('cor'), pekerja: () => { viewTabel('pekerja', { atas: rs => `<div class="row" style="margin-bottom:8px"><span class="small" style="flex:1">Aktif: <b>${rs.filter(r => r.status === 'Aktif' && !/Staf/.test(r.kategori || '')).length}</b> pekerja + <b>${rs.filter(r => r.status === 'Aktif' && /Staf/.test(r.kategori || '')).length}</b> staf · rencana hari ini ${mpRencana(today())} pekerja · <b>${rows('pekerja').filter(p => p.status === 'Aktif' && !p.fotoWajah).length}</b> belum ada foto wajah. Ketuk kode untuk melihat QR.</span><button class="btn acc" id="pkKartu">Cetak kartu + QR</button></div>` }); const kb = $('#pkKartu'); if (kb) kb.onclick = pilihCetakKartu; },
   alat: () => viewTabel('alat'), material: () => viewTabel('material', { atas: rs => { const s = {}; rows('material').forEach(r => { const k = r.material + ' (' + (r.satuan || '') + ')'; s[k] = s[k] || [0, 0]; s[k][0] += num(r.masuk); s[k][1] += num(r.pakai); }); return Object.keys(s).length ? `<div class="card"><h2>Sisa material</h2><div class="tw"><table class="t"><thead><tr><th>Material</th><th class="n">Masuk</th><th class="n">Dipakai</th><th class="n">Sisa</th></tr></thead><tbody>${Object.entries(s).map(([k, [a, b]]) => `<tr><td>${esc(k)}</td><td class="n">${fmtN(a, 2)}</td><td class="n">${fmtN(b, 2)}</td><td class="n"><b>${fmtN(a - b, 2)}</b></td></tr>`).join('')}</tbody></table></div></div>` : ''; } }),
-  inventaris: () => viewTabel('inventaris'), hse: () => viewTabel('hse'), surat: () => viewTabel('surat')
+  inventaris: () => viewTabel('inventaris'), hse: vHSE, surat: () => viewTabel('surat')
 };
 function menuLabel(k) { for (const [, it] of MENU) for (const [a, l] of it) if (a === k) return l; return k; }
 function buka(k) { S.pref.menu = k; persist(); $('#nav').classList.remove('open'); render(); window.scrollTo(0, 0); }
@@ -1567,8 +1596,10 @@ function layarLogin() {
   <input class="pinbox" id="pinIn" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="PIN"><div class="keys">${[1, 2, 3, 4, 5, 6, 7, 8, 9, '⌫', 0, '✓'].map(x => `<button data-k="${x}">${x}</button>`).join('')}</div><div id="pinMsg" class="small" style="color:var(--bad);min-height:18px"></div>
   <div class="small mut" style="margin-top:6px">v${APP_VER} · ${S.cfg.url ? 'tersambung ke server' : 'mode lokal'} · <a href="#" id="lgSrv">sambungan server</a></div></div>`;
   const inp = $('#pinIn', el);
-  const coba = () => {
-    const u = rows('users').find(x => x.pin === inp.value && x.aktif !== '0');
+  let cobaServer = false;
+  const coba = async () => {
+    let u = rows('users').find(x => x.pin === inp.value && x.aktif !== '0');
+    if (!u && S.cfg.url && !cobaServer) { cobaServer = true; $('#pinMsg', el).textContent = 'Memeriksa data pengguna terbaru di server…'; await sinkron(true); u = rows('users').find(x => x.pin === inp.value && x.aktif !== '0'); }
     if (!u) { $('#pinMsg', el).textContent = 'PIN salah'; inp.value = ''; return; }
     ME = u; S.pref.sesi = { uid: u.id, exp: Date.now() + 12 * 3600e3 }; persist(); el.classList.add('hidden'); mulaiApp();
   };
@@ -1616,5 +1647,337 @@ function boot() {
   window.addEventListener('online', () => { if (S.cfg.url && ME) sinkron(); });
 }
 document.addEventListener('DOMContentLoaded', boot);
+
+/* ================= HSE & K3 + BARCODE PEKERJA ================= */
+const PERUSAHAAN = ['AEN', 'MPJ', 'MP', 'KIE', 'Lainnya'];
+const NAMA_PT = { AEN: 'PT. Avindo Energi Nusantara', MPJ: 'PT. Mega Perkasa Jaya', MP: 'PT Mucoindo Prakasa', KIE: 'PT Kaltim Industrial Estate' };
+const JENIS_PERMIT = ['Heavy Equipment', 'Hot Work', 'Cold Work', 'Working at Height', 'Excavation / Galian', 'Lifting', 'Electrical', 'Confined Space'];
+const JENIS_APD = ['Safety helmet', 'Rompi reflektor', 'Safety shoes', 'Sarung tangan', 'Kacamata safety', 'Masker', 'Earplug', 'Full body harness', 'Coverall / wearpack', 'Sepatu boot', 'Jas hujan', 'Face shield'];
+const BLN_P = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+const fTglPanjang = s => { if (!s) return ''; const d = pd(s); return d.getDate() + ' ' + BLN_P[d.getMonth()] + ' ' + d.getFullYear(); };
+const fTglSlash = s => { if (!s) return ''; const d = pd(s); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); };
+const baris = v => String(v || '').split(/\n|;/).map(x => x.replace(/^[•\-\s]+/, '').trim()).filter(Boolean);
+
+function noOtomatis(t, pre, tgl) {
+  const p = pre + '-' + String(tgl || today()).slice(2, 4) + String(tgl || today()).slice(5, 7) + '-';
+  const ada = rows(t).map(r => r.no || '').filter(x => x.startsWith(p)).map(x => num(x.slice(p.length)));
+  return p + String((ada.length ? Math.max(...ada) : 0) + 1).padStart(3, '0');
+}
+function kodePekerjaBaru() {
+  const ada = rows('pekerja').map(r => /^NACL-(\d+)$/.exec(r.kode || '')).filter(Boolean).map(m => num(m[1]));
+  return 'NACL-' + String((ada.length ? Math.max(...ada) : 0) + 1).padStart(3, '0');
+}
+const kodePek = p => p.kode || p.id;
+
+/* ---- QR ---- */
+function qrSVG(teks, sel = 4, tepi = 2) {
+  try { const q = qrcode(0, 'M'); q.addData(String(teks)); q.make(); return q.createSvgTag(sel, tepi); } catch (e) { return ''; }
+}
+function lihatQR(id) {
+  const p = get('pekerja', id); if (!p) return;
+  modal('Barcode / QR — ' + p.nama, `<div style="text-align:center">${p.fotoWajah ? `<img src="${fotoSrc(p.fotoWajah, 300)}" style="width:120px;height:150px;object-fit:cover;border-radius:8px">` : ''}<div>${qrSVG(kodePek(p), 7)}</div><div style="font-size:20px;font-weight:700;letter-spacing:1px">${esc(kodePek(p))}</div><div>${esc(p.nama)} · ${esc(p.jabatan || '')}</div><div class="small mut">ID badge: ${esc(p.badge || '—')}</div></div><div class="row end" style="margin-top:10px"><button class="btn acc" id="qrCetak">Cetak kartu</button></div>`);
+  $('#qrCetak').onclick = () => { tutupModal(); cetak(docKartu([p]), 'Kartu ' + p.nama); };
+}
+function docKartu(L) {
+  const lg = cfg('logo').aen, p0 = cfg('proyek');
+  const kartu = p => `<div style="width:85.6mm;height:54mm;border:1px solid #1F3A5F;border-radius:3mm;overflow:hidden;display:flex;flex-direction:column;page-break-inside:avoid;box-sizing:border-box">
+    <div style="background:#1F3A5F;color:#fff;display:flex;align-items:center;gap:2mm;padding:1.2mm 2.5mm;height:9mm;box-sizing:border-box">${lg ? `<img src="${lg}" style="height:6mm;background:#fff;border-radius:1mm;padding:.4mm">` : ''}<div style="font-size:7.5pt;font-weight:700;line-height:1.1">PT. AVINDO ENERGI NUSANTARA<br><span style="font-weight:400;font-size:6pt">Pondasi NaCl Bulk Storage · Paket 8, 9, 12</span></div></div>
+    <div style="display:flex;gap:2.5mm;padding:2mm 2.5mm;flex:1">
+      <div style="width:20mm;height:26mm;background:#eef1f5;border:1px solid #ccd;display:flex;align-items:center;justify-content:center;font-size:6pt;color:#889">${p.fotoWajah ? `<img src="${fotoSrc(p.fotoWajah, 300)}" style="width:20mm;height:26mm;object-fit:cover">` : 'FOTO'}</div>
+      <div style="flex:1;min-width:0;font-size:7.5pt;line-height:1.3"><div style="font-size:9.5pt;font-weight:700;color:#1F3A5F">${esc(p.nama)}</div><div>${esc(p.jabatan || '')}</div><div>${esc(NAMA_PT[p.perusahaan || 'AEN'] || p.perusahaan || '')}</div><div style="margin-top:1mm">Kode: <b>${esc(kodePek(p))}</b></div><div>ID badge: ${esc(p.badge || '—')}</div><div style="font-size:6pt;color:#555">Berlaku s/d ${esc(fD(p.badgeS) || '—')}</div></div>
+      <div style="width:21mm;display:flex;align-items:flex-end">${qrSVG(kodePek(p), 2, 1).replace('<svg ', '<svg style="width:21mm;height:21mm" ')}</div>
+    </div></div>`;
+  return `<div style="display:grid;grid-template-columns:repeat(2,85.6mm);gap:5mm 6mm;justify-content:center">${L.map(kartu).join('')}</div><p style="font-size:8pt;color:#666;text-align:center;margin-top:4mm">${esc(p0.pekerjaan)} — dicetak ${fD(today())}. Potong mengikuti garis kartu.</p>`;
+}
+function pilihCetakKartu() {
+  const P = rows('pekerja').filter(p => p.status === 'Aktif').sort((a, b) => a.nama.localeCompare(b.nama));
+  const m = modal('Cetak kartu pekerja + QR', `<p class="small mut">Pilih pekerja. Satu halaman A4 memuat 10 kartu (ukuran KTP).</p><div class="row small" style="margin-bottom:6px"><a href="#" id="kkAll">pilih semua</a> · <a href="#" id="kkNone">kosongkan</a></div><div class="objlist">${P.map(p => `<label><input type="checkbox" value="${esc(p.id)}" checked>${esc(p.nama)} <span class="mut">${esc(kodePek(p))}</span>${p.fotoWajah ? '' : ' <span class="b warn">tanpa foto</span>'}</label>`).join('') || '<span class="mut">Belum ada pekerja aktif.</span>'}</div><div class="row end" style="margin-top:10px"><button class="btn acc" id="kkGo">Cetak</button></div>`, { wide: true });
+  $('#kkAll', m).onclick = e => { e.preventDefault(); $$('.objlist input', m).forEach(c => c.checked = true); };
+  $('#kkNone', m).onclick = e => { e.preventDefault(); $$('.objlist input', m).forEach(c => c.checked = false); };
+  $('#kkGo', m).onclick = () => { const ids = $$('.objlist input', m).filter(c => c.checked).map(c => c.value); if (!ids.length) return toast('Pilih minimal satu pekerja', 'err'); tutupModal(); cetak(docKartu(ids.map(i => get('pekerja', i)).filter(Boolean)), 'Kartu Pekerja QR'); };
+}
+
+/* ---- editor daftar baris ---- */
+function editorBaris(el, kol, data) {
+  const D = data.length ? data.map(x => Object.assign({}, x)) : [{}];
+  const draw = () => {
+    el.innerHTML = `<div class="tw"><table class="t"><thead><tr><th>No</th>${kol.map(k => `<th>${esc(k.l)}</th>`).join('')}<th></th></tr></thead><tbody>${D.map((r, i) => `<tr><td>${i + 1}</td>${kol.map(k => `<td><input class="inp sm" data-i="${i}" data-k="${k.k}" ${k.t === 'num' ? 'type="number" step="any"' : ''} ${k.o ? `list="dlb_${k.k}"` : ''} value="${esc(r[k.k] ?? '')}" style="width:${k.w || 120}px"></td>`).join('')}<td><button class="btn sm del" type="button" data-x="${i}">×</button></td></tr>`).join('')}</tbody></table></div>${kol.filter(k => k.o).map(k => `<datalist id="dlb_${k.k}">${k.o.map(o => `<option value="${esc(o)}">`).join('')}</datalist>`).join('')}<button class="btn sm" type="button" data-add style="margin-top:6px">+ baris</button>`;
+    $$('input[data-i]', el).forEach(inp => inp.oninput = () => { D[+inp.dataset.i][inp.dataset.k] = inp.value; });
+    $$('[data-x]', el).forEach(b => b.onclick = () => { D.splice(+b.dataset.x, 1); if (!D.length) D.push({}); draw(); });
+    $('[data-add]', el).onclick = () => { D.push({}); draw(); const l = $$('input[data-i]', el); if (l.length) l[l.length - kol.length].focus(); };
+  };
+  draw();
+  return () => D.map(r => { const o = {}; kol.forEach(k => o[k.k] = String(r[k.k] ?? '').trim()); return o; }).filter(o => kol.some(k => o[k.k]));
+}
+
+/* ---- editor peserta (absensi MP / MPJ / AEN) ---- */
+function editorPeserta(el, data, opt = {}) {
+  const L = data.map(x => Object.assign({}, x));
+  let panel = '';
+  const P = () => rows('pekerja').filter(p => p.status === 'Aktif').sort((a, b) => a.nama.localeCompare(b.nama));
+  const ada = p => L.some(x => (x.pek && x.pek === p.id) || x.nama.toLowerCase() === p.nama.toLowerCase());
+  const tambahPek = p => { if (!ada(p)) L.push({ pek: p.id, nama: p.nama, perusahaan: p.perusahaan || 'AEN', jabatan: p.jabatan || '' }); };
+  const draw = () => {
+    const hasil = opt.hasil;
+    const rekap = PERUSAHAAN.map(c => [c, L.filter(x => x.perusahaan === c).length]).filter(x => x[1]).map(([c, n]) => c + ' ' + n).join(' · ');
+    el.innerHTML = `<div class="row" style="margin-bottom:6px"><button class="btn sm" type="button" data-pk>+ Pilih dari pekerja</button><button class="btn sm" type="button" data-hadir>+ Semua yang hadir (absensi tanggal ini)</button><button class="btn sm" type="button" data-luar>+ Peserta MP / MPJ / KIE / tamu</button><span class="small mut">${L.length} peserta${rekap ? ' — ' + rekap : ''}</span></div>
+    <div data-panel>${panel === 'pk' ? `<div class="card" style="padding:8px;margin-bottom:8px"><input class="inp sm" data-q placeholder="Cari nama" style="width:100%;margin-bottom:6px"><div class="objlist" style="max-height:220px">${P().map(p => `<label class="${ada(p) ? 'dn' : ''}"><input type="checkbox" value="${esc(p.id)}" ${ada(p) ? 'disabled checked' : ''}>${esc(p.nama)} <span class="mut">${esc(p.jabatan || '')}</span></label>`).join('') || '<span class="mut small">Belum ada data pekerja.</span>'}</div><div class="row end" style="margin-top:6px"><button class="btn sm" type="button" data-tutup>Tutup</button><button class="btn sm pri" type="button" data-ok>Tambahkan terpilih</button></div></div>` : ''}</div>
+    <div class="tw"><table class="t"><thead><tr><th>No</th><th>Nama</th><th>Perusahaan</th><th>Jabatan</th>${hasil ? '<th>Hasil MCU</th><th>Tes narkoba</th><th>Berlaku s/d</th>' : ''}<th></th></tr></thead><tbody>${L.map((p, i) => `<tr><td>${i + 1}</td><td><input class="inp sm" data-i="${i}" data-k="nama" value="${esc(p.nama || '')}" style="width:150px"></td><td><select class="inp sm" data-i="${i}" data-k="perusahaan">${PERUSAHAAN.map(o => `<option ${o === p.perusahaan ? 'selected' : ''}>${o}</option>`).join('')}</select></td><td><input class="inp sm" data-i="${i}" data-k="jabatan" value="${esc(p.jabatan || '')}" list="dlJab" style="width:130px"></td>${hasil ? `<td><select class="inp sm" data-i="${i}" data-k="mcu">${['', 'Fit', 'Fit dengan catatan', 'Unfit'].map(o => `<option ${o === (p.mcu || '') ? 'selected' : ''}>${o}</option>`).join('')}</select></td><td><select class="inp sm" data-i="${i}" data-k="narkoba">${['', 'Negatif', 'Positif'].map(o => `<option ${o === (p.narkoba || '') ? 'selected' : ''}>${o}</option>`).join('')}</select></td><td><input type="date" class="inp sm" data-i="${i}" data-k="berlaku" value="${esc(p.berlaku || '')}"></td>` : ''}<td><button class="btn sm del" type="button" data-x="${i}">×</button></td></tr>`).join('') || `<tr><td colspan="8" class="mut">Belum ada peserta.</td></tr>`}</tbody></table></div><datalist id="dlJab">${JABATAN.concat(['HSE', 'Operator Crane', 'Welder', 'PM', 'Pengawas']).map(o => `<option value="${esc(o)}">`).join('')}</datalist>`;
+    $$('[data-i]', el).forEach(inp => { inp.oninput = inp.onchange = () => { L[+inp.dataset.i][inp.dataset.k] = inp.value; }; });
+    $$('[data-x]', el).forEach(b => b.onclick = () => { L.splice(+b.dataset.x, 1); draw(); });
+    $('[data-pk]', el).onclick = () => { panel = panel === 'pk' ? '' : 'pk'; draw(); };
+    $('[data-luar]', el).onclick = () => { L.push({ nama: '', perusahaan: 'MPJ', jabatan: '' }); draw(); const n = $$('input[data-k=nama]', el); n[n.length - 1].focus(); };
+    $('[data-hadir]', el).onclick = () => {
+      const tgl = ($('#f_tgl') || {}).value || today();
+      const hadir = rows('absen').filter(r => r.tgl === tgl && /^H/.test(r.kode || '')).map(r => get('pekerja', r.pek)).filter(Boolean);
+      if (!hadir.length) return toast('Absensi tanggal ' + fD(tgl) + ' belum diisi', 'err');
+      const n0 = L.length; hadir.forEach(tambahPek); toast((L.length - n0) + ' peserta ditambahkan dari absensi'); draw();
+    };
+    if (panel === 'pk') {
+      const q = $('[data-q]', el); q.oninput = () => $$('.objlist label', el).forEach(l => l.style.display = l.textContent.toLowerCase().includes(q.value.toLowerCase()) ? '' : 'none');
+      $('[data-tutup]', el).onclick = () => { panel = ''; draw(); };
+      $('[data-ok]', el).onclick = () => { $$('.objlist input:not([disabled])', el).filter(c => c.checked).forEach(c => { const p = get('pekerja', c.value); if (p) tambahPek(p); }); panel = ''; draw(); };
+    }
+  };
+  draw();
+  return () => L.map(x => { const o = {}; for (const k of Object.keys(x)) o[k] = String(x[k] ?? '').trim(); return o; }).filter(x => x.nama);
+}
+
+/* ---- skema dokumen HSE ---- */
+const statusB = v => { const c = /Disetujui|Selesai|Diterima|masuk lokasi|keluar lokasi/.test(v || '') ? 'ok' : /Ditolak|Dibatalkan/.test(v || '') ? 'bad' : /Draft/.test(v || '') ? 'gr' : 'warn'; return v ? `<span class="b ${c}">${esc(v)}</span>` : ''; };
+const nomorHook = (t, pre) => (n, baru) => { if (!n.no) n.no = noOtomatis(t, pre, n.tgl); };
+SK.permit = {
+  judul: 'E-Permit', f: [
+    { k: 'no', l: 'No. (otomatis)', t: 'text', ph: 'otomatis' },
+    { k: 'tgl', l: 'Tanggal', t: 'date', req: 1, def: () => today() },
+    { k: 'jamMulai', l: 'Jam mulai', t: 'time', def: '07:00' }, { k: 'jamSelesai', l: 'Jam selesai', t: 'time', def: '17:00' },
+    { k: 'subkon', l: '1. Sub-kontraktor', t: 'text', def: 'PT. Avindo Energi Nusantara', req: 1 },
+    { k: 'holder', l: '2. Permit holder', t: 'selx', o: () => ['Firimus Api', 'Fery Padly', 'Habel'], def: () => (rows('permit').sort((a, b) => a.tgl < b.tgl ? 1 : -1)[0] || {}).holder || 'Firimus Api', req: 1 },
+    { k: 'npk', l: '3. No. NPK / badge', t: 'text', def: () => (rows('permit').sort((a, b) => a.tgl < b.tgl ? 1 : -1)[0] || {}).npk || '' },
+    { k: 'area', l: '4. Area kerja', t: 'text', def: () => (rows('permit').sort((a, b) => a.tgl < b.tgl ? 1 : -1)[0] || {}).area || 'EPC-D Soda Ash Project — NaCl Bulk Storage (Paket 8, 9, 12)', w: 1, req: 1 },
+    { k: 'jenis', l: '6. Jenis permit', t: 'multi', o: JENIS_PERMIT, req: 1, w: 1 },
+    { k: 'kegiatan', l: '7. Kegiatan yang akan dilaksanakan (satu per baris)', t: 'area', req: 1, w: 1 },
+    { k: 'peralatan', l: '8. Peralatan yang akan digunakan (satu per baris)', t: 'area', w: 1 },
+    { k: 'pob', l: '9. Jumlah POB (orang)', t: 'num' },
+    { k: 'status', l: 'Status', t: 'sel', o: ['Draft', 'Diajukan', 'Disetujui', 'Ditolak', 'Selesai / ditutup'], def: 'Diajukan' },
+    { k: 'noPermit', l: 'No. permit dari MPJ/MP', t: 'text' }, { k: 'approver', l: 'Disetujui oleh', t: 'text' },
+    { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }, { k: 'foto', l: 'Foto permit bertanda tangan', t: 'foto' }
+  ], kol: [], sebelum: nomorHook('permit', 'EP'),
+  siap: el => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn sm'; b.textContent = 'Ambil POB dari TBM / absensi tanggal ini'; b.onclick = () => { const t = $('#f_tgl', el).value; const tb = rows('tbm').filter(r => r.tgl === t)[0]; const n = tb ? jsonArr(tb.peserta).filter(p => p.perusahaan === 'AEN').length : rows('absen').filter(r => r.tgl === t && /^H/.test(r.kode || '')).length; $('#f_pob', el).value = n || ''; toast(n ? 'POB ' + n + ' orang (' + (tb ? 'dari TBM' : 'dari absensi') + ')' : 'Belum ada TBM/absensi tanggal ini', n ? '' : 'err'); }; $('#f_pob', el).after(b); }
+};
+SK.tbm = {
+  judul: 'Tool Box Meeting / Safety Talk', f: [
+    { k: 'no', l: 'No. (otomatis)', t: 'text', ph: 'otomatis' },
+    { k: 'tgl', l: 'Tanggal', t: 'date', req: 1, def: () => today() }, { k: 'jam', l: 'Jam', t: 'time', def: '07:00' },
+    { k: 'jenis', l: 'Jenis', t: 'sel', o: ['Tool Box Meeting', 'Safety Talk', 'Safety Induction', 'Safety Meeting gabungan (MP/MPJ/AEN)'], def: 'Tool Box Meeting', req: 1 },
+    { k: 'kontraktor', l: 'Nama kontraktor', t: 'text', def: 'PT. Avindo Energi Nusantara' },
+    { k: 'pekerjaan', l: 'Jenis pekerjaan', t: 'text', def: 'Pekerjaan Pondasi NaCl Bulk Storage' },
+    { k: 'cuaca', l: 'Cuaca', t: 'sel', o: ['Cerah', 'Berawan', 'Gerimis', 'Hujan'] },
+    { k: 'pemateri', l: 'Pemateri', t: 'text', def: () => ME && ME.peran === 'HSE' ? ME.nama + ' (Safety Officer)' : '' },
+    { k: 'topik', l: 'Topik / materi', t: 'area', req: 1, w: 1 },
+    { k: 'peserta', l: 'Daftar hadir peserta (AEN, MPJ, MP, tamu)', t: 'peserta', req: 1, w: 1 },
+    { k: 'fotoAbsen', l: 'Foto lembar absensi bertanda tangan', t: 'foto' }, { k: 'foto', l: 'Foto kegiatan', t: 'foto' },
+    { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }
+  ], kol: [], sebelum: nomorHook('tbm', 'TBM')
+};
+SK.izin = {
+  judul: 'Izin Masuk Material & Alat', f: [
+    { k: 'no', l: 'No. surat (otomatis)', t: 'text', ph: 'otomatis' },
+    { k: 'tgl', l: 'Tanggal pengajuan', t: 'date', req: 1, def: () => today() },
+    { k: 'jenis', l: 'Jenis', t: 'sel', o: ['Material', 'Alat', 'Material & Alat'], req: 1, def: 'Material' },
+    { k: 'arah', l: 'Masuk / keluar', t: 'sel', o: ['Masuk lokasi', 'Keluar lokasi'], def: 'Masuk lokasi' },
+    { k: 'tglRencana', l: 'Rencana tanggal masuk', t: 'date' },
+    { k: 'vendor', l: 'Asal / vendor', t: 'text' }, { k: 'kendaraan', l: 'Kendaraan & no. polisi', t: 'text' }, { k: 'driver', l: 'Nama driver', t: 'text' },
+    { k: 'item', l: 'Daftar material / alat', t: 'baris', req: 1, w: 1, kol: [{ k: 'nama', l: 'Nama material / alat', w: 200 }, { k: 'spek', l: 'Spesifikasi / no. seri', w: 150 }, { k: 'jml', l: 'Jumlah', t: 'num', w: 70 }, { k: 'sat', l: 'Satuan', o: ['unit', 'batang', 'lembar', 'set', 'm³', 'kg', 'zak', 'roll'], w: 80 }] },
+    { k: 'tujuan', l: 'Tujuan / area', t: 'text', def: 'Area NaCl Bulk Storage — Paket 8, 9, 12', w: 1 },
+    { k: 'keperluan', l: 'Keperluan', t: 'text', w: 1 },
+    { k: 'status', l: 'Status', t: 'sel', o: ['Draft', 'Diajukan ke MPJ', 'Disetujui', 'Ditolak', 'Sudah masuk lokasi', 'Sudah keluar lokasi'], def: 'Diajukan ke MPJ' },
+    { k: 'tglAktual', l: 'Tanggal aktual masuk/keluar', t: 'date' },
+    { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }, { k: 'foto', l: 'Foto surat jalan / barang', t: 'foto' }
+  ], kol: [], sebelum: nomorHook('izin', 'IZN')
+};
+SK.apd = {
+  judul: 'Pengajuan APD', f: [
+    { k: 'no', l: 'No. (otomatis)', t: 'text', ph: 'otomatis' },
+    { k: 'tgl', l: 'Tanggal pengajuan', t: 'date', req: 1, def: () => today() },
+    { k: 'keperluan', l: 'Keperluan', t: 'sel', o: ['Pekerja baru', 'Penggantian rusak / hilang', 'Stok cadangan', 'Tamu / visitor', 'Lainnya'], def: 'Pekerja baru' },
+    { k: 'item', l: 'Daftar APD', t: 'baris', req: 1, w: 1, kol: [{ k: 'apd', l: 'Jenis APD', o: JENIS_APD, w: 170 }, { k: 'ukuran', l: 'Ukuran', w: 70 }, { k: 'jml', l: 'Jumlah', t: 'num', w: 70 }, { k: 'untuk', l: 'Untuk (nama / umum)', w: 170 }] },
+    { k: 'status', l: 'Status', t: 'sel', o: ['Diajukan', 'Disetujui', 'Dibeli / disiapkan', 'Diterima & dibagikan', 'Ditolak'], def: 'Diajukan' },
+    { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }, { k: 'foto', l: 'Foto serah terima', t: 'foto' }
+  ], kol: [], sebelum: nomorHook('apd', 'APD')
+};
+SK.mcu = {
+  judul: 'Pengajuan MCU & Tes Narkoba', f: [
+    { k: 'no', l: 'No. (otomatis)', t: 'text', ph: 'otomatis' },
+    { k: 'tgl', l: 'Tanggal pengajuan', t: 'date', req: 1, def: () => today() },
+    { k: 'jenis', l: 'Jenis', t: 'sel', o: ['MCU', 'Tes narkoba', 'MCU + tes narkoba'], req: 1, def: 'MCU + tes narkoba' },
+    { k: 'klinik', l: 'Klinik / tempat', t: 'text' }, { k: 'tglPel', l: 'Tanggal pelaksanaan', t: 'date' },
+    { k: 'peserta', l: 'Peserta & hasil', t: 'peserta', req: 1, w: 1, opt: { hasil: 1 } },
+    { k: 'status', l: 'Status', t: 'sel', o: ['Diajukan', 'Dijadwalkan', 'Selesai', 'Dibatalkan'], def: 'Diajukan' },
+    { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }, { k: 'foto', l: 'Foto surat / hasil', t: 'foto' }
+  ], kol: [], sebelum: nomorHook('mcu', 'MCU')
+};
+
+/* ---- teks WhatsApp ---- */
+function waPermit(r) {
+  const li = a => a.map(x => '  • ' + x).join('\n') || '  • -';
+  return `>>> *E-Permit* <<<\n\n*1. SUB-KONTRAKTOR :*\n${li([r.subkon])}\n*2. PERMIT HOLDER :*\n${li([r.holder])}\n*3. NO NPK/ BADGE :*\n${li([r.npk || '-'])}\n*4. AREA KERJA :*\n${li([r.area])}\n*5.TANGGAL / JAM :*\n${li([fTglSlash(r.tgl) + '. ' + (r.jamMulai || '') + '-' + (r.jamSelesai || '')])}\n*6.  JENIS PERMIT :*\n${li(jsonArr(r.jenis))}\n*7. KEGIATAN YANG AKAN DILAKSANAKAN :*\n${li(baris(r.kegiatan))}\n*8. PERALATAN YANG AKAN DIGUNAKAN :*\n${li(baris(r.peralatan))}\n*9. JUMLAH POB : ${r.pob || 0} Orang*`;
+}
+function pobJabatan(L) {
+  const m = new Map(); L.forEach(p => { const k = (p.jabatan || 'Lainnya').toUpperCase(); m.set(k, (m.get(k) || 0) + 1); });
+  return [...m.entries()].map(([k, n]) => `  • ${k} = ${n} Orang`).join('\n');
+}
+function waTbm(r) {
+  const L = jsonArr(r.peserta), comps = PERUSAHAAN.filter(c => L.some(p => p.perusahaan === c));
+  const pt = r.kontraktor || NAMA_PT.AEN;
+  let s = `*${r.jenis || 'Tool Box Meeting'}*\n_${pt}_ *(AEN)*\n\nHari : ${HARI[pd(r.tgl).getDay()]}\nTanggal : ${fTglPanjang(r.tgl)}\nJam : ${r.jam || ''}\n`;
+  if (r.topik) s += `Topik : ${r.topik}\n`;
+  if (comps.length <= 1) s += `\nPOB :\n${pobJabatan(L)}\n\nTotal = ${L.length} Orang`;
+  else { comps.forEach(c => { const l = L.filter(p => p.perusahaan === c); s += `\nPOB ${c} :\n${pobJabatan(l)}\n  Subtotal = ${l.length} Orang\n`; }); s += `\nTotal = ${L.length} Orang`; }
+  return s;
+}
+const arahK = r => /Keluar/.test(r.arah || '') ? 'KELUAR' : 'MASUK';
+function waIzin(r) {
+  const it = jsonArr(r.item);
+  return `*IZIN ${arahK(r)} ${String(r.jenis || '').toUpperCase()}*\n_${NAMA_PT.AEN}_ *(AEN)*\nNo : ${r.no || '-'}\nTanggal : ${fTglPanjang(r.tglRencana || r.tgl)}\nAsal / vendor : ${r.vendor || '-'}\nKendaraan : ${r.kendaraan || '-'}${r.driver ? ' (' + r.driver + ')' : ''}\nTujuan : ${r.tujuan || '-'}\n\nDaftar :\n${it.map((x, i) => `${i + 1}. ${x.nama}${x.spek ? ' — ' + x.spek : ''} : ${x.jml || ''} ${x.sat || ''}`).join('\n')}\n${r.keperluan ? '\nKeperluan : ' + r.keperluan : ''}`;
+}
+function waApd(r) { const it = jsonArr(r.item); return `*PENGAJUAN APD*\n_${NAMA_PT.AEN}_ *(AEN)*\nNo : ${r.no || '-'}\nTanggal : ${fTglPanjang(r.tgl)}\nKeperluan : ${r.keperluan || '-'}\n\n${it.map((x, i) => `${i + 1}. ${x.apd}${x.ukuran ? ' (' + x.ukuran + ')' : ''} : ${x.jml || ''} pcs${x.untuk ? ' — ' + x.untuk : ''}`).join('\n')}\n\nTotal = ${it.reduce((a, x) => a + num(x.jml), 0)} pcs`; }
+function waMcu(r) { const L = jsonArr(r.peserta); return `*PENGAJUAN ${String(r.jenis || '').toUpperCase()}*\n_${NAMA_PT.AEN}_ *(AEN)*\nNo : ${r.no || '-'}\nTanggal pengajuan : ${fTglPanjang(r.tgl)}\n${r.tglPel ? 'Pelaksanaan : ' + fTglPanjang(r.tglPel) + '\n' : ''}${r.klinik ? 'Tempat : ' + r.klinik + '\n' : ''}\nPeserta :\n${L.map((p, i) => `${i + 1}. ${p.nama} — ${p.jabatan || ''} (${p.perusahaan || ''})`).join('\n')}\n\nTotal = ${L.length} Orang`; }
+
+/* ---- dokumen cetak ---- */
+const ttd3 = (a, b, c) => `<div class="ttd">${[a, b, c].map(([j, n, jb]) => `<div>${j},<div class="ln">${esc(n || '')}</div>${esc(jb || '')}</div>`).join('')}</div>`;
+const namaHSE = () => (rows('users').find(u => u.peran === 'HSE' && u.aktif !== '0') || {}).nama || 'Safety Officer';
+function docPermit(r, k) {
+  const li = a => a.map(x => esc(x)).join('<br>') || '-';
+  return kop(k) + `<div class="jd">E-PERMIT / IZIN KERJA${r.no ? '<br><span style="font-size:11px;font-weight:400">No. ' + esc(r.no) + (r.noPermit ? ' · Permit ' + esc(r.noPermit) : '') + '</span>' : ''}</div><table>
+  ${[['1. Sub-kontraktor', esc(r.subkon)], ['2. Permit holder', esc(r.holder)], ['3. No. NPK / badge', esc(r.npk || '-')], ['4. Area kerja', esc(r.area)], ['5. Tanggal / jam', fDH(r.tgl) + ', ' + esc(r.jamMulai || '') + ' – ' + esc(r.jamSelesai || '')], ['6. Jenis permit', li(jsonArr(r.jenis))], ['7. Kegiatan', li(baris(r.kegiatan))], ['8. Peralatan', li(baris(r.peralatan))], ['9. Jumlah POB', esc(r.pob || 0) + ' orang'], ['Status', esc(r.status || '')]].map(([a, b]) => `<tr><th style="width:30%;text-align:left">${a}</th><td>${b}</td></tr>`).join('')}</table>${r.catatan ? '<p>Catatan: ' + esc(r.catatan) + '</p>' : ''}` + ttd3(['Permit holder', r.holder, 'AEN'], ['Diperiksa', namaHSE(), 'Safety Officer AEN'], ['Disetujui', r.approver || '', 'HSE MPJ / MP']);
+}
+function docTbm(r, k) {
+  const L = jsonArr(r.peserta), min = Math.max(15, L.length);
+  const isi = Array.from({ length: min }, (_, i) => L[i] || {});
+  const rek = PERUSAHAAN.map(c => [c, L.filter(p => p.perusahaan === c).length]).filter(x => x[1]);
+  return kop(k) + `<div class="jd">ABSENSI ${esc(String(r.jenis || 'Tool Box Meeting').toUpperCase())}</div><table>
+  <tr><th style="width:25%;text-align:left">Nama kontraktor</th><td>${esc(r.kontraktor || '')}</td></tr><tr><th style="text-align:left">Jenis pekerjaan</th><td>${esc(r.pekerjaan || '')}</td></tr><tr><th style="text-align:left">Hari / tanggal / jam</th><td>${fDH(r.tgl)} · ${esc(r.jam || '')}</td></tr><tr><th style="text-align:left">Cuaca</th><td>${esc(r.cuaca || '')}</td></tr><tr><th style="text-align:left">Topik</th><td>${esc(r.topik || '').replace(/\n/g, '<br>')}</td></tr><tr><th style="text-align:left">Pemateri</th><td>${esc(r.pemateri || '')}</td></tr></table>
+  <table><tr><th style="width:6%">No</th><th>Nama</th><th style="width:14%">Perusahaan</th><th style="width:22%">Jabatan</th><th style="width:20%">Tanda tangan</th></tr>${isi.map((p, i) => `<tr style="height:24px"><td class="n">${i + 1}</td><td>${esc(p.nama || '')}</td><td>${esc(p.perusahaan || '')}</td><td>${esc(p.jabatan || '')}</td><td></td></tr>`).join('')}</table>
+  <p>POB: ${rek.map(([c, n]) => c + ' ' + n + ' orang').join(', ') || '-'} · Total ${L.length} orang</p>` + ttd3(['Pemateri', r.pemateri || namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Mengetahui', '', 'HSE MPJ / MP']);
+}
+function docIzin(r, k) {
+  const it = jsonArr(r.item);
+  return kop(k) + `<div class="jd">SURAT PERMOHONAN IZIN ${arahK(r)} ${esc(String(r.jenis || '').toUpperCase())}<br><span style="font-size:11px;font-weight:400">No. ${esc(r.no || '')}</span></div>
+  <p>Kepada Yth. HSE PT. Mega Perkasa Jaya / PT Mucoindo Prakasa<br>Dengan hormat, bersama ini kami mengajukan izin ${arahK(r) === 'MASUK' ? 'masuk' : 'keluar'} ${esc(String(r.jenis || '').toLowerCase())} ${arahK(r) === 'MASUK' ? 'ke' : 'dari'} lokasi pekerjaan ${esc(cfg('proyek').pekerjaan)} dengan rincian:</p>
+  <table>${[['Tanggal rencana', fDH(r.tglRencana || r.tgl)], ['Asal / vendor', r.vendor], ['Kendaraan / no. polisi', r.kendaraan], ['Driver', r.driver], ['Tujuan / area', r.tujuan], ['Keperluan', r.keperluan]].map(([a, b]) => `<tr><th style="width:28%;text-align:left">${a}</th><td>${esc(b || '-')}</td></tr>`).join('')}</table>
+  <table><tr><th style="width:6%">No</th><th>Nama material / alat</th><th>Spesifikasi / no. seri</th><th style="width:10%">Jumlah</th><th style="width:10%">Satuan</th></tr>${it.map((x, i) => `<tr><td class="n">${i + 1}</td><td>${esc(x.nama)}</td><td>${esc(x.spek || '')}</td><td class="n">${esc(x.jml || '')}</td><td>${esc(x.sat || '')}</td></tr>`).join('')}</table>
+  <p>Demikian permohonan ini kami sampaikan. Atas perhatian dan persetujuannya kami ucapkan terima kasih.</p>` + ttd3(['Diajukan oleh', namaHSE(), 'Safety Officer AEN'], ['Mengetahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Disetujui oleh', '', 'HSE MPJ / MP']);
+}
+function docApd(r, k) {
+  const it = jsonArr(r.item);
+  return kop(k) + `<div class="jd">PENGAJUAN ALAT PELINDUNG DIRI (APD)<br><span style="font-size:11px;font-weight:400">No. ${esc(r.no || '')} · ${fDH(r.tgl)}</span></div><p>Keperluan: ${esc(r.keperluan || '-')}</p>
+  <table><tr><th style="width:6%">No</th><th>Jenis APD</th><th style="width:12%">Ukuran</th><th style="width:10%">Jumlah</th><th>Untuk</th></tr>${it.map((x, i) => `<tr><td class="n">${i + 1}</td><td>${esc(x.apd)}</td><td>${esc(x.ukuran || '')}</td><td class="n">${esc(x.jml || '')}</td><td>${esc(x.untuk || '')}</td></tr>`).join('')}<tr><th colspan="3">Total</th><th class="n">${it.reduce((a, x) => a + num(x.jml), 0)}</th><th></th></tr></table>${r.catatan ? '<p>Catatan: ' + esc(r.catatan) + '</p>' : ''}` + ttd3(['Diajukan oleh', namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Disetujui', '', 'Finance / Direktur']);
+}
+function docMcu(r, k) {
+  const L = jsonArr(r.peserta);
+  return kop(k) + `<div class="jd">PENGAJUAN ${esc(String(r.jenis || '').toUpperCase())}<br><span style="font-size:11px;font-weight:400">No. ${esc(r.no || '')} · ${fDH(r.tgl)}</span></div><p>Tempat: ${esc(r.klinik || '-')} · Pelaksanaan: ${fDH(r.tglPel) || '-'}</p>
+  <table><tr><th style="width:6%">No</th><th>Nama</th><th>Perusahaan</th><th>Jabatan</th><th>Hasil MCU</th><th>Tes narkoba</th><th>Berlaku s/d</th></tr>${L.map((p, i) => `<tr><td class="n">${i + 1}</td><td>${esc(p.nama)}</td><td>${esc(p.perusahaan || '')}</td><td>${esc(p.jabatan || '')}</td><td>${esc(p.mcu || '')}</td><td>${esc(p.narkoba || '')}</td><td>${fD(p.berlaku)}</td></tr>`).join('')}</table>` + ttd3(['Diajukan oleh', namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Disetujui', '', 'MPJ / MP']);
+}
+const DOK = {
+  permit: { tab: 'E-Permit', wa: waPermit, doc: docPermit, dup: 1, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Jam', r => esc((r.jamMulai || '') + '–' + (r.jamSelesai || ''))], ['Jenis permit', r => esc(jsonArr(r.jenis).join(', '))], ['Kegiatan', r => esc(baris(r.kegiatan).join(', '))], ['POB', r => esc(r.pob || '')], ['Status', r => statusB(r.status)], ['Foto', r => r.foto ? `<img class="thumb" src="${fotoSrc(r.foto, 120)}" onclick="lihatFoto('${esc(r.foto)}')">` : '']] },
+  tbm: { tab: 'Tool Box Meeting', wa: waTbm, doc: docTbm, dup: 1, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl) + ' ' + esc(r.jam || '')], ['Jenis', r => esc(r.jenis || '')], ['Topik', r => esc(String(r.topik || '').slice(0, 80))], ['Peserta', r => { const L = jsonArr(r.peserta); return `<b>${L.length}</b> <span class="small mut">${PERUSAHAAN.map(c => [c, L.filter(p => p.perusahaan === c).length]).filter(x => x[1]).map(x => x.join(' ')).join(' · ')}</span>`; }], ['Pemateri', r => esc(r.pemateri || '')], ['Absen', r => r.fotoAbsen ? `<img class="thumb" src="${fotoSrc(r.fotoAbsen, 120)}" onclick="lihatFoto('${esc(r.fotoAbsen)}')">` : '<span class="b warn">belum</span>']] },
+  izin: { tab: 'Izin Masuk Material & Alat', wa: waIzin, doc: docIzin, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Jenis', r => esc((r.jenis || '') + ' · ' + (r.arah || ''))], ['Item', r => esc(jsonArr(r.item).map(x => x.nama + ' ' + (x.jml || '') + ' ' + (x.sat || '')).join(', ').slice(0, 90))], ['Vendor / kendaraan', r => esc([r.vendor, r.kendaraan].filter(Boolean).join(' · '))], ['Status', r => statusB(r.status)]] },
+  apd: { tab: 'Pengajuan APD', wa: waApd, doc: docApd, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Keperluan', r => esc(r.keperluan || '')], ['APD', r => esc(jsonArr(r.item).map(x => x.apd + ' ' + (x.jml || '')).join(', ').slice(0, 90))], ['Jumlah', r => String(jsonArr(r.item).reduce((a, x) => a + num(x.jml), 0))], ['Status', r => statusB(r.status)]] },
+  mcu: { tab: 'MCU & Narkoba', wa: waMcu, doc: docMcu, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Jenis', r => esc(r.jenis || '')], ['Pelaksanaan', r => esc([fD(r.tglPel), r.klinik].filter(Boolean).join(' · '))], ['Peserta', r => { const L = jsonArr(r.peserta); const u = L.filter(p => p.mcu === 'Unfit').length, ps = L.filter(p => p.narkoba === 'Positif').length, blm = L.filter(p => !p.mcu && !p.narkoba).length; return `<b>${L.length}</b> ${blm ? `<span class="b warn">${blm} belum ada hasil</span>` : ''}${u ? ` <span class="b bad">${u} unfit</span>` : ''}${ps ? ` <span class="b bad">${ps} positif</span>` : ''}`; }], ['Status', r => statusB(r.status)]] }
+};
+
+/* ---- halaman HSE ---- */
+let HS = { tab: 'ringkas', q: '', dari: '', sampai: '' };
+function vHSE() {
+  const tabs = [['ringkas', 'Ringkasan']].concat(Object.entries(DOK).map(([k, d]) => [k, d.tab]), [['temuan', 'Temuan & Insiden']]);
+  $('#main').innerHTML = `<h1>HSE & K3</h1><div class="tabs">${tabs.map(([k, l]) => `<button class="${HS.tab === k ? 'on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div><div id="hsBox"></div>`;
+  $$('[data-tab]').forEach(b => b.onclick = () => { HS.tab = b.dataset.tab; HS.q = ''; vHSE(); });
+  if (HS.tab === 'ringkas') return hseRingkas();
+  if (HS.tab === 'temuan') return viewTabel('hse', { box: $('#hsBox'), noJudul: true });
+  hseDaftar(HS.tab);
+}
+function hariTanpaKecelakaan() {
+  const t = today(), mulai = cfg('proyek').mulai;
+  const ins = rows('hse').filter(r => /Insiden/.test(r.jenis || '') && r.tgl <= t).map(r => r.tgl).sort().pop();
+  const dari = ins || mulai; if (dari > t) return 0;
+  return Math.max(0, diffD(dari, t) + (ins ? 0 : 1));
+}
+function hseRingkas() {
+  const t = today();
+  const pmHari = rows('permit').filter(r => r.tgl === t), tbHari = rows('tbm').filter(r => r.tgl === t);
+  const izinT = rows('izin').filter(r => /Draft|Diajukan/.test(r.status || '')), apdT = rows('apd').filter(r => /^(Diajukan|Disetujui|Dibeli)/.test(r.status || '')), mcuT = rows('mcu').filter(r => /Diajukan|Dijadwalkan/.test(r.status || ''));
+  const temuan = rows('hse').filter(r => r.status === 'Terbuka');
+  const ed = k => bisaEdit(k);
+  const hari = []; for (let i = 6; i >= 0; i--) hari.push(addD(t, -i));
+  let h = `<div class="kpis">
+    <div class="kpi ok"><div class="l">Hari kerja tanpa kecelakaan</div><div class="v">${hariTanpaKecelakaan()}</div><div class="s">sejak ${fD(cfg('proyek').mulai)} / insiden terakhir</div></div>
+    <div class="kpi ${tbHari.length ? 'ok' : 'warn'}"><div class="l">TBM hari ini</div><div class="v">${tbHari.length ? jsonArr(tbHari[0].peserta).length + ' org' : 'Belum'}</div><div class="s">${tbHari.length ? esc(tbHari[0].topik || '').slice(0, 40) : 'belum dicatat'}</div></div>
+    <div class="kpi ${pmHari.length ? '' : 'warn'}"><div class="l">E-Permit hari ini</div><div class="v">${pmHari.length}</div><div class="s">${esc([...new Set(pmHari.flatMap(r => jsonArr(r.jenis)))].join(', ') || 'belum ada')}</div></div>
+    <div class="kpi ${izinT.length ? 'warn' : ''}"><div class="l">Izin masuk menunggu</div><div class="v">${izinT.length}</div></div>
+    <div class="kpi ${apdT.length ? 'warn' : ''}"><div class="l">Pengajuan APD berjalan</div><div class="v">${apdT.length}</div></div>
+    <div class="kpi ${mcuT.length ? 'warn' : ''}"><div class="l">MCU / narkoba berjalan</div><div class="v">${mcuT.length}</div></div>
+    <div class="kpi ${temuan.length ? 'bad' : ''}"><div class="l">Temuan terbuka</div><div class="v">${temuan.length}</div></div></div>`;
+  if (['permit', 'tbm', 'izin', 'apd', 'mcu'].some(ed)) h += `<div class="card"><h2>Input cepat</h2><div class="row">${[['tbm', '+ Tool Box Meeting'], ['permit', '+ E-Permit'], ['izin', '+ Izin masuk material / alat'], ['apd', '+ Pengajuan APD'], ['mcu', '+ MCU / tes narkoba'], ['hse', '+ Temuan / insiden']].filter(([k]) => ed(k)).map(([k, l]) => `<button class="btn ${k === 'tbm' ? 'pri' : ''}" data-baru="${k}">${l}</button>`).join('')}</div></div>`;
+  h += `<div class="card"><h2>7 hari terakhir</h2><div class="tw"><table class="t"><thead><tr><th>Tanggal</th><th>TBM / safety talk</th><th class="n">Peserta</th><th>E-Permit</th><th class="n">Temuan</th></tr></thead><tbody>${hari.map(d => { const tb = rows('tbm').filter(r => r.tgl === d), pm = rows('permit').filter(r => r.tgl === d); return `<tr><td>${fDH(d)}</td><td>${tb.length ? esc(tb.map(r => r.jenis).join(', ')) : '<span class="b warn">belum</span>'}</td><td class="n">${tb.reduce((a, r) => a + jsonArr(r.peserta).length, 0) || ''}</td><td>${pm.length ? pm.map(r => statusB(r.status) + ' ' + esc(jsonArr(r.jenis).join(', '))).join('<br>') : '<span class="mut">—</span>'}</td><td class="n">${rows('hse').filter(r => r.tgl === d).length || ''}</td></tr>`; }).join('')}</tbody></table></div></div>`;
+  const tunggu = [].concat(izinT.map(r => ['Izin masuk', r]), apdT.map(r => ['APD', r]), mcuT.map(r => ['MCU / narkoba', r]));
+  if (tunggu.length) h += `<div class="card"><h2>Masih berjalan</h2><div class="tw"><table class="t"><tbody>${tunggu.map(([j, r]) => `<tr><td>${esc(j)}</td><td>${esc(r.no || '')}</td><td>${fD(r.tgl)}</td><td>${statusB(r.status)}</td></tr>`).join('')}</tbody></table></div></div>`;
+  $('#hsBox').innerHTML = h;
+  $$('[data-baru]').forEach(b => b.onclick = () => formTabel(b.dataset.baru, null, {}, () => vHSE()));
+}
+function hseDaftar(t) {
+  const d = DOK[t], ed = bisaEdit(t);
+  let rs = rows(t);
+  if (HS.q) { const q = HS.q.toLowerCase(); rs = rs.filter(r => JSON.stringify(r).toLowerCase().includes(q)); }
+  if (HS.dari) rs = rs.filter(r => r.tgl >= HS.dari); if (HS.sampai) rs = rs.filter(r => r.tgl <= HS.sampai);
+  rs.sort((a, b) => a.tgl < b.tgl ? 1 : a.tgl > b.tgl ? -1 : String(b.no || '').localeCompare(String(a.no || ''), 'id', { numeric: true }));
+  let h = `<div class="row" style="margin-bottom:10px"><input class="inp" style="max-width:220px" id="hsQ" placeholder="Cari…" value="${esc(HS.q)}"><span class="small mut">dari</span><input type="date" class="inp sm" id="hsD1" value="${HS.dari}"><span class="small mut">s/d</span><input type="date" class="inp sm" id="hsD2" value="${HS.sampai}"><span style="flex:1"></span><span class="small mut">${rs.length} data</span><button class="btn" id="hsXl">Excel</button>${ed ? `<button class="btn pri" id="hsAdd">+ ${esc(d.tab)}</button>` : ''}</div>`;
+  h += `<div class="tw tall"><table class="t"><thead><tr>${d.kol.map(k => `<th>${k[0]}</th>`).join('')}<th>Oleh</th><th></th></tr></thead><tbody>${rs.map(r => `<tr>${d.kol.map(k => `<td>${k[1](r)}</td>`).join('')}<td class="small mut">${esc(r._oleh || '')}</td><td style="white-space:nowrap"><button class="btn sm" data-wa="${esc(r.id)}">WA</button> <button class="btn sm" data-pr="${esc(r.id)}">Cetak</button>${ed && d.dup ? ` <button class="btn sm" data-dup="${esc(r.id)}" title="Salin ke tanggal lain">Duplikat</button>` : ''}${ed ? ` <button class="btn sm" data-ed="${esc(r.id)}">Ubah</button> <button class="btn sm del" data-del="${esc(r.id)}">Hapus</button>` : ''}</td></tr>`).join('') || `<tr><td colspan="${d.kol.length + 2}" class="mut">Belum ada data.</td></tr>`}</tbody></table></div>`;
+  $('#hsBox').innerHTML = h;
+  $('#hsQ').onchange = e => { HS.q = e.target.value; hseDaftar(t); };
+  $('#hsD1').onchange = e => { HS.dari = e.target.value; hseDaftar(t); }; $('#hsD2').onchange = e => { HS.sampai = e.target.value; hseDaftar(t); };
+  $('#hsXl').onclick = () => unduhExcel(d.tab.replace(/\W+/g, '_') + '_' + today(), [[d.tab, [d.kol.map(k => k[0]).concat(['Diinput oleh', 'Waktu'])].concat(rs.map(r => d.kol.map(k => k[1](r).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()).concat([r._oleh || '', fW(r._ubah)])))]].concat(t === 'tbm' || t === 'mcu' ? [['Peserta', [['No dokumen', 'Tanggal', 'Nama', 'Perusahaan', 'Jabatan'].concat(t === 'mcu' ? ['Hasil MCU', 'Tes narkoba', 'Berlaku s/d'] : [])].concat(rs.flatMap(r => jsonArr(r.peserta).map(p => [r.no, fD(r.tgl), p.nama, p.perusahaan, p.jabatan].concat(t === 'mcu' ? [p.mcu || '', p.narkoba || '', fD(p.berlaku)] : []))))]] : []));
+  $$('[data-wa]').forEach(b => b.onclick = () => { const txt = d.wa(get(t, b.dataset.wa)); navigator.clipboard?.writeText(txt).then(() => toast('Teks disalin — tempel di WhatsApp'), () => { }); modal('Teks WhatsApp', `<textarea class="inp" style="height:360px">${esc(txt)}</textarea><div class="row end" style="margin-top:8px"><a class="btn acc" target="_blank" href="https://wa.me/?text=${encodeURIComponent(txt)}">Buka WhatsApp</a></div>`); });
+  $$('[data-pr]').forEach(b => b.onclick = () => { const r = get(t, b.dataset.pr); pilihKop(k => cetak(d.doc(r, k), d.tab + ' ' + (r.no || ''))); });
+  if (ed) {
+    $('#hsAdd').onclick = () => formTabel(t, null, {}, () => vHSE());
+    $$('[data-ed]').forEach(b => b.onclick = () => formTabel(t, get(t, b.dataset.ed), {}, () => vHSE()));
+    $$('[data-del]').forEach(b => b.onclick = () => { if (yakin('Hapus ' + d.tab + ' ini?')) { hapus(t, b.dataset.del); vHSE(); } });
+    $$('[data-dup]').forEach(b => b.onclick = () => {
+      const r = get(t, b.dataset.dup), besok = addD(r.tgl, 1);
+      const m = modal('Duplikat ' + d.tab, `<p class="small">Semua isian disalin ke tanggal baru (status kembali awal, foto tidak ikut). Cocok untuk permit/TBM harian yang isinya sama.</p><div class="fld"><label>Tanggal baru</label><input type="date" id="dupT" value="${besok}"></div><div class="row end"><button class="btn pri" id="dupOk">Buat & buka</button></div>`);
+      $('#dupOk', m).onclick = () => { const tg = $('#dupT', m).value; if (!tg) return; const n = Object.assign({}, r); ['id', 'no', 'foto', 'fotoAbsen', 'noPermit', 'approver', '_ubah', '_oleh', '_srv', '_hapus'].forEach(k => delete n[k]); n.tgl = tg; n.status = t === 'permit' ? 'Diajukan' : n.status; tutupModal(); formTabel(t, null, n, () => vHSE()); };
+    });
+  }
+}
+
+/* ---- absensi: cari / scan kode pekerja ---- */
+function pasangScanAbsen() {
+  const box = $('#abScan'); if (!box) return;
+  const cari = v => {
+    v = String(v || '').trim().toLowerCase(); if (!v) return;
+    const p = rows('pekerja').find(x => kodePek(x).toLowerCase() === v || (x.badge || '').toLowerCase() === v) || rows('pekerja').find(x => x.nama.toLowerCase().includes(v));
+    const s = p && $(`[data-p="${CSS.escape(p.id)}"]`);
+    if (!s) return toast('Pekerja "' + v + '" tidak ada di daftar tanggal ini', 'err');
+    if (!s.value) s.value = 'H'; s.dispatchEvent(new Event('change'));
+    const tr = s.closest('tr'); tr.scrollIntoView({ block: 'center' }); tr.style.background = '#e1f3e8'; setTimeout(() => tr.style.background = '', 2500);
+    toast(p.nama + ' → ' + s.value + ' (jangan lupa Simpan absensi)');
+  };
+  const inp = $('#abKode'); inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); cari(inp.value); inp.value = ''; } };
+  const bc = $('#abCam');
+  if (bc) bc.onclick = async () => {
+    let stream, stop = false;
+    const m = modal('Scan QR pekerja', '<video id="scV" playsinline style="width:100%;border-radius:8px;background:#000"></video><p class="small mut">Arahkan kamera ke QR di kartu pekerja. Setiap QR yang terbaca langsung diisi H.</p>');
+    const tutup0 = tutupModal; const selesai = () => { stop = true; if (stream) stream.getTracks().forEach(t => t.stop()); };
+    $('.x', m).addEventListener('click', selesai);
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      const v = $('#scV', m); v.srcObject = stream; await v.play();
+      const det = new BarcodeDetector({ formats: ['qr_code'] }); let last = '';
+      const loop = async () => { if (stop || !document.body.contains(v)) return selesai(); try { const r = await det.detect(v); if (r[0] && r[0].rawValue !== last) { last = r[0].rawValue; cari(last); } } catch (e) { } setTimeout(loop, 350); };
+      loop();
+    } catch (e) { toast('Kamera tidak bisa dibuka: ' + e.message, 'err'); selesai(); tutup0(); }
+  };
+}
 
 </script></body></html>
