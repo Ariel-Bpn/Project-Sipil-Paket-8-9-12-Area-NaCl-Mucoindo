@@ -270,7 +270,8 @@ const MENU = [
   ['Sistem', [['master', 'Master Titik & Tie Beam'], ['atur', 'Pengaturan'], ['audit', 'Jejak Audit']]]
 ];
 const VIEW = {
-  PC: '*', SM: '*,-atur,-audit', FIN: '*,-atur,-audit', DIR: '*,-atur,-audit',
+  PC: '*', SM: '*,-atur,-audit,-upah', DIR: '*,-atur',
+  FIN: 'dash,peta,kurva,absen,pekerja,upah,kas,alat,material,inventaris',
   SPV: 'dash,peta,kurva,harian,mingguan,keputusan,inspeksi,cor,foto,alat,material,master',
   ADM: 'dash,absen,pekerja,kas,inventaris,mingguan'
 };
@@ -280,6 +281,10 @@ const EDIT = {
   ADM: 'absen,pekerja,kas,inventaris', FIN: 'kas,anggaran', DIR: ''
 };
 function bisaLihat(m) { if (!ME) return false; const v = VIEW[ME.peran] || ''; const l = v.split(','); if (l.includes('-' + m)) return false; return l.includes('*') || l.includes(m); }
+// Anggaran, sisa anggaran, nilai kontrak & margin hanya untuk Project Control, Finance, Direktur
+const lihatAnggaran = () => !!ME && ['PC', 'FIN', 'DIR'].includes(ME.peran);
+// Site Manager & Admin hanya boleh input nota pemasukan & pengeluaran
+const jenisBoleh = buku => (JENIS_KAS[buku] || JENIS_KAS['Kas Proyek']).filter(j => lihatAnggaran() || /^Masuk|^Keluar/.test(j));
 function bisaEdit(t) { if (!ME) return false; const v = (EDIT[ME.peran] || '').split(','); return v.includes('*') || v.includes(t); }
 
 /* ================= OBJEK (TITIK & TIE BEAM) ================= */
@@ -826,7 +831,7 @@ SK.kas = {
   f: [
     { k: 'buku', l: 'Buku kas', t: 'sel', o: ['Kas Proyek', 'Petty Cash'], req: 1 },
     { k: 'tgl', l: 'Tanggal transaksi', t: 'date', req: 1, def: () => today() },
-    { k: 'jenis', l: 'Jenis', t: 'sel', o: r => JENIS_KAS[r.buku] || JENIS_KAS['Kas Proyek'], req: 1 },
+    { k: 'jenis', l: 'Jenis', t: 'sel', o: r => jenisBoleh(r.buku), req: 1 },
     { k: 'kode', l: 'Kode biaya (untuk biaya)', t: 'sel', o: () => cfg('kodeBiaya') },
     { k: 'uraian', l: 'Uraian', t: 'text', req: 1, w: 1 },
     { k: 'nominal', l: 'Nominal (Rp)', t: 'rp', req: 1 },
@@ -836,6 +841,7 @@ SK.kas = {
   ], kol: [],
   cek: n => {
     if (!(JENIS_KAS[n.buku] || []).includes(n.jenis)) return 'Jenis "' + n.jenis + '" tidak berlaku untuk ' + n.buku;
+    if (!jenisBoleh(n.buku).includes(n.jenis)) return 'Jenis "' + n.jenis + '" hanya bisa diinput Project Control / Finance';
     if (isBiaya(n) && !n.kode) return 'Pilih kode biaya';
     if (num(n.nominal) <= 0) return 'Nominal harus lebih dari 0';
     return '';
@@ -952,7 +958,7 @@ function vDash() {
   h += '</tbody></table></div>';
   const hr = rows('progres').filter(r => r.tgl === t), fh = rows('foto').filter(r => r.tgl === t), lh = get('harian', 'H' + t);
   h += `<h3>Hari ini</h3><ul class="small" style="margin:0;padding-left:18px"><li>${hr.length} catatan progress, ${fh.length} foto</li><li>Laporan harian: ${lh ? '<span class="b ok">cuaca & kendala terisi</span>' : '<span class="b warn">belum diisi</span>'}</li><li>Rencana besok: ${rows('rencana').filter(r => r.tgl === addD(t, 1)).length} item</li></ul></div></div>`;
-  if (['PC', 'SM', 'FIN', 'DIR'].includes(ME.peran)) {
+  if (lihatAnggaran()) {
     const k = ringkasKeu(), nilai = num(p.nilai), hasil = nilai * tot / 100;
     h += `<div class="card"><h2>Keuangan</h2><div class="kpis" style="margin:0">
       <div class="kpi"><div class="l">Nilai kontrak</div><div class="v" style="font-size:17px">${nilai ? fmtRp(nilai) : '—'}</div><div class="s">${nilai ? '' : 'isi di Pengaturan'}</div></div>
@@ -1369,7 +1375,7 @@ function vKas() {
   let b = `<p class="small mut">${buku === 'Kas Proyek' ? 'Dana masuk menambah saldo. "Bayar langsung kantor" dicatat sebagai biaya tanpa mengubah saldo. "Transfer ke Petty Cash" otomatis menjadi dana masuk di Petty Cash (bukan biaya).' : 'Petty cash dipisah dari kas proyek. Isi ulang lewat transfer dari Kas Proyek atau dana masuk langsung.'}</p>
   <div class="row" style="margin-bottom:10px"><span class="small mut">dari</span><input type="date" class="inp sm" id="kD1" value="${KS.dari}"><span class="small mut">s/d</span><input type="date" class="inp sm" id="kD2" value="${KS.sampai}"><select class="inp sm" id="kKode"><option value="">Semua kode</option>${cfg('kodeBiaya').map(x => `<option ${KS.kode === x ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select><span style="flex:1"></span><button class="btn" id="kXl">Excel (audit)</button>${ed ? '<button class="btn pri" id="kAdd">+ Transaksi</button>' : ''}</div>
   <div class="tw tall"><table class="t"><thead><tr><th>No.</th><th>Tanggal</th><th>Jenis</th><th>Kode biaya</th><th>Uraian</th><th>Pihak</th><th class="n">Masuk</th><th class="n">Keluar</th><th class="n">Saldo</th><th>Nota</th><th>Oleh</th>${ed ? '<th></th>' : ''}</tr></thead><tbody>`;
-  b += rs.map(r => `<tr><td class="small nw">${esc(r.noTrx || '')}</td><td class="nw">${fD(r.tgl)}</td><td class="small">${esc(r.jenis)}${r.lnk ? ' <span class="b info">otomatis</span>' : ''}</td><td class="small">${esc(r.kode || '')}</td><td>${esc(r.uraian)}</td><td class="small">${esc(r.pihak || '')}</td><td class="n">${isMasuk(r) ? fmtRp(r.nominal) : ''}</td><td class="n">${isMasuk(r) ? '' : fmtRp(r.nominal)}</td><td class="n">${fmtRp(run.get(r.id))}</td><td>${r.foto ? `<img class="thumb" src="${fotoSrc(r.foto, 120)}" onclick="lihatFoto('${esc(r.foto)}')">` : '<span class="b warn">belum</span>'}</td><td class="small mut">${esc(r._oleh || '')}</td>${ed ? `<td style="white-space:nowrap">${r.lnk ? '' : `<button class="btn sm" data-ed="${esc(r.id)}">Ubah</button> <button class="btn sm del" data-del="${esc(r.id)}">Hapus</button>`}</td>` : ''}</tr>`).join('') || '<tr><td colspan="12" class="mut">Belum ada transaksi.</td></tr>';
+  b += rs.map(r => `<tr><td class="small nw">${esc(r.noTrx || '')}</td><td class="nw">${fD(r.tgl)}</td><td class="small">${esc(r.jenis)}${r.lnk ? ' <span class="b info">otomatis</span>' : ''}</td><td class="small">${esc(r.kode || '')}</td><td>${esc(r.uraian)}</td><td class="small">${esc(r.pihak || '')}</td><td class="n">${isMasuk(r) ? fmtRp(r.nominal) : ''}</td><td class="n">${isMasuk(r) ? '' : fmtRp(r.nominal)}</td><td class="n">${fmtRp(run.get(r.id))}</td><td>${r.foto ? `<img class="thumb" src="${fotoSrc(r.foto, 120)}" onclick="lihatFoto('${esc(r.foto)}')">` : '<span class="b warn">belum</span>'}</td><td class="small mut">${esc(r._oleh || '')}</td>${ed ? `<td style="white-space:nowrap">${r.lnk || !jenisBoleh(r.buku).includes(r.jenis) ? '' : `<button class="btn sm" data-ed="${esc(r.id)}">Ubah</button> <button class="btn sm del" data-del="${esc(r.id)}">Hapus</button>`}</td>` : ''}</tr>`).join('') || '<tr><td colspan="12" class="mut">Belum ada transaksi.</td></tr>';
   $('#ksBox').innerHTML = b + '</tbody></table></div>';
   $('#kD1').onchange = e => { KS.dari = e.target.value; vKas(); }; $('#kD2').onchange = e => { KS.sampai = e.target.value; vKas(); }; $('#kKode').onchange = e => { KS.kode = e.target.value; vKas(); };
   $('#kXl').onclick = kasExcel;
@@ -1380,6 +1386,12 @@ function vKas() {
   }
 }
 function kasRekap() {
+  if (!lihatAnggaran()) {
+    const k = ringkasKeu(), all = [...new Set(cfg('kodeBiaya').concat(Object.keys(k.perKode)))];
+    $('#ksBox').innerHTML = `<p class="small mut">Realisasi biaya per kode biaya.</p><div class="row end" style="margin-bottom:8px"><button class="btn" id="kXl">Excel</button></div><div class="tw"><table class="t"><thead><tr><th>Kode biaya</th><th class="n">Aktual</th></tr></thead><tbody>${all.map(x => `<tr><td>${esc(x)}</td><td class="n">${fmtRp(k.perKode[x] || 0)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="n">${fmtRp(k.biaya)}</td></tr></tfoot></table></div>`;
+    $('#kXl').onclick = kasExcel;
+    return;
+  }
   const k = ringkasKeu(), ang = cfg('anggaran'), kode = cfg('kodeBiaya'), edA = bisaEdit('anggaran'), p = cfg('proyek');
   const all = [...new Set(kode.concat(Object.keys(k.perKode)))];
   const tA = all.reduce((a, x) => a + num(ang[x]), 0);
@@ -1401,7 +1413,7 @@ function kasExcel() {
   const rs = rows('kas').sort((a, b) => a.tgl < b.tgl ? -1 : 1), k = ringkasKeu(), ang = cfg('anggaran');
   const trx = [['No transaksi', 'Buku', 'Tanggal', 'Jenis', 'Kode biaya', 'Uraian', 'Pihak', 'Masuk', 'Keluar', 'Biaya?', 'Foto nota', 'Diinput oleh', 'Waktu input']].concat(rs.map(r => [r.noTrx || '', r.buku, fD(r.tgl), r.jenis, r.kode || '', r.uraian, r.pihak || '', isMasuk(r) ? num(r.nominal) : '', isMasuk(r) ? '' : num(r.nominal), isBiaya(r) ? 'Ya' : 'Tidak', r.foto && r.foto.startsWith('drive:') ? 'https://drive.google.com/file/d/' + r.foto.slice(6) + '/view' : (r.foto ? 'belum terunggah' : 'TIDAK ADA'), r._oleh || '', fW(r._ubah)]));
   const kode = [...new Set(cfg('kodeBiaya').concat(Object.keys(k.perKode)))];
-  const rek = [['Kode biaya', 'Anggaran', 'Aktual', 'Sisa']].concat(kode.map(x => [x, num(ang[x]), k.perKode[x] || 0, num(ang[x]) - (k.perKode[x] || 0)]));
+  const rek = lihatAnggaran() ? [['Kode biaya', 'Anggaran', 'Aktual', 'Sisa']].concat(kode.map(x => [x, num(ang[x]), k.perKode[x] || 0, num(ang[x]) - (k.perKode[x] || 0)])) : [['Kode biaya', 'Aktual']].concat(kode.map(x => [x, k.perKode[x] || 0]));
   unduhExcel('Keuangan_Pondasi_NaCl_' + today(), [['Transaksi', trx], ['Rekap per kode', rek], ['Saldo', [['Buku', 'Saldo'], ['Kas Proyek', k.kp], ['Petty Cash', k.pc], ['Total biaya', k.biaya]]]]);
 }
 
@@ -1477,7 +1489,7 @@ function vAtur() {
   <div class="card"><h2>Bobot tahap (%)</h2><div class="grid g2">${[['std', 'Pondasi umum (F1A, F4, F2A, F3A, conveyor)'], ['f1', 'F1 — one-time casting'], ['tb', 'Tie beam']].map(([s, l]) => `<div><h3>${l}</h3><table class="t">${TAHAP[s].map(([k, n]) => `<tr><td>${esc(n)}</td><td class="n"><input type="number" class="inp sm" style="width:70px" data-b="${s}|${k}" value="${B[s][k] ?? 0}"></td></tr>`).join('')}<tfoot><tr><td>Jumlah</td><td class="n" data-bs="${s}"></td></tr></tfoot></table></div>`).join('')}</div><div class="row end"><button class="btn pri" id="bSv">Simpan bobot</button></div></div>
   <div class="card"><h2>Kode biaya</h2><p class="small mut">Satu kode per baris. Transaksi lama tetap memakai nama kode yang tersimpan.</p><textarea class="inp" id="kbT" style="height:200px">${esc(cfg('kodeBiaya').join('\n'))}</textarea><div class="row end" style="margin-top:6px"><button class="btn pri" id="kbSv">Simpan kode biaya</button></div></div>
   <div class="card"><h2>Pengguna & PIN</h2><div class="tw"><table class="t"><thead><tr><th>Nama</th><th>Peran</th><th>PIN (6 angka)</th><th>Aktif</th></tr></thead><tbody>${U.map(u => `<tr data-u="${esc(u.id)}"><td><input class="inp sm" data-k="nama" value="${esc(u.nama)}"></td><td><select class="inp sm" data-k="peran">${Object.entries(PERAN).map(([k, l]) => `<option value="${k}" ${u.peran === k ? 'selected' : ''}>${l}</option>`).join('')}</select></td><td><input class="inp sm" data-k="pin" value="${esc(u.pin)}" style="width:90px"></td><td><input type="checkbox" data-k="aktif" ${u.aktif !== '0' ? 'checked' : ''}></td></tr>`).join('')}</tbody></table></div><div class="row" style="margin-top:8px"><button class="btn" id="uAdd">+ Pengguna</button><span style="flex:1"></span><button class="btn pri" id="uSv">Simpan pengguna</button></div>
-  <p class="small mut">Hak per peran: Project Control penuh · Site Manager lihat semua + input HSE, ID badge, nota, keputusan · Supervisor Sipil input master titik, progress & laporan harian · Admin Project input ID badge, nota, absensi, pekerja, inventaris · Finance lihat semua + input kas & nota · Direktur lihat semua.</p></div>
+  <p class="small mut">Hak per peran: <b>Project Control</b> penuh · <b>Site Manager</b> semua menu kecuali Rekap Upah; input nota pemasukan/pengeluaran, HSE, ID badge, keputusan, inspeksi, surat; rekap biaya hanya kode & aktual · <b>Supervisor Sipil</b> master titik, laporan harian, progress, foto, pengecoran, alat & BBM, material, inspeksi, keputusan · <b>Admin Project</b> absensi, pekerja & ID badge, nota pemasukan/pengeluaran, inventaris; rekap biaya hanya kode & aktual · <b>Finance</b> menu Pantauan, Tenaga kerja, Biaya & sumber daya; input kas, anggaran · <b>Direktur</b> semua menu, hanya lihat.</p></div>
   <div class="card"><h2>Cadangan data</h2><div class="row"><button class="btn" id="bkDl">Unduh cadangan (.json)</button><label class="btn">Pulihkan dari cadangan<input type="file" id="bkUp" accept=".json" hidden></label></div><p class="small mut">Pulihkan menggabungkan data cadangan sebagai perubahan terbaru lalu mengirimnya ke server.</p></div>`;
   $('#main').innerHTML = h;
   $('#pKop').value = cfg('kop');
