@@ -1571,10 +1571,6 @@ function layarLogin() {
   setTimeout(() => inp.focus(), 50);
 }
 function keluar() { ME = null; delete S.pref.sesi; persist(); $('#app').classList.add('hidden'); layarLogin(); }
-function gantiPin() {
-  const m = modal('Ganti PIN saya', `<div class="fld"><label>PIN lama</label><input id="gp0" type="password" inputmode="numeric" maxlength="6"></div><div class="fld"><label>PIN baru (6 angka)</label><input id="gp1" type="password" inputmode="numeric" maxlength="6"></div><div class="row end"><button class="btn pri" id="gpOk">Simpan</button></div>`);
-  $('#gpOk', m).onclick = () => { const a = $('#gp0', m).value, b = $('#gp1', m).value; if (a !== ME.pin) return toast('PIN lama salah', 'err'); if (!/^\d{6}$/.test(b)) return toast('PIN baru harus 6 angka', 'err'); if (rows('users').some(u => u.pin === b && u.id !== ME.id)) return toast('PIN sudah dipakai orang lain, pilih yang lain', 'err'); ME = put('users', Object.assign({}, ME, { pin: b })); tutupModal(); toast('PIN diganti'); };
-}
 function panelSinkron() {
   const m = modal('Sinkronisasi', `<div class="small" style="line-height:1.8">Server: ${S.cfg.url ? '<span class="b ok">terisi</span>' : '<span class="b warn">belum diatur — data hanya di perangkat ini</span>'}<br>Status: <b>${esc(SY.st)}</b>${SY.err ? ' — ' + esc(SY.err) : ''}<br>Terakhir berhasil: ${SY.last ? fW(SY.last) : '-'}<br>Menunggu kirim: ${Object.keys(S.dirty).length} catatan, ${Object.keys(S.pend).length} foto</div><div class="row end" style="margin-top:10px">${ME.peran === 'PC' ? '<button class="btn" id="psAt">Pengaturan server</button>' : ''}<button class="btn pri" id="psGo" ${S.cfg.url ? '' : 'disabled'}>Sinkronkan sekarang</button></div>`);
   const a = $('#psAt', m); if (a) a.onclick = () => { tutupModal(); buka('atur'); };
@@ -1595,7 +1591,8 @@ function boot() {
   if (!S.cfg.url) semai();
   $('#burger').onclick = () => $('#nav').classList.toggle('open');
   $('#chip').onclick = panelSinkron;
-  $('#userbtn').onclick = () => { const mm = modal(ME.nama, `<p class="small mut">${PERAN[ME.peran]}</p><div class="row"><button class="btn" id="ubPin">Ganti PIN</button><button class="btn del" id="ubOut">Keluar</button></div>`); $('#ubPin', mm).onclick = gantiPin; $('#ubOut', mm).onclick = () => { tutupModal(); keluar(); }; };
+  // PIN hanya bisa diubah Project Control lewat Pengaturan → Pengguna & PIN; menu pengguna hanya berisi Keluar.
+  $('#userbtn').onclick = () => { const mm = modal(ME.nama, `<p class="small mut">${PERAN[ME.peran]}</p>${ME.peran === 'PC' ? '<p class="small">PIN semua pengguna diatur di <a href="#" id="ubAtur">Pengaturan → Pengguna & PIN</a>.</p>' : '<p class="small mut">Lupa atau ingin mengganti PIN? Hubungi Project Control.</p>'}<div class="row end"><button class="btn del" id="ubOut">Keluar</button></div>`); const a = $('#ubAtur', mm); if (a) a.onclick = e => { e.preventDefault(); tutupModal(); buka('atur'); }; $('#ubOut', mm).onclick = () => { tutupModal(); keluar(); }; };
   const ses = S.pref.sesi;
   const u = ses && ses.exp > Date.now() ? rows('users').find(x => x.id === ses.uid && x.aktif !== '0') : null;
   const lanjut = () => { const ss = S.pref.sesi; const uu = ss && ss.exp > Date.now() ? rows('users').find(x => x.id === ss.uid && x.aktif !== '0') : null; if (uu) { ME = uu; mulaiApp(); } else layarLogin(); };
