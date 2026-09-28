@@ -114,7 +114,7 @@ table.t tfoot td{font-weight:700;background:#f6f8fb}
   body{background:#fff}
   body>*:not(#cetak){display:none!important}
   #cetak{display:block}
-  @page{size:A4;margin:11mm}
+
 }
 /* dokumen cetak */
 .doc{font:11px/1.35 Arial,sans-serif;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -135,9 +135,111 @@ table.t tfoot td{font-weight:700;background:#f6f8fb}
 .doc .fotos img{width:100%;height:110px;object-fit:cover;border:1px solid #999}
 .doc .fotos div{font-size:9px;text-align:center}
 .doc .pb{page-break-before:always}
+.lembar{width:100%;border-collapse:collapse}
+.lembar>thead>tr>td,.lembar>tbody>tr>td,.lembar>tfoot>tr>td{padding:0;border:0;vertical-align:top}
+.lembar>thead{display:table-header-group}.lembar>tfoot{display:table-footer-group}
+.lembar .kaki{font:8pt Arial,sans-serif;color:#555;border-top:1px solid #bbb;padding-top:3px;margin-top:8px}
+.doc tr,.doc img{page-break-inside:avoid}.doc h3{page-break-after:avoid}
 
 @media(max-width:600px){#top .ttl{font-size:13px}#top .ttl small{display:none}#userbtn{max-width:96px;font-size:12px}.kpi .v{font-size:19px}}
 .nw{white-space:nowrap}
+
+/* ---- Struktur organisasi (dari struktur_organisasi_proyek.html) ---- */
+
+/* Semua gaya diberi awalan .so- agar aman ditempel ke aplikasi lain */
+.so-wrap{
+  --so-navy:#0f2342; --so-navy2:#1b3764; --so-blue:#1f6fd1; --so-green:#1f9d57;
+  --so-red:#d33a2c; --so-amber:#d9861c; --so-gray:#6b7689; --so-line:#9aa6b8;
+  --so-bg:#f4f6fa; --so-card:#ffffff; --so-text:#16223a; --so-muted:#5e6b80; --so-border:#dde3ec;
+  font-family:"Segoe UI",Roboto,Arial,sans-serif; color:var(--so-text); background:var(--so-bg);
+  max-width:1120px; margin:0 auto; padding:16px; box-sizing:border-box;
+}
+.so-wrap *{box-sizing:border-box}
+.so-head{background:linear-gradient(135deg,var(--so-navy),var(--so-navy2));color:#fff;border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+.so-head:after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;
+  background:conic-gradient(var(--so-red) 0 33%,var(--so-green) 0 66%,var(--so-blue) 0);opacity:.18}
+.so-head small{letter-spacing:.12em;text-transform:uppercase;opacity:.75;font-size:11px}
+.so-head h1{margin:4px 0 2px;font-size:20px;color:#fff}
+.so-head p{margin:0;font-size:13px;opacity:.85}
+.so-tabs{display:flex;gap:6px;margin:14px 0;flex-wrap:wrap}
+.so-tab{border:1px solid var(--so-border);background:#fff;color:var(--so-text);padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-weight:600}
+.so-tab.on{background:var(--so-navy);color:#fff;border-color:var(--so-navy)}
+.so-pane{display:none}.so-pane.on{display:block}
+
+/* ---------- Bagan ---------- */
+.so-chartbox{background:#fff;border:1px solid var(--so-border);border-radius:14px;padding:18px 10px 14px;position:relative}
+.so-chart{position:relative;display:grid;grid-template-columns:repeat(4,1fr);column-gap:14px;row-gap:46px}
+.so-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.so-card{position:relative;z-index:1;background:var(--so-card);border:1px solid var(--so-border);border-top:4px solid var(--c);
+  border-radius:10px;padding:10px 10px 9px;text-align:center;cursor:pointer;transition:.15s;box-shadow:0 1px 3px rgba(15,35,66,.06)}
+.so-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(15,35,66,.12)}
+.so-card.sel{outline:2px solid var(--c);outline-offset:2px}
+.so-card .j{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.so-card .n{font-size:14px;font-weight:700;margin:3px 0 5px;line-height:1.25}
+.so-card.ext{background:#f7f8fb;border-style:dashed;border-top-style:solid}
+.so-badge{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:10px;background:#eef2f8;color:var(--so-muted);font-weight:600}
+.so-badge.remote{background:#e7f0fc;color:var(--so-blue)}
+.so-badge.site{background:#e6f5ec;color:var(--so-green)}
+.so-legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;font-size:12px;color:var(--so-muted)}
+.so-legend span{display:inline-flex;align-items:center;gap:6px}
+.so-legend i{display:inline-block;width:28px;border-top:2px solid var(--so-navy2)}
+.so-legend i.d{border-top:2px dashed var(--so-blue)} .so-legend i.o{border-top:2px dotted var(--so-gray)}
+.so-hint{text-align:center;font-size:12px;color:var(--so-muted);margin-top:8px}
+.so-uplink{display:none;font-size:11px;color:var(--so-muted);margin-top:4px}
+
+/* ---------- Detail tupoksi ---------- */
+.so-detail{background:#fff;border:1px solid var(--so-border);border-left:5px solid var(--c,var(--so-navy));border-radius:12px;padding:16px 18px;margin-top:14px}
+.so-detail h2{margin:0;font-size:17px}
+.so-detail .sub{font-size:12.5px;color:var(--so-muted);margin:2px 0 10px}
+.so-tp{background:#f6f8fc;border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.5;margin-bottom:10px}
+.so-tp b{color:var(--c,var(--so-navy))}
+.so-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.so-cols h4{margin:4px 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--so-muted)}
+.so-cols ul{margin:0;padding-left:18px;font-size:13px;line-height:1.5}
+.so-cols li{margin-bottom:3px}
+.so-app{margin-top:10px;font-size:12.5px;background:#fff8ec;border:1px solid #f3dfb8;border-radius:8px;padding:8px 10px;color:#6b4a12}
+
+/* ---------- Daftar semua tupoksi ---------- */
+.so-acc details{background:#fff;border:1px solid var(--so-border);border-left:5px solid var(--c);border-radius:10px;margin-bottom:8px}
+.so-acc summary{cursor:pointer;padding:11px 14px;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between;gap:8px}
+.so-acc summary::-webkit-details-marker{display:none}
+.so-acc summary em{font-style:normal;font-weight:500;color:var(--so-muted);font-size:12.5px}
+.so-acc .body{padding:0 14px 14px}
+
+/* ---------- Alur koordinasi ---------- */
+.so-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.so-fcard{background:#fff;border:1px solid var(--so-border);border-radius:12px;padding:14px}
+.so-fcard h3{margin:0 0 2px;font-size:15px;display:flex;align-items:center;gap:8px}
+.so-fcard h3 span{background:var(--c);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px}
+.so-fcard .who{font-size:12px;color:var(--so-muted);margin-bottom:8px}
+.so-steps{margin:0;padding:0;list-style:none;counter-reset:s}
+.so-steps li{counter-increment:s;position:relative;padding:0 0 9px 30px;font-size:13px;line-height:1.45}
+.so-steps li:before{content:counter(s);position:absolute;left:0;top:0;width:21px;height:21px;border-radius:50%;background:#eef2f8;color:var(--so-navy);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.so-note{margin-top:12px;background:#fdecea;border:1px solid #f5c6c1;border-radius:10px;padding:10px 12px;font-size:13px;color:#7a2118;line-height:1.5}
+
+/* ---------- Matriks ---------- */
+.so-tblwrap{overflow-x:auto;background:#fff;border:1px solid var(--so-border);border-radius:12px}
+.so-tbl{border-collapse:collapse;width:100%;font-size:12.5px;min-width:760px}
+.so-tbl th,.so-tbl td{border-bottom:1px solid var(--so-border);padding:8px 6px;text-align:center}
+.so-tbl th{background:var(--so-navy);color:#fff;font-weight:600;font-size:11.5px}
+.so-tbl td:first-child,.so-tbl th:first-child{text-align:left;padding-left:12px}
+.so-tbl tr:nth-child(even) td{background:#f9fafc}
+.so-k{display:inline-block;min-width:24px;padding:2px 5px;border-radius:6px;font-weight:700;font-size:11px}
+.k-P{background:#e6f5ec;color:#157044}.k-V{background:#e7f0fc;color:#1a5bb0}.k-S{background:#fde9e7;color:#a62a1f}.k-I{background:#eef0f3;color:#5e6b80}
+.so-klist{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--so-muted);margin:10px 2px 0}
+
+/* ---------- Responsif: HP ---------- */
+@media (max-width:820px){
+  .so-chart{grid-template-columns:1fr;row-gap:10px}
+  .so-svg{display:none}
+  .so-card{grid-column:1 !important;grid-row:auto !important;text-align:left;margin-left:calc(var(--lv,0) * 16px)}
+  .so-uplink{display:block}
+}
+
+/* ---- slip gaji ---- */
+.doc .slip{border:1px solid #1F3A5F;border-radius:4px;padding:8px 10px;page-break-inside:avoid;margin-bottom:4px}
+.doc .potong{text-align:center;font-size:8px;color:#999;margin:6px 0 8px;page-break-after:auto}
+.doc .slip-hal{page-break-after:always}.doc .slip-hal:last-child{page-break-after:auto}
 </style></head>
 <body>
 <div id="login" class="hidden"></div>
@@ -178,6 +280,11 @@ const fDH = s => s ? HARI[pd(s).getDay()] + ', ' + fD(s) : '';
 const fW = ms => { if (!ms) return ''; const d = new Date(+ms); return fD(dstr(d)) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
 const uid = p => (p || 'R') + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
+/* ====== SAMBUNGAN SERVER BAWAAN ======
+   Isi URL /exec dan kode akses di bawah SEKALI sebelum mengunggah index.html ke GitHub.
+   Semua HP & laptop yang membuka aplikasi langsung tersambung ke Google Sheets tanpa tautan setup.
+   Kosongkan ('') bila ingin memakai tautan setup saja. */
+const SERVER_BAWAAN = { url: '', token: '' };
 let S = { db: {}, dirty: {}, srv: 0, cfg: { url: '', token: '' }, pend: {}, pref: {} };
 let ME = null;
 function muatLokal() {
@@ -269,25 +376,25 @@ const USERS_DEF = [
 ];
 const PERAN = { PC: 'Project Control', SM: 'Site Manager', SPV: 'Supervisor Sipil', ADM: 'Admin Project', FIN: 'Finance', DIR: 'Direktur', HSE: 'Safety Officer' };
 const MENU = [
-  ['Pantauan', [['dash', 'Dashboard'], ['peta', 'Peta Titik'], ['kurva', 'Progress & Kurva S']]],
-  ['Lapangan', [['harian', 'Laporan Harian'], ['mingguan', 'Laporan Mingguan'], ['keputusan', 'Keputusan Lapangan'], ['inspeksi', 'Inspeksi & Approval'], ['cor', 'Log Pengecoran'], ['foto', 'Dokumentasi Foto']]],
-  ['Tenaga kerja', [['absen', 'Absensi & Lembur'], ['pekerja', 'Pekerja & ID Badge'], ['upah', 'Rekap Upah']]],
+  ['Pantauan', [['dash', 'Dashboard'], ['peta', 'Peta Titik'], ['kurva', 'Progress & Kurva S'], ['struktur', 'Struktur Organisasi']]],
+  ['Lapangan', [['harian', 'Laporan Harian'], ['mingguan', 'Laporan Mingguan & Bulanan'], ['keputusan', 'Keputusan Lapangan'], ['inspeksi', 'Inspeksi & Approval'], ['cor', 'Log Pengecoran'], ['foto', 'Dokumentasi Foto']]],
+  ['Tenaga kerja', [['absen', 'Absensi & Lembur'], ['pekerja', 'Pekerja & ID Badge'], ['upah', 'Upah & Payroll']]],
   ['Biaya & sumber daya', [['kas', 'Keuangan'], ['alat', 'Alat & BBM'], ['material', 'Material'], ['inventaris', 'Inventaris Tools']]],
   ['Administrasi', [['hse', 'HSE & K3'], ['surat', 'Surat & Dokumen']]],
   ['Sistem', [['master', 'Master Titik & Tie Beam'], ['atur', 'Pengaturan'], ['audit', 'Jejak Audit']]]
 ];
 const VIEW = {
   PC: '*', SM: '*,-atur,-audit,-upah', DIR: '*,-atur',
-  FIN: 'dash,peta,kurva,absen,pekerja,upah,kas,alat,material,inventaris',
-  SPV: 'dash,peta,kurva,harian,mingguan,keputusan,inspeksi,cor,foto,alat,material,master',
-  ADM: 'dash,absen,pekerja,kas,inventaris,mingguan',
-  HSE: 'dash,peta,harian,mingguan,hse,pekerja,absen'
+  FIN: 'dash,peta,kurva,struktur,absen,pekerja,upah,kas,alat,material,inventaris',
+  SPV: 'dash,peta,kurva,struktur,harian,mingguan,keputusan,inspeksi,cor,foto,alat,material,master',
+  ADM: 'dash,struktur,absen,pekerja,kas,inventaris,mingguan',
+  HSE: 'dash,peta,struktur,harian,mingguan,hse,pekerja,absen'
 };
 const EDIT = {
   PC: '*', SM: 'pekerja,kas,keputusan,surat,inspeksi,foto',
   SPV: 'titik,tb,progres,rencana,harian,foto,cor,alat,material,inspeksi,keputusan',
-  ADM: 'absen,pekerja,kas,inventaris', FIN: 'kas,anggaran', DIR: '',
-  HSE: 'hse,permit,tbm,izin,apd,mcu'
+  ADM: 'absen,absenfoto,pekerja,kas,inventaris', FIN: 'kas,anggaran,payroll', DIR: '',
+  HSE: 'hse,permit,tbm,izin,apd,mcu,dokhse'
 };
 function bisaLihat(m) { if (!ME) return false; const v = VIEW[ME.peran] || ''; const l = v.split(','); if (l.includes('-' + m)) return false; return l.includes('*') || l.includes(m); }
 // Anggaran, sisa anggaran, nilai kontrak & margin hanya untuk Project Control, Finance, Direktur
@@ -363,7 +470,7 @@ async function api(aksi, data = {}, ms = 90000) {
   } catch (e) { if (e.name === 'AbortError') throw new Error('Server tidak menjawab (batas waktu).'); throw e; }
   finally { clearTimeout(tt); }
 }
-const jmlTunggu = () => Object.keys(S.dirty).length + Object.keys(S.pend).length;
+const jmlTunggu = () => Object.keys(S.dirty).filter(k => !k.startsWith('hadir|')).length + Object.keys(S.pend).length;
 function chip() {
   const c = $('#chip'); if (!c) return;
   const n = jmlTunggu();
@@ -371,7 +478,8 @@ function chip() {
   if (SY.busy) { c.className = 'chip wait'; c.textContent = 'Sinkron…'; return; }
   if (SY.st === 'gagal') { c.className = 'chip bad'; c.textContent = 'Gagal sinkron' + (n ? ' · ' + n : ''); return; }
   if (n) { c.className = 'chip wait'; c.textContent = 'Menunggu kirim · ' + n; return; }
-  c.className = 'chip ok'; c.textContent = 'Tersinkron';
+  const on = typeof daftarOnline === 'function' ? daftarOnline().length : 0;
+  c.className = 'chip ok'; c.textContent = 'Tersinkron' + (on > 1 ? ' · ' + on + ' online' : '');
 }
 function jadwalKirim() { chip(); if (!S.cfg.url) return; clearTimeout(SY.kirimT); SY.kirimT = setTimeout(() => sinkron(), 1200); }
 async function unggahFoto() {
@@ -471,11 +579,25 @@ function kompres(file, max = 1280, q = .8) {
     fr.onerror = no; fr.readAsDataURL(file);
   });
 }
+// Foto langsung diunggah ke Google Drive server bila online; aplikasi hanya menyimpan tautannya.
+// Bila sinyal putus, foto dititip sementara di perangkat lalu terkirim otomatis saat sinkron.
 async function simpanFotoBaru(file, t, id, f, tgl) {
   const data = await kompres(file);
-  const key = uid('F');
-  S.pend[key] = { data, t, id, f, tgl, nama: (id + '_' + key + '.jpg').replace(/[^\w.-]/g, '_') };
+  const key = uid('F'), nama = (id + '_' + key + '.jpg').replace(/[^\w.-]/g, '_');
+  if (S.cfg.url && navigator.onLine !== false) {
+    try { const m = /^data:([^;]+);base64,(.*)$/.exec(data); const j = await api('foto', { nama, mime: m[1], data: m[2], bulan: (tgl || today()).slice(0, 7) }, 60000); if (j.id) return 'drive:' + j.id; } catch (e) { }
+  }
+  S.pend[key] = { data, t, id, f, tgl, nama };
   return 'pend:' + key;
+}
+// Dokumen (Word/PDF/Excel) hanya diunggah langsung ke server — tidak disimpan di perangkat
+async function unggahBerkas(file, folder) {
+  if (!S.cfg.url) throw new Error('Unggah dokumen perlu tersambung ke server (Pengaturan → Sambungan server).');
+  if (file.size > 15 * 1024 * 1024) throw new Error('Ukuran berkas maksimal 15 MB.');
+  const data = await new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = no; fr.readAsDataURL(file); });
+  const m = /^data:([^;]*);base64,(.*)$/.exec(data);
+  const j = await api('foto', { nama: file.name, mime: m[1] || file.type || 'application/octet-stream', data: m[2], bulan: folder }, 180000);
+  return 'drive:' + j.id;
 }
 
 /* ---- Excel ---- */
@@ -492,8 +614,8 @@ async function unduhExcel(nama, sheets) {
     for (const [sn, aoa] of sheets) { const ws = X.utils.aoa_to_sheet(aoa); ws['!cols'] = (aoa[0] || []).map((_, i) => ({ wch: Math.min(45, Math.max(8, ...aoa.slice(0, 200).map(r => String(r[i] ?? '').length + 2))) })); X.utils.book_append_sheet(wb, ws, sn.slice(0, 31)); }
     X.writeFile(wb, nama + '.xlsx');
   } catch (e) {
-    const [sn, aoa] = sheets[0];
-    const csv = aoa.map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';')).join('\n');
+    const q = r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';');
+    const csv = sheets.map(([sn, aoa], i) => (sheets.length > 1 ? q([sn]) + '\n' : '') + aoa.map(q).join('\n')).join('\n\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = nama + '.csv'; a.click();
     toast(e.message + ' Diunduh sebagai CSV.', 'err');
   }
@@ -509,9 +631,18 @@ function ttdHTML() {
   const t = cfg('ttd');
   return `<div class="ttd"><div>Dibuat oleh,<div class="ln">${esc(t.dibuat)}</div>${esc(t.dibuatJ)}</div><div>Diketahui oleh,<div class="ln">${esc(t.diketahui)}</div>${esc(t.diketahuiJ)}</div><div>Diterima oleh,<div class="ln">${esc(t.diterima)}</div>${esc(t.diterimaJ)}</div></div>`;
 }
-function cetak(html, judul) {
-  const c = $('#cetak'); c.innerHTML = `<div class="doc">${html}</div>`;
-  const t0 = document.title; document.title = judul || t0;
+// Chrome/Edge desktop & Android versi 131+ mendukung kotak margin @page (footer + "Page x of y" otomatis)
+const MARGIN_BOX = (() => { const u = navigator.userAgent, m = /(?:Chrome|Chromium)\/(\d+)/.exec(u); return !!m && +m[1] >= 131 && !/CriOS|EdgiOS|FxiOS/.test(u); })();
+const cssStr = s => '"' + String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ') + '"';
+function cetak(html, judul, o = {}) {
+  const tmp = document.createElement('div'); tmp.innerHTML = html;
+  const k = tmp.querySelector('.kop'); let head = '';
+  if (k) { head = k.outerHTML; k.remove(); }
+  const ttl = judul || document.title, kaki = 'Project Control File — ' + ttl;
+  const c = $('#cetak');
+  c.innerHTML = `<style>@page{size:A4 ${o.landscape ? 'landscape' : 'portrait'};margin:13mm 12mm 16mm 14mm;${MARGIN_BOX ? `@bottom-left{content:${cssStr(kaki)};font:8pt Arial,sans-serif;color:#555;vertical-align:middle}@bottom-right{content:"Page " counter(page) " of " counter(pages);font:8pt Arial,sans-serif;color:#555;vertical-align:middle}` : ''}}</style>
+  <table class="lembar"><thead><tr><td>${head ? `<div class="doc">${head}</div>` : ''}</td></tr></thead>${MARGIN_BOX ? '' : `<tfoot><tr><td><div class="kaki">${esc(kaki)}</div></td></tr></tfoot>`}<tbody><tr><td><div class="doc">${tmp.innerHTML}</div></td></tr></tbody></table>`;
+  const t0 = document.title; document.title = ttl;
   const imgs = $$('img', c).filter(i => !i.complete);
   const jalan = () => { setTimeout(() => { window.print(); document.title = t0; }, 150); };
   if (!imgs.length) return jalan();
@@ -536,7 +667,7 @@ const SK = {
       { k: 'obj', l: 'Titik / segmen (boleh kosong)', t: 'obj' },
       { k: 'kendala', l: 'Kendala / usulan', t: 'area', req: 1, w: 1 },
       { k: 'keputusan', l: 'Keputusan / arahan', t: 'area', w: 1 },
-      { k: 'olehMpj', l: 'Diputuskan oleh (MPJ)', t: 'selx', o: ['Rival Okem — Project Manager MPJ', 'Rival Okem — Project Manager MPJ'], def: 'Rival Okem — Project Mamanger MPJ' },
+      { k: 'olehMpj', l: 'Diputuskan oleh (MPJ)', t: 'selx', o: ['Rival Okem — Project Manager MPJ'], def: 'Rival Okem — Project Manager MPJ' },
       { k: 'olehAen', l: 'Pihak AEN', t: 'selx', o: ['Firimus Api — Site Manager', 'Fery Padly — Supervisor Sipil', 'Ariel — Project Control'], def: 'Firimus Api — Site Manager' },
       { k: 'cara', l: 'Disampaikan lewat', t: 'sel', o: ['Lisan di lapangan', 'WhatsApp', 'Rapat', 'Surat / email'] },
       { k: 'status', l: 'Status', t: 'sel', o: ['Menunggu keputusan', 'Disetujui', 'Ditolak', 'Selesai dilaksanakan'], def: 'Menunggu keputusan' },
@@ -650,6 +781,9 @@ const SK = {
       { k: 'kategori', l: 'Kategori', t: 'sel', o: ['Pekerja', 'Staf (Foreman/SPV/Safety/Admin)'], def: 'Pekerja' },
       { k: 'upah', l: 'Upah harian (Rp)', t: 'rp' },
       { k: 'lembur', l: 'Tarif lembur per jam (Rp)', t: 'rp', ph: 'kosong = upah ÷ jam kerja' },
+      { k: 'bank', l: 'Bank', t: 'selx', o: ['BRI', 'BNI', 'Mandiri', 'BCA', 'BSI', 'BTN', 'Bankaltimtara', 'CIMB Niaga', 'Danamon', 'Lainnya'] },
+      { k: 'noRek', l: 'No. rekening', t: 'text', ph: 'hanya angka' },
+      { k: 'atasNama', l: 'Atas nama rekening', t: 'text', ph: 'kosong = sama dengan nama' },
       { k: 'badge', l: 'No. ID badge', t: 'text' },
       { k: 'badgeS', l: 'ID badge berlaku s/d', t: 'date' },
       { k: 'masuk', l: 'Tanggal masuk', t: 'date', def: () => today() },
@@ -714,6 +848,7 @@ function selNilai(t, k, r) {
   if (k === '_siap') { const ok = r.tglMpj && r.tglMp && r.tglKie; return ok ? '<span class="b ok">Siap cor</span>' : '<span class="b warn">Belum lengkap</span>'; }
   if (k === '_waste') { const a = num(r.volT), b = num(r.volD); if (!a || !b) return ''; const w = (b - a) / a * 100; return `<span class="b ${w > 5 ? 'bad' : w > 2 ? 'warn' : 'ok'}">${fmtN(w, 1)}%</span>`; }
   if (k === '_badge') return badgeSt(r);
+  if (k === '_rek') return r.noRek ? esc((r.bank || '') + ' ' + r.noRek) + (r.atasNama && r.atasNama !== r.nama ? '<div class="small mut">a.n. ' + esc(r.atasNama) + '</div>' : '') : '<span class="b warn">belum ada</span>';
   if (k === 'paket') return bPaket(v);
   if (t === 'pekerja' && k === 'kode') return `<a href="#" onclick="event.preventDefault();lihatQR('${esc(r.id)}')">${esc(kodePek(r))}</a>`;
   if (!f) return esc(v);
@@ -738,12 +873,13 @@ function badgeSt(p) {
   if (d <= 14) return `<span class="b warn">${d} hari lagi</span>`;
   return '<span class="b ok">Berlaku</span>';
 }
-function kolLabel(t, k) { return { _siap: 'Status', _waste: 'Waste', _badge: 'Status badge' }[k] || (SK[t].f.find(x => x.k === k) || {}).l || k; }
+function kolLabel(t, k) { return { _siap: 'Status', _waste: 'Waste', _badge: 'Status badge', _rek: 'Rekening' }[k] || (SK[t].f.find(x => x.k === k) || {}).l || k; }
 function nilaiPolos(t, k, r) {
   const f = (SK[t]?.f || []).find(x => x.k === k); const v = r[k];
   if (k === '_siap') return r.tglMpj && r.tglMp && r.tglKie ? 'Siap cor' : 'Belum lengkap';
   if (k === '_waste') { const a = num(r.volT), b = num(r.volD); return a && b ? +((b - a) / a * 100).toFixed(1) : ''; }
   if (k === '_badge') return badgeSt(r).replace(/<[^>]+>/g, '');
+  if (k === '_rek') return r.noRek ? (r.bank || '') + ' ' + r.noRek + (r.atasNama ? ' a.n. ' + r.atasNama : '') : '';
   if (!f) return v ?? '';
   if (f.t === 'obj') return objLbl(v);
   if (f.t === 'rp' || f.t === 'num') return v === '' || v == null ? '' : num(v);
@@ -801,8 +937,9 @@ function formTabel(t, row, preset = {}, after) {
   let sibuk = false;
   $('[data-a=simpan]', el).onclick = async () => {
     if (sibuk) return; sibuk = true;
-    const tb = $('[data-a=simpan]', el); tb.disabled = true;
-    const gagal = m => { if (m) toast(m, 'err'); sibuk = false; tb.disabled = false; };
+    const tb = $('[data-a=simpan]', el); tb.disabled = true; const tbTeks = tb.textContent;
+    if ($$('input[type=file]', el).some(i => i.files && i.files.length)) tb.textContent = 'Mengunggah foto…';
+    const gagal = m => { if (m) toast(m, 'err'); sibuk = false; tb.disabled = false; tb.textContent = tbTeks; };
     const n = Object.assign({}, r);
     for (const f of sk.f) {
       const inp = $('#f_' + f.k, el);
@@ -854,6 +991,10 @@ function viewTabel(t, o = {}) {
     $$('[data-del]', box).forEach(b => b.onclick = () => { const np = (t === 'titik' || t === 'tb') ? rows('progres').filter(r => r.obj === b.dataset.del).length : 0; if (yakin(np ? 'Titik/segmen ini sudah punya ' + np + ' catatan progress. Jika dihapus, progress-nya tidak dihitung lagi. Lebih aman ubah status menjadi BATAL. Tetap hapus?' : 'Hapus data ini? Penghapusan tercatat di jejak audit.')) { hapus(t, b.dataset.del); if (o.onDel) o.onDel(b.dataset.del); viewTabel(t, o); } });
   }
 }
+
+// Kolom rekening di daftar pekerja hanya untuk Project Control, Finance, Direktur, Admin Project
+(() => { const dasar = SK.pekerja.kol.slice(); Object.defineProperty(SK.pekerja, 'kol', { get() { const L = dasar.slice(); if (ME && ['PC', 'FIN', 'DIR', 'ADM', 'SM'].includes(ME.peran)) L.splice(L.indexOf('lembur') + 1, 0, '_rek'); return L; } }); })();
+SK.pekerja.cek = n => { if (n.noRek && !/^[\d\s.-]{5,25}$/.test(n.noRek)) return 'No. rekening hanya boleh angka'; return ''; };
 
 /* ================= KEUANGAN (skema) ================= */
 const JENIS_KAS = { 'Kas Proyek': ['Masuk (dana diterima)', 'Keluar (biaya)', 'Bayar langsung kantor (biaya)', 'Transfer ke Petty Cash'], 'Petty Cash': ['Masuk (isi ulang)', 'Keluar (biaya)'] };
@@ -1288,19 +1429,40 @@ function vKurva() {
 /* ================= MINGGUAN ================= */
 let MG = null;
 function akhirMinggu(d) { const co = cfg('cutoff'); let x = d; for (let i = 0; i < 7; i++) { if (pd(x).getDay() === co) return x; x = addD(x, 1); } return d; }
+let MGTAB = 'minggu', MB = null;
+const tabLap = () => `<h1>Laporan Mingguan & Bulanan</h1><div class="tabs">${[['minggu', 'Mingguan / cut-off'], ['bulan', 'Bulanan']].map(([k, l]) => `<button class="${MGTAB === k ? 'on' : ''}" data-mgtab="${k}">${l}</button>`).join('')}</div>`;
+const pasangTabLap = () => $$('[data-mgtab]').forEach(b => b.onclick = () => { MGTAB = b.dataset.mgtab; render(); });
+function vBulanan() {
+  MB = MB || today().slice(0, 7);
+  const { s, e, hari } = dataBulan(MB), B = cfg('bobot'), pmE = progMap(e), pmS = progMap(addD(s, -1));
+  const [y, m] = MB.split('-').map(Number);
+  const mp = hari.map(d => manpowerHari(d)), hk = mp.filter(x => x.tot).length, md = mp.reduce((a, x) => a + x.pek, 0);
+  const tbm = rows('tbm').filter(r => r.tgl >= s && r.tgl <= e);
+  let h = tabLap() + `<div class="row" style="margin-bottom:12px"><input type="month" class="inp sm" id="mbBln" value="${MB}"><span class="small mut">${BLN_P[m - 1]} ${y} · ${fD(s)} – ${fD(e)}</span><span style="flex:1"></span><button class="btn acc" id="mbPr">Cetak laporan bulanan</button></div>
+  <div class="kpis"><div class="kpi"><div class="l">Progress akhir bulan</div><div class="v">${pct(agregat(pmE))}</div><div class="s">awal bulan ${pct(agregat(pmS))} · rencana ${pct(rencanaPct(e))}</div></div>
+  <div class="kpi"><div class="l">Titik selesai bulan ini</div><div class="v">${objAll().filter(o => hitung(o) && objPctB(o, pmE, B) >= 99.99 && objPctB(o, pmS, B) < 99.99).length}</div></div>
+  <div class="kpi"><div class="l">Hari kerja / man-day</div><div class="v">${hk} <span style="font-size:14px">/ ${md}</span></div><div class="s">rata-rata ${hk ? fmtN(md / hk, 1) : 0} pekerja/hari</div></div>
+  <div class="kpi"><div class="l">TBM / peserta</div><div class="v">${tbm.length} <span style="font-size:14px">/ ${tbm.reduce((a, r) => a + jsonArr(r.peserta).length, 0)}</span></div></div>
+  <div class="kpi"><div class="l">Keputusan lapangan</div><div class="v">${rows('keputusan').filter(r => r.tgl >= s && r.tgl <= e).length}</div></div></div>
+  <div class="card"><h2>Kurva S</h2>${kurvaSVG(kurvaData())}</div><p class="small mut">Laporan cetak berisi progress per paket, titik selesai, tenaga kerja & cuaca, HSE, ${lihatAnggaran() ? 'keuangan (biaya per kode, margin), ' : ''}keputusan lapangan dan target bulan berikutnya.</p>`;
+  $('#main').innerHTML = h; pasangTabLap();
+  $('#mbBln').onchange = ev => { MB = ev.target.value || today().slice(0, 7); vBulanan(); };
+  $('#mbPr').onclick = () => pilihKop(k => cetak(docBulanan(MB, k), 'Laporan Bulanan ' + BLN_P[m - 1] + ' ' + y));
+}
 function vMingguan() {
+  if (MGTAB === 'bulan') return vBulanan();
   MG = MG || akhirMinggu(today()); const e = MG, s = addD(e, -6), p = cfg('proyek');
   const pmE = progMap(e), pmS = progMap(addD(s, -1)), B = cfg('bobot');
   const selesai = objAll().filter(o => hitung(o) && objPctB(o, pmE, B) >= 99.99 && objPctB(o, pmS, B) < 99.99);
   const hari = []; for (let d = s; d <= e; d = addD(d, 1)) hari.push(d);
-  let h = `<h1>Laporan Mingguan & Cut-off</h1><div class="row" style="margin-bottom:12px"><button class="btn" id="mPrev">◀</button><span><b>${fD(s)} – ${fD(e)}</b></span><button class="btn" id="mNext">▶</button><span class="small mut">cut-off tiap ${HARI[cfg('cutoff')]} (ubah di Pengaturan)</span><span style="flex:1"></span>
+  let h = tabLap() + `<div class="row" style="margin-bottom:12px"><button class="btn" id="mPrev">◀</button><span><b>${fD(s)} – ${fD(e)}</b></span><button class="btn" id="mNext">▶</button><span class="small mut">cut-off tiap ${HARI[cfg('cutoff')]} (ubah di Pengaturan)</span><span style="flex:1"></span>
   <button class="btn" id="mMp">Daftar manpower (Minggu sore)</button><button class="btn" id="mXl">Excel</button><button class="btn acc" id="mPr">Cetak laporan mingguan</button></div>`;
   h += `<div class="card"><h2>Progress</h2><div class="tw"><table class="t"><thead><tr><th>Lingkup</th><th class="n">Awal minggu</th><th class="n">Akhir minggu</th><th class="n">Naik</th><th class="n">Rencana</th><th class="n">Deviasi</th></tr></thead><tbody>${['9', '8', '12', ''].map(pk => { const f = pk ? (o => o.paket === pk) : null; const a = agregat(pmS, f), b = agregat(pmE, f), r = rencanaPct(e, pk || undefined); return `<tr><td>${pk ? bPaket(pk) : '<b>Total</b>'}</td><td class="n">${pct(a)}</td><td class="n">${pct(b)}</td><td class="n">${fmtN(b - a, 1)}%</td><td class="n">${pct(r)}</td><td class="n" style="color:${b - r < 0 ? 'var(--bad)' : 'var(--ok)'}">${fmtN(b - r, 1)}%</td></tr>`; }).join('')}</tbody></table></div>
   <h3>Selesai minggu ini (${selesai.length})</h3><p class="small">${selesai.map(o => esc(o.no + ' ' + o.kode)).join(', ') || '-'}</p></div>`;
   h += `<div class="card"><h2>Manpower & cuaca harian</h2><div class="tw"><table class="t"><thead><tr><th>Tanggal</th><th class="n">Pekerja</th><th class="n">Staf</th><th class="n">Rencana</th><th class="n">Lembur (jam)</th><th>Cuaca</th><th class="n">Catatan progress</th></tr></thead><tbody>${hari.map(d => { const m = manpowerHari(d), H = get('harian', 'H' + d) || {}; return `<tr><td>${fDH(d)}</td><td class="n">${m.pek}</td><td class="n">${m.staf}</td><td class="n">${mpRencana(d)}</td><td class="n">${m.jamL}</td><td>${esc([H.pagi, H.siang, H.sore].filter(Boolean).join(' / '))}</td><td class="n">${rows('progres').filter(r => r.tgl === d).length}</td></tr>`; }).join('')}</tbody></table></div></div>`;
   const kep = rows('keputusan').filter(r => r.tgl >= s && r.tgl <= e);
   h += `<div class="card"><h2>Keputusan lapangan minggu ini</h2>${kep.length ? `<div class="tw"><table class="t"><tbody>${kep.map(r => `<tr><td>${fD(r.tgl)}</td><td>${esc(r.kendala)}</td><td>${esc(r.keputusan || '')}</td><td>${selNilai('keputusan', 'status', r)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="mut small">-</p>'}</div>`;
-  $('#main').innerHTML = h;
+  $('#main').innerHTML = h; pasangTabLap();
   $('#mPrev').onclick = () => { MG = addD(e, -7); vMingguan(); }; $('#mNext').onclick = () => { MG = addD(e, 7); vMingguan(); };
   $('#mPr').onclick = () => pilihKop(k => cetak(docMingguan(s, e, k), 'Laporan Mingguan ' + e));
   $('#mMp').onclick = () => pilihKop(k => cetak(docManpower(e, k), 'Daftar Manpower ' + e));
@@ -1347,6 +1509,7 @@ function absInput() {
   $('#abBox').innerHTML = h;
   const sum = () => { const c = {}; $$('[data-p]').forEach(s => { if (s.value) c[s.value] = (c[s.value] || 0) + 1; }); const hadir = Object.entries(c).filter(([k]) => /^H/.test(k)).reduce((a, [, n]) => a + n, 0); $('#abSum').innerHTML = `Hadir <b>${hadir}</b> dari ${P.length} · ` + Object.entries(c).map(([k, n]) => `${k}: ${n}`).join(' · ') + ` · rencana pekerja ${mpRencana(d)}`; };
   $$('[data-p]').forEach(s => s.onchange = sum); sum(); pasangScanAbsen();
+  lampiranAbsen(d);
   $('#aTgl').onchange = e => { AB.tgl = e.target.value || today(); absInput(); };
   $('#aPrev').onclick = () => { AB.tgl = addD(d, -1); absInput(); }; $('#aNext').onclick = () => { AB.tgl = addD(d, 1); absInput(); };
   if (ed) {
@@ -1357,6 +1520,15 @@ function absInput() {
       toast(n ? n + ' perubahan absensi tersimpan' : 'Tidak ada perubahan'); absInput();
     };
   }
+}
+function lampiranAbsen(d) {
+  const box = document.createElement('div'); box.className = 'card'; box.style.marginTop = '12px';
+  const ed = bisaEdit('absenfoto'), L = rows('absenfoto').filter(r => r.tgl === d).sort((a, b) => num(a._ubah) - num(b._ubah));
+  box.innerHTML = `<div class="row" style="flex-wrap:wrap"><h2 style="flex:1 1 220px;margin:0">Lampiran absensi manual (foto) — ${fD(d)}</h2>${ed ? '<label class="btn pri">+ Foto lembar absensi<input type="file" id="afF" accept="image/*" multiple hidden></label>' : ''}</div><p class="small mut">Foto lembar daftar hadir bertanda tangan. Foto langsung tersimpan di Google Drive server; aplikasi hanya menampilkan pratinjau.</p><div class="gal">${L.map(r => `<figure><img src="${fotoSrc(r.foto, 300)}" onclick="lihatFoto('${esc(r.foto)}','Absensi ${esc(fD(d))}')"><figcaption>${esc(r._oleh || '')} · ${fW(r._ubah)}${r.foto && r.foto.startsWith('pend:') ? ' <span class="b warn">menunggu unggah</span>' : ''}${ed ? ` <a href="#" data-afx="${esc(r.id)}" style="color:var(--bad)">hapus</a>` : ''}</figcaption></figure>`).join('') || '<span class="mut small">Belum ada foto untuk tanggal ini.</span>'}</div>`;
+  $('#abBox').appendChild(box);
+  const f = $('#afF', box);
+  if (f) f.onchange = async () => { const fs = [...f.files]; if (!fs.length) return; toast('Mengunggah ' + fs.length + ' foto…'); for (const fl of fs) { const id = uid('AF'); try { const v = await simpanFotoBaru(fl, 'absenfoto', id, 'foto', d); put('absenfoto', { id, tgl: d, foto: v }); } catch (e) { toast('Satu foto gagal dibaca', 'err'); } } toast(fs.length + ' foto absensi tersimpan'); absInput(); };
+  $$('[data-afx]', box).forEach(a => a.onclick = e => { e.preventDefault(); if (yakin('Hapus foto absensi ini?')) { hapus('absenfoto', a.dataset.afx); absInput(); } });
 }
 function absRekap() {
   const [y, m] = AB.bln.split('-').map(Number), nd = new Date(y, m, 0).getDate();
@@ -1381,12 +1553,12 @@ function vUpah() {
   const P = rows('pekerja').filter(p => ab.some(r => r.pek === p.id)).sort((a, b) => a.nama.localeCompare(b.nama));
   const data = P.map(p => { let hd = 0, jl = 0; ab.filter(r => r.pek === p.id).forEach(r => { if (/^H/.test(r.kode)) { hd++; jl += num((r.kode || '').split('-')[1]); } }); const tl = num(p.lembur) || Math.round(num(p.upah) / jk); const pok = hd * num(p.upah), lem = jl * tl; return { p, hd, jl, tl, pok, lem, tot: pok + lem }; });
   const T = data.reduce((a, x) => ({ hd: a.hd + x.hd, jl: a.jl + x.jl, pok: a.pok + x.pok, lem: a.lem + x.lem, tot: a.tot + x.tot }), { hd: 0, jl: 0, pok: 0, lem: 0, tot: 0 });
-  let h = `<h1>Rekap Upah & Lembur</h1><p class="small mut" style="margin-top:-8px">Dihitung otomatis dari absensi: upah harian × hari hadir + jam lembur × tarif lembur per jam (tarif kosong = upah ÷ ${jk} jam). Tarif diatur per orang di menu Pekerja.</p>
+  let h = upahTabs() + `<p class="small mut">Dihitung otomatis dari absensi: upah harian × hari hadir + jam lembur × tarif lembur per jam (tarif kosong = upah ÷ ${jk} jam). Tarif diatur per orang di menu Pekerja.</p>
   <div class="row" style="margin-bottom:10px"><span class="small mut">Periode</span><input type="date" class="inp sm" id="uS" value="${UP.s}"><span class="small mut">s/d</span><input type="date" class="inp sm" id="uE" value="${UP.e}"><span style="flex:1"></span><button class="btn" id="uXl">Excel</button><button class="btn acc" id="uPr">Cetak</button></div>
   <div class="tw tall"><table class="t"><thead><tr><th>No</th><th>Nama</th><th>Jabatan</th><th class="n">Upah/hari</th><th class="n">Hadir</th><th class="n">Lembur jam</th><th class="n">Tarif lembur</th><th class="n">Upah pokok</th><th class="n">Lembur</th><th class="n">Total</th></tr></thead><tbody>${data.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.p.nama)}</td><td class="small">${esc(x.p.jabatan || '')}</td><td class="n">${fmtRp(x.p.upah)}</td><td class="n">${x.hd}</td><td class="n">${x.jl}</td><td class="n">${fmtRp(x.tl)}</td><td class="n">${fmtRp(x.pok)}</td><td class="n">${fmtRp(x.lem)}</td><td class="n"><b>${fmtRp(x.tot)}</b></td></tr>`).join('') || '<tr><td colspan="10" class="mut">Tidak ada absensi pada periode ini.</td></tr>'}</tbody>
   <tfoot><tr><td colspan="4">Total</td><td class="n">${T.hd}</td><td class="n">${T.jl}</td><td></td><td class="n">${fmtRp(T.pok)}</td><td class="n">${fmtRp(T.lem)}</td><td class="n">${fmtRp(T.tot)}</td></tr></tfoot></table></div>
   <p class="small mut">Catatan: angka ini estimasi kebutuhan dana upah dan tidak otomatis masuk biaya. Pembayaran upah dicatat di menu Keuangan (kode biaya "Upah pekerja") supaya tidak terhitung dua kali.</p>`;
-  $('#main').innerHTML = h;
+  $('#main').innerHTML = h; pasangUpahTabs();
   $('#uS').onchange = e => { UP.s = e.target.value; vUpah(); }; $('#uE').onchange = e => { UP.e = e.target.value; vUpah(); };
   $('#uXl').onclick = () => unduhExcel('Rekap_Upah_' + UP.s + '_' + UP.e, [['Rekap upah', [['No', 'Nama', 'Jabatan', 'Upah/hari', 'Hadir', 'Lembur jam', 'Tarif lembur', 'Upah pokok', 'Lembur', 'Total']].concat(data.map((x, i) => [i + 1, x.p.nama, x.p.jabatan, num(x.p.upah), x.hd, x.jl, x.tl, x.pok, x.lem, x.tot]), [['', 'TOTAL', '', '', T.hd, T.jl, '', T.pok, T.lem, T.tot]])]]);
   $('#uPr').onclick = () => cetak(kop('AEN') + `<div class="jd">REKAP UPAH & LEMBUR<br><span style="font-size:11px;font-weight:400">Periode ${fD(UP.s)} – ${fD(UP.e)}</span></div><table><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Upah/hari</th><th>Hadir</th><th>Lembur jam</th><th>Upah pokok</th><th>Lembur</th><th>Total</th><th>Paraf</th></tr>${data.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.p.nama)}</td><td>${esc(x.p.jabatan || '')}</td><td class="n">${fmtRp(x.p.upah)}</td><td class="n">${x.hd}</td><td class="n">${x.jl}</td><td class="n">${fmtRp(x.pok)}</td><td class="n">${fmtRp(x.lem)}</td><td class="n">${fmtRp(x.tot)}</td><td></td></tr>`).join('')}<tr><th colspan="4">TOTAL</th><th>${T.hd}</th><th>${T.jl}</th><th class="n">${fmtRp(T.pok)}</th><th class="n">${fmtRp(T.lem)}</th><th class="n">${fmtRp(T.tot)}</th><th></th></tr></table><div class="ttd"><div>Dibuat oleh,<div class="ln">Hiskia</div>Admin Project</div><div>Diperiksa oleh,<div class="ln">Ariel</div>Project Control</div><div>Disetujui oleh,<div class="ln">Ibu Vivi</div>Finance</div></div>`, 'Rekap Upah ' + UP.e);
@@ -1522,7 +1694,7 @@ function vAtur() {
   const U = Object.values(TB_('users')).filter(u => u._hapus !== '1').sort((a, b) => a.id.localeCompare(b.id, 'id', { numeric: true }));
   const f = (id, l, v, tp = 'text', w) => `<div class="fld" ${w ? 'style="grid-column:1/-1"' : ''}><label>${l}</label><input id="${id}" type="${tp}" value="${esc(v ?? '')}"></div>`;
   let h = `<h1>Pengaturan</h1>
-  <div class="card"><h2>Sambungan server (Google Sheets)</h2><div class="fgrid">${f('sUrl', 'URL Web App Apps Script (/exec)', S.cfg.url, 'text', 1)}${f('sTok', 'Kode akses (sama dengan KODE_AKSES di Code.gs)', S.cfg.token)}</div>
+  <div class="card"><h2>Sambungan server (Google Sheets)</h2><p class="small mut">${SERVER_BAWAAN.url ? '<span class="b ok">Server bawaan tertanam di index.html</span> — semua perangkat otomatis tersambung.' : 'Tip: agar semua HP & laptop langsung tersambung tanpa tautan setup, isi SERVER_BAWAAN (URL & kode akses) di bagian atas skrip index.html sebelum diunggah ke GitHub.'}</p><div class="fgrid">${f('sUrl', 'URL Web App Apps Script (/exec)', S.cfg.url, 'text', 1)}${f('sTok', 'Kode akses (sama dengan KODE_AKSES di Code.gs)', S.cfg.token)}</div>
   <div class="row"><button class="btn pri" id="sSv">Simpan & uji</button><button class="btn" id="sSync">Sinkronkan sekarang</button><button class="btn" id="sFull">Kirim ulang semua data</button><button class="btn" id="sLink">Salin tautan setup untuk HP tim</button><button class="btn" id="sCek">Periksa sinkron</button></div><div id="sInfo" class="small" style="margin-top:8px"></div></div>
   <div class="card"><h2>Identitas proyek & kontrak</h2><div class="fgrid">${f('pNo', 'No. kontrak / PO (masih draft — ganti bila nomor resmi terbit)', p.noKontrak, 'text', 1)}${f('pNil', 'Nilai kontrak (Rp)', p.nilai || '', 'number')}${f('pMul', 'Tanggal mulai (effective date)', p.mulai, 'date')}${f('pSel', 'Tanggal selesai (contract end)', p.selesai, 'date')}${f('pNama', 'Nama proyek', p.nama, 'text', 1)}${f('pPek', 'Pekerjaan', p.pekerjaan, 'text', 1)}${f('pLok', 'Lokasi', p.lokasi, 'text', 1)}${f('pDwg', 'Drawing acuan', p.drawing, 'text', 1)}</div>
   <h3>Kop & tanda tangan laporan</h3><div class="fgrid"><div class="fld"><label>Kop bawaan</label><select id="pKop"><option>MPJ</option><option>AEN</option></select></div>${f('t1', 'Dibuat oleh', t.dibuat)}${f('t1j', 'Jabatan', t.dibuatJ)}${f('t2', 'Diketahui oleh', t.diketahui)}${f('t2j', 'Jabatan', t.diketahuiJ)}${f('t3', 'Diterima oleh', t.diterima)}${f('t3j', 'Jabatan', t.diterimaJ)}</div>
@@ -1591,13 +1763,13 @@ function vAudit() {
 
 /* ================= NAVIGASI, LOGIN, BOOT ================= */
 const VIEWS = {
-  dash: vDash, peta: vPeta, kurva: vKurva, harian: vHarian, mingguan: vMingguan, foto: vFoto, absen: vAbsen, upah: vUpah, kas: vKas, master: vMaster, atur: vAtur, audit: vAudit,
+  dash: vDash, peta: vPeta, kurva: vKurva, harian: vHarian, mingguan: vMingguan, foto: vFoto, absen: vAbsen, upah: vUpahMenu, struktur: vStruktur, kas: vKas, master: vMaster, atur: vAtur, audit: vAudit,
   keputusan: () => viewTabel('keputusan'), inspeksi: () => viewTabel('inspeksi'), cor: () => viewTabel('cor'), pekerja: () => { viewTabel('pekerja', { atas: rs => `<div class="row" style="margin-bottom:8px"><span class="small" style="flex:1">Aktif: <b>${rs.filter(r => r.status === 'Aktif' && !/Staf/.test(r.kategori || '')).length}</b> pekerja + <b>${rs.filter(r => r.status === 'Aktif' && /Staf/.test(r.kategori || '')).length}</b> staf · rencana hari ini ${mpRencana(today())} pekerja · <b>${rows('pekerja').filter(p => p.status === 'Aktif' && !p.fotoWajah).length}</b> belum ada foto wajah. Ketuk kode untuk melihat QR.</span><button class="btn acc" id="pkKartu">Cetak kartu + QR</button></div>` }); const kb = $('#pkKartu'); if (kb) kb.onclick = pilihCetakKartu; },
   alat: () => viewTabel('alat'), material: () => viewTabel('material', { atas: rs => { const s = {}; rows('material').forEach(r => { const k = r.material + ' (' + (r.satuan || '') + ')'; s[k] = s[k] || [0, 0]; s[k][0] += num(r.masuk); s[k][1] += num(r.pakai); }); return Object.keys(s).length ? `<div class="card"><h2>Sisa material</h2><div class="tw"><table class="t"><thead><tr><th>Material</th><th class="n">Masuk</th><th class="n">Dipakai</th><th class="n">Sisa</th></tr></thead><tbody>${Object.entries(s).map(([k, [a, b]]) => `<tr><td>${esc(k)}</td><td class="n">${fmtN(a, 2)}</td><td class="n">${fmtN(b, 2)}</td><td class="n"><b>${fmtN(a - b, 2)}</b></td></tr>`).join('')}</tbody></table></div></div>` : ''; } }),
   inventaris: () => viewTabel('inventaris'), hse: vHSE, surat: () => viewTabel('surat')
 };
 function menuLabel(k) { for (const [, it] of MENU) for (const [a, l] of it) if (a === k) return l; return k; }
-function buka(k) { S.pref.menu = k; persist(); $('#nav').classList.remove('open'); render(); window.scrollTo(0, 0); }
+function buka(k) { S.pref.menu = k; persist(); $('#nav').classList.remove('open'); render(); window.scrollTo(0, 0); catatHadir(true); if (S.cfg.url && Date.now() - (SY.last || 0) > 20000) sinkron(); }
 function render() {
   if (!ME) return;
   let k = S.pref.menu || 'dash'; if (!bisaLihat(k) || !VIEWS[k]) k = 'dash';
@@ -1629,9 +1801,9 @@ function layarLogin() {
   };
   setTimeout(() => inp.focus(), 50);
 }
-function keluar() { ME = null; delete S.pref.sesi; persist(); $('#app').classList.add('hidden'); layarLogin(); }
+function keluar() { if (ME && S.cfg.url) { const h = TB_('hadir')['HD' + ME.id]; if (h) { h.w = '0'; h._ubah = Date.now(); S.dirty['hadir|' + h.id] = 1; sinkron(); } } ME = null; delete S.pref.sesi; persist(); $('#app').classList.add('hidden'); layarLogin(); }
 function panelSinkron() {
-  const m = modal('Sinkronisasi', `<div class="small" style="line-height:1.8">Server: ${S.cfg.url ? '<span class="b ok">terisi</span>' : '<span class="b warn">belum diatur — data hanya di perangkat ini</span>'}<br>Status: <b>${esc(SY.st)}</b>${SY.err ? ' — ' + esc(SY.err) : ''}<br>Terakhir berhasil: ${SY.last ? fW(SY.last) : '-'}<br>Menunggu kirim: ${Object.keys(S.dirty).length} catatan, ${Object.keys(S.pend).length} foto</div><div class="row end" style="margin-top:10px">${ME.peran === 'PC' ? '<button class="btn" id="psAt">Pengaturan server</button>' : ''}<button class="btn pri" id="psGo" ${S.cfg.url ? '' : 'disabled'}>Sinkronkan sekarang</button></div>`);
+  const m = modal('Sinkronisasi', `<div class="small" style="line-height:1.8">Server: ${S.cfg.url ? '<span class="b ok">terisi</span>' : '<span class="b warn">belum diatur — data hanya di perangkat ini</span>'}<br>Status: <b>${esc(SY.st)}</b>${SY.err ? ' — ' + esc(SY.err) : ''}<br>Terakhir berhasil: ${SY.last ? fW(SY.last) : '-'}<br>Sedang online (3 menit terakhir): ${daftarOnline().map(r => '<b>' + esc(r.nama) + '</b> <span class="mut">(' + esc(r.alat || '') + ' · ' + esc(r.menu || '') + ')</span>').join(', ') || '-'}<br>Data di perangkat ini: ${fmtN((localStorage.getItem(LS) || '').length / 1024, 0)} KB<br>Menunggu kirim: ${Object.keys(S.dirty).length} catatan, ${Object.keys(S.pend).length} foto</div><div class="row end" style="margin-top:10px">${ME.peran === 'PC' ? '<button class="btn" id="psAt">Pengaturan server</button>' : ''}<button class="btn pri" id="psGo" ${S.cfg.url ? '' : 'disabled'}>Sinkronkan sekarang</button></div>`);
   const a = $('#psAt', m); if (a) a.onclick = () => { tutupModal(); buka('atur'); };
   $('#psGo', m).onclick = async () => { $('#psGo', m).disabled = true; S.srv = 0; await sinkron(true); tutupModal(); toast(SY.st === 'ok' ? 'Sinkron selesai' : 'Gagal: ' + SY.err, SY.st === 'ok' ? '' : 'err'); };
 }
@@ -1639,7 +1811,7 @@ function mulaiApp() {
   $('#app').classList.remove('hidden');
   $('#userbtn').textContent = ME.nama + ' · ' + PERAN[ME.peran];
   render(); chip();
-  if (S.cfg.url) sinkron();
+  if (S.cfg.url) { catatHadir(true); sinkron(); }
 }
 function boot() {
   muatLokal();
@@ -1647,6 +1819,7 @@ function boot() {
   // Tautan setup sengaja tidak dihapus dari alamat: di iPhone, "Tambahkan ke Layar Utama" menyimpan alamat lengkap
   // dan ikon di layar utama punya penyimpanan sendiri, jadi ikon itu ikut tersambung otomatis.
   if (m) { try { const j = JSON.parse(decodeURIComponent(escape(atob(m[1])))); if (j.u && (j.u !== S.cfg.url || j.t !== S.cfg.token)) { S.cfg.url = j.u; S.cfg.token = j.t; S.srv = 0; persist(); setTimeout(() => toast('Perangkat tersambung ke server. Masuk dengan PIN Anda.'), 400); } } catch (e) { } }
+  if (!S.cfg.url && SERVER_BAWAAN.url) { S.cfg.url = SERVER_BAWAAN.url; S.cfg.token = SERVER_BAWAAN.token; S.srv = 0; persist(); }
   if (!S.cfg.url) semai();
   $('#burger').onclick = () => $('#nav').classList.toggle('open');
   $('#chip').onclick = panelSinkron;
@@ -1658,7 +1831,7 @@ function boot() {
   if (u) { ME = u; mulaiApp(); }
   else if (S.cfg.url && !rows('users').length) { $('#login').classList.remove('hidden'); $('#login').innerHTML = '<div class="box">Mengunduh data dari server…</div>'; sinkron(true).finally(lanjut); }
   else layarLogin();
-  setInterval(() => { if (S.cfg.url && ME && !document.hidden) sinkron(); }, 60000);
+  setInterval(() => { if (S.cfg.url && ME && !document.hidden) { catatHadir(); sinkron(); } }, 30000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden && S.cfg.url && ME) sinkron(); });
   window.addEventListener('online', () => { if (S.cfg.url && ME) sinkron(); });
 }
@@ -1906,11 +2079,12 @@ const DOK = {
 /* ---- halaman HSE ---- */
 let HS = { tab: 'ringkas', q: '', dari: '', sampai: '' };
 function vHSE() {
-  const tabs = [['ringkas', 'Ringkasan']].concat(Object.entries(DOK).map(([k, d]) => [k, d.tab]), [['temuan', 'Temuan & Insiden']]);
+  const tabs = [['ringkas', 'Ringkasan']].concat(Object.entries(DOK).map(([k, d]) => [k, d.tab]), [['temuan', 'Temuan & Insiden'], ['dokumen', 'Dokumen & Surat']]);
   $('#main').innerHTML = `<h1>HSE & K3</h1><div class="tabs">${tabs.map(([k, l]) => `<button class="${HS.tab === k ? 'on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div><div id="hsBox"></div>`;
   $$('[data-tab]').forEach(b => b.onclick = () => { HS.tab = b.dataset.tab; HS.q = ''; vHSE(); });
   if (HS.tab === 'ringkas') return hseRingkas();
   if (HS.tab === 'temuan') return viewTabel('hse', { box: $('#hsBox'), noJudul: true });
+  if (HS.tab === 'dokumen') return hseDokumen();
   hseDaftar(HS.tab);
 }
 function hariTanpaKecelakaan() {
@@ -1994,6 +2168,301 @@ function pasangScanAbsen() {
       loop();
     } catch (e) { toast('Kamera tidak bisa dibuka: ' + e.message, 'err'); selesai(); tutup0(); }
   };
+}
+
+/* ---- Dokumen & surat HSE: berkas disimpan di Google Drive server, aplikasi hanya menyimpan tautannya ---- */
+const JENIS_DOK = ['Surat Tugas PT MPJ', 'Surat Permohonan Pembuatan Stiker', 'Surat Permohonan Gate Pass', 'Surat Pengajuan Pembuatan SIOPER', 'Surat Permohonan ID Badge', 'Lainnya'];
+const ikonBerkas = n => /\.pdf$/i.test(n || '') ? 'PDF' : /\.xlsx?$/i.test(n || '') ? 'XLS' : /\.(png|jpe?g|webp|heic)$/i.test(n || '') ? 'IMG' : 'DOC';
+function hseDokumen() {
+  const ed = bisaEdit('dokhse'), L = rows('dokhse');
+  let h = `<p class="small mut">Arsip dokumen & template HSE (Word, PDF, Excel, foto). Berkas langsung tersimpan di Google Drive server — aplikasi hanya menyimpan tautannya, jadi tetap ringan. Semua perangkat melihat daftar yang sama.</p>
+  ${ed ? `<div class="row" style="margin-bottom:10px"><button class="btn pri" data-up="">+ Unggah dokumen</button>${S.cfg.url ? '' : '<span class="b warn">Unggah perlu tersambung ke server</span>'}</div>` : ''}`;
+  for (const j of JENIS_DOK) {
+    const g = L.filter(r => (r.jenis || 'Lainnya') === j).sort((a, b) => (a.tgl < b.tgl ? 1 : a.tgl > b.tgl ? -1 : num(b._ubah) - num(a._ubah)));
+    if (!g.length && j === 'Lainnya') continue;
+    h += `<div class="card"><div class="row"><h2 style="flex:1">${esc(j)} <span class="small mut">(${g.length})</span></h2>${ed ? `<button class="btn sm" data-up="${esc(j)}">+ Unggah</button>` : ''}</div>${g.length ? `<div class="tw"><table class="t"><thead><tr><th></th><th>Judul</th><th>Tanggal</th><th>Keterangan</th><th>Diunggah</th><th></th></tr></thead><tbody>${g.map((r, i) => { const id = String(r.file || '').replace('drive:', ''); return `<tr><td><span class="b ${i === 0 ? 'ok' : 'gr'}">${ikonBerkas(r.namaFile)}</span></td><td><b>${esc(r.judul || r.namaFile || '')}</b>${i === 0 && g.length > 1 ? ' <span class="b info">terbaru</span>' : ''}<div class="small mut">${esc(r.namaFile || '')}${r.ukuran ? ' · ' + fmtN(num(r.ukuran) / 1024, 0) + ' KB' : ''}</div></td><td class="nw">${fD(r.tgl)}</td><td class="small">${esc(r.ket || '')}</td><td class="small mut">${esc(r._oleh || '')}</td><td class="nw">${id ? `<a class="btn sm" target="_blank" href="https://drive.google.com/file/d/${esc(id)}/view">Buka</a> <a class="btn sm" target="_blank" href="https://drive.google.com/uc?export=download&id=${esc(id)}">Unduh</a>` : ''}${ed ? ` <button class="btn sm" data-dke="${esc(r.id)}">Ubah</button> <button class="btn sm del" data-dkx="${esc(r.id)}">Hapus</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="small mut" style="margin:0">Belum ada berkas.</p>'}</div>`;
+  }
+  $('#hsBox').innerHTML = h;
+  $$('[data-up]').forEach(b => b.onclick = () => formDokumen(null, b.dataset.up));
+  $$('[data-dke]').forEach(b => b.onclick = () => formDokumen(get('dokhse', b.dataset.dke)));
+  $$('[data-dkx]').forEach(b => b.onclick = () => { if (yakin('Hapus dokumen ini dari daftar? (Berkas di Google Drive tidak ikut terhapus.)')) { hapus('dokhse', b.dataset.dkx); hseDokumen(); } });
+}
+function formDokumen(r, jenis) {
+  const baru = !r; r = r || { jenis: jenis || JENIS_DOK[0], tgl: today() };
+  const el = document.createElement('div');
+  el.innerHTML = `<div class="fgrid"><div class="fld"><label>Jenis dokumen</label><select id="dkJ">${JENIS_DOK.map(o => `<option ${o === r.jenis ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></div><div class="fld"><label>Tanggal</label><input type="date" id="dkT" value="${esc(r.tgl || today())}"></div>
+  <div class="fld" style="grid-column:1/-1"><label>Judul</label><input id="dkN" value="${esc(r.judul || '')}" placeholder="kosong = nama berkas"></div><div class="fld" style="grid-column:1/-1"><label>Keterangan</label><input id="dkK" value="${esc(r.ket || '')}"></div>
+  <div class="fld" style="grid-column:1/-1"><label>${baru ? 'Berkas (Word / PDF / Excel / foto, maks. 15 MB)' : 'Ganti berkas (opsional)'}</label><input type="file" id="dkF" accept=".doc,.docx,.pdf,.xls,.xlsx,image/*">${r.namaFile ? `<div class="small mut">Sekarang: ${esc(r.namaFile)}</div>` : ''}</div></div>
+  <div class="row end"><button class="btn" data-a="b">Batal</button><button class="btn pri" data-a="s">${baru ? 'Unggah' : 'Simpan'}</button></div>`;
+  modal(baru ? 'Unggah dokumen HSE' : 'Ubah dokumen', el, { lekat: true });
+  $('[data-a=b]', el).onclick = tutupModal;
+  $('[data-a=s]', el).onclick = async () => {
+    const b = $('[data-a=s]', el), f = $('#dkF', el).files[0];
+    if (baru && !f) return toast('Pilih berkas', 'err');
+    b.disabled = true; b.textContent = f ? 'Mengunggah…' : 'Menyimpan…';
+    const n = Object.assign({}, r, { id: r.id || uid('DK'), jenis: $('#dkJ', el).value, tgl: $('#dkT', el).value, ket: $('#dkK', el).value.trim() });
+    try {
+      if (f) { n.file = await unggahBerkas(f, 'Dokumen HSE'); n.namaFile = f.name; n.ukuran = String(f.size); n.mime = f.type; }
+      n.judul = $('#dkN', el).value.trim() || n.judul || String(n.namaFile || '').replace(/\.[^.]+$/, '');
+      put('dokhse', n); tutupModal(); toast('Dokumen tersimpan'); hseDokumen();
+    } catch (e) { toast(e.message || 'Unggah gagal', 'err'); b.disabled = false; b.textContent = baru ? 'Unggah' : 'Simpan'; }
+  };
+}
+
+/* ================= PAYROLL, SLIP GAJI, LAPORAN BULANAN, STRUKTUR ORGANISASI, ONLINE ================= */
+
+/* ---- terbilang ---- */
+function terbilang(n) {
+  n = Math.floor(Math.abs(num(n)));
+  const s = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
+  const f = x => x < 12 ? s[x] : x < 20 ? f(x - 10) + ' belas' : x < 100 ? f(Math.floor(x / 10)) + ' puluh ' + f(x % 10) : x < 200 ? 'seratus ' + f(x - 100) : x < 1000 ? f(Math.floor(x / 100)) + ' ratus ' + f(x % 100) : x < 2000 ? 'seribu ' + f(x - 1000) : x < 1e6 ? f(Math.floor(x / 1000)) + ' ribu ' + f(x % 1000) : x < 1e9 ? f(Math.floor(x / 1e6)) + ' juta ' + f(x % 1e6) : f(Math.floor(x / 1e9)) + ' miliar ' + f(x % 1e9);
+  const t = f(n).replace(/\s+/g, ' ').trim();
+  return (t ? t.charAt(0).toUpperCase() + t.slice(1) : 'Nol') + ' rupiah';
+}
+
+/* ---- hitung upah dari absensi (rumus sama dengan Rekap Upah) ---- */
+function hitungUpah(s, e) {
+  const jk = num(cfg('jamKerja')) || 7;
+  const ab = rows('absen').filter(r => r.tgl >= s && r.tgl <= e);
+  const P = rows('pekerja').filter(p => ab.some(r => r.pek === p.id)).sort((a, b) => a.nama.localeCompare(b.nama));
+  return P.map(p => {
+    let hd = 0, jl = 0, iz = 0, sk = 0, al = 0;
+    ab.filter(r => r.pek === p.id).forEach(r => { const k = r.kode || ''; if (/^H/.test(k)) { hd++; jl += num(k.split('-')[1]); } else if (k === 'I') iz++; else if (k === 'S') sk++; else if (k === 'A') al++; });
+    const tl = num(p.lembur) || Math.round(num(p.upah) / jk);
+    const pok = hd * num(p.upah), lem = jl * tl;
+    return { p, hd, jl, iz, sk, al, tl, pok, lem };
+  });
+}
+const payId = (s, e, pid) => 'PY|' + s + '|' + e + '|' + pid;
+function dataPayroll(s, e) {
+  return hitungUpah(s, e).map(x => {
+    const r = get('payroll', payId(s, e, x.p.id)) || {};
+    const tun = num(r.tunjangan), mkn = num(r.makan), pot = num(r.potongan);
+    return Object.assign(x, { r, tun, mkn, pot, bruto: x.pok + x.lem + tun + mkn, net: x.pok + x.lem + tun + mkn - pot });
+  });
+}
+function periodePay(s, e) { return get('payroll', payId(s, e, '_')) || { status: 'Draft', tglBayar: '' }; }
+
+/* ---- tab Payroll ---- */
+function vPayroll() {
+  if (!UP) { const e = akhirMinggu(today()); UP = { s: addD(e, -6), e }; }
+  const { s, e } = UP, ed = bisaEdit('payroll'), D = dataPayroll(s, e), per = periodePay(s, e), kunci = per.status !== 'Draft' && ME.peran !== 'PC';
+  const T = D.reduce((a, x) => ({ pok: a.pok + x.pok, lem: a.lem + x.lem, tun: a.tun + x.tun, mkn: a.mkn + x.mkn, pot: a.pot + x.pot, net: a.net + x.net }), { pok: 0, lem: 0, tun: 0, mkn: 0, pot: 0, net: 0 });
+  const tanpaRek = D.filter(x => !x.p.noRek).length;
+  let h = upahTabs() + `<p class="small mut" style="margin-top:-4px">Rincian yang diterima tiap pekerja: upah pokok + lembur (dari absensi) + tunjangan + uang makan − potongan/kasbon. Tunjangan, uang makan dan potongan diisi di tabel ini${ed ? '' : ' oleh Project Control / Finance'}.</p>
+  <div class="row" style="margin-bottom:10px"><span class="small mut">Periode</span><input type="date" class="inp sm" id="uS" value="${s}"><span class="small mut">s/d</span><input type="date" class="inp sm" id="uE" value="${e}">
+  <span class="small">Status periode: <span class="b ${per.status === 'Dibayar' ? 'ok' : per.status === 'Final' ? 'warn' : 'gr'}">${esc(per.status)}</span>${per.tglBayar ? ' · dibayar ' + fD(per.tglBayar) : ''}</span>
+  ${ed ? `<select class="inp sm" id="pySt">${['Draft', 'Final', 'Dibayar'].map(o => `<option ${o === per.status ? 'selected' : ''}>${o}</option>`).join('')}</select><input type="date" class="inp sm" id="pyTb" value="${per.tglBayar || ''}" title="Tanggal bayar"><button class="btn" id="pyStSv">Simpan status</button>` : ''}
+  <span style="flex:1"></span><button class="btn" id="pyXl">Excel (rekap & transfer)</button><button class="btn" id="pyPr">Cetak rekap</button><button class="btn acc" id="pySlip">Cetak slip gaji</button></div>`;
+  if (tanpaRek) h += `<div class="alert warn">${tanpaRek} pekerja belum punya nomor rekening. Isi di menu Pekerja & ID Badge.</div>`;
+  if (kunci) h += `<div class="alert info">Periode ini sudah ${esc(per.status)} — angka dikunci. Hanya Project Control yang bisa mengubah.</div>`;
+  const inp = (x, k, v) => ed && !kunci ? `<input class="inp sm" data-rp data-py="${esc(x.p.id)}" data-k="${k}" inputmode="numeric" style="width:105px;text-align:right" value="${v ? Math.round(v).toLocaleString('id-ID') : ''}">` : fmtRp(v);
+  h += `<div class="tw tall"><table class="t"><thead><tr><th>No</th><th>Nama</th><th>Rekening</th><th class="n">Hadir</th><th class="n">Lembur jam</th><th class="n">Upah pokok</th><th class="n">Lembur</th><th class="n">Tunjangan</th><th class="n">Uang makan</th><th class="n">Potongan / kasbon</th><th class="n">Diterima</th><th></th></tr></thead><tbody>${D.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(x.p.nama)}<div class="small mut">${esc(x.p.jabatan || '')}</div></td><td class="small">${x.p.noRek ? esc((x.p.bank || '') + ' ' + x.p.noRek) + '<div class="mut">a.n. ' + esc(x.p.atasNama || x.p.nama) + '</div>' : '<span class="b warn">belum ada</span>'}</td><td class="n">${x.hd}</td><td class="n">${x.jl}</td><td class="n">${fmtRp(x.pok)}</td><td class="n">${fmtRp(x.lem)}</td><td class="n">${inp(x, 'tunjangan', x.tun)}</td><td class="n">${inp(x, 'makan', x.mkn)}</td><td class="n">${inp(x, 'potongan', x.pot)}</td><td class="n"><b>${fmtRp(x.net)}</b></td><td><button class="btn sm" data-slip="${esc(x.p.id)}">Slip</button></td></tr>`).join('') || '<tr><td colspan="12" class="mut">Tidak ada absensi pada periode ini.</td></tr>'}</tbody>
+  <tfoot><tr><td colspan="5">Total ${D.length} orang</td><td class="n">${fmtRp(T.pok)}</td><td class="n">${fmtRp(T.lem)}</td><td class="n">${fmtRp(T.tun)}</td><td class="n">${fmtRp(T.mkn)}</td><td class="n">${fmtRp(T.pot)}</td><td class="n">${fmtRp(T.net)}</td><td></td></tr></tfoot></table></div>
+  ${ed && !kunci && D.length ? '<div class="row end" style="margin-top:8px"><button class="btn pri" id="pySv">Simpan tunjangan / uang makan / potongan</button></div>' : ''}
+  <p class="small mut">Setelah dibayar, catat pembayarannya di menu Keuangan dengan kode biaya "Upah pekerja" supaya masuk biaya proyek.</p>`;
+  $('#main').innerHTML = h; pasangRp($('#main')); pasangUpahTabs();
+  $('#uS').onchange = ev => { UP.s = ev.target.value; vPayroll(); }; $('#uE').onchange = ev => { UP.e = ev.target.value; vPayroll(); };
+  const sv = $('#pySv'); if (sv) sv.onclick = () => {
+    let n = 0; const by = {};
+    $$('[data-py]').forEach(i => { (by[i.dataset.py] = by[i.dataset.py] || {})[i.dataset.k] = String(parseRp(i.value)); });
+    for (const [pid, v] of Object.entries(by)) { const id = payId(s, e, pid), o = get('payroll', id) || { id, s, e, pek: pid }; if (['tunjangan', 'makan', 'potongan'].some(k => String(o[k] || '') !== String(v[k] || ''))) { put('payroll', Object.assign({}, o, v)); n++; } }
+    toast(n ? n + ' pekerja diperbarui' : 'Tidak ada perubahan'); vPayroll();
+  };
+  const ss = $('#pyStSv'); if (ss) ss.onclick = () => { const id = payId(s, e, '_'); put('payroll', Object.assign({}, get('payroll', id) || { id, s, e, pek: '_' }, { status: $('#pySt').value, tglBayar: $('#pyTb').value })); toast('Status periode tersimpan'); vPayroll(); };
+  $('#pyXl').onclick = () => unduhExcel('Payroll_' + s + '_' + e, [
+    ['Rekap payroll', [['No', 'Nama', 'Jabatan', 'Hadir', 'Lembur jam', 'Upah/hari', 'Tarif lembur', 'Upah pokok', 'Lembur', 'Tunjangan', 'Uang makan', 'Potongan', 'Diterima']].concat(D.map((x, i) => [i + 1, x.p.nama, x.p.jabatan || '', x.hd, x.jl, num(x.p.upah), x.tl, x.pok, x.lem, x.tun, x.mkn, x.pot, x.net]), [['', 'TOTAL', '', '', '', '', '', T.pok, T.lem, T.tun, T.mkn, T.pot, T.net]])],
+    ['Transfer bank', [['No', 'Nama penerima', 'Bank', 'No. rekening', 'Atas nama', 'Nominal', 'Keterangan']].concat(D.map((x, i) => [i + 1, x.p.nama, x.p.bank || '', x.p.noRek ? String(x.p.noRek) : 'BELUM ADA', x.p.atasNama || x.p.nama, x.net, 'Gaji ' + fD(s) + ' - ' + fD(e)]))]
+  ]);
+  $('#pyPr').onclick = () => cetak(docRekapPayroll(s, e), 'Rekap Payroll ' + fD(s) + ' - ' + fD(e), { landscape: true });
+  $('#pySlip').onclick = () => pilihSlip(s, e, D);
+  $$('[data-slip]').forEach(b => b.onclick = () => { const x = D.find(y => y.p.id === b.dataset.slip); cetak(docSlip([x], s, e), 'Slip Gaji ' + x.p.nama); });
+}
+function docRekapPayroll(s, e) {
+  const D = dataPayroll(s, e), T = D.reduce((a, x) => a + x.net, 0), per = periodePay(s, e);
+  return kop('AEN') + `<div class="jd">REKAP PAYROLL PEKERJA<br><span style="font-size:11px;font-weight:400">Periode ${fD(s)} – ${fD(e)} · status ${esc(per.status)}</span></div>
+  <table><tr><th>No</th><th>Nama</th><th>Jabatan</th><th>Bank / no. rekening</th><th>Hadir</th><th>Lembur (jam)</th><th>Upah pokok</th><th>Lembur</th><th>Tunjangan</th><th>Uang makan</th><th>Potongan</th><th>Diterima</th><th>Paraf</th></tr>${D.map((x, i) => `<tr><td class="n">${i + 1}</td><td>${esc(x.p.nama)}</td><td>${esc(x.p.jabatan || '')}</td><td>${esc((x.p.bank || '') + ' ' + (x.p.noRek || '-'))}</td><td class="n">${x.hd}</td><td class="n">${x.jl}</td><td class="n">${fmtRp(x.pok)}</td><td class="n">${fmtRp(x.lem)}</td><td class="n">${fmtRp(x.tun)}</td><td class="n">${fmtRp(x.mkn)}</td><td class="n">${fmtRp(x.pot)}</td><td class="n"><b>${fmtRp(x.net)}</b></td><td></td></tr>`).join('')}<tr><th colspan="11">TOTAL DIBAYARKAN</th><th class="n">${fmtRp(T)}</th><th></th></tr></table>
+  <p>Terbilang: <i>${terbilang(T)}</i></p>` + `<div class="ttd"><div>Dibuat oleh,<div class="ln">${esc(namaPeran('ADM') || 'Admin Project')}</div>Admin Project</div><div>Diperiksa oleh,<div class="ln">${esc(namaPeran('PC') || 'Project Control')}</div>Project Control</div><div>Disetujui oleh,<div class="ln">${esc(namaPeran('FIN') || 'Finance')}</div>Finance</div></div>`;
+}
+const namaPeran = r => (rows('users').find(u => u.peran === r && u.aktif !== '0') || {}).nama || '';
+function docSlip(L, s, e) {
+  const lg = cfg('logo').aen, per = periodePay(s, e);
+  const satu = x => `<div class="slip"><div style="display:flex;align-items:center;gap:10px;border-bottom:2px solid #1F3A5F;padding-bottom:5px;margin-bottom:6px">${lg ? `<img src="${lg}" style="height:34px">` : ''}<div style="flex:1"><div style="font-weight:700;font-size:12px;color:#1F3A5F">PT. AVINDO ENERGI NUSANTARA</div><div style="font-size:9px">${esc(cfg('proyek').pekerjaan)}</div></div><div style="text-align:right"><div style="font-weight:700;font-size:13px">SLIP GAJI</div><div style="font-size:9px">Periode ${fD(s)} – ${fD(e)}</div></div></div>
+    <table style="margin-bottom:5px"><tr><td style="width:22%;border:0">Nama</td><td style="border:0">: <b>${esc(x.p.nama)}</b></td><td style="width:20%;border:0">Kode</td><td style="border:0">: ${esc(kodePek(x.p))}</td></tr><tr><td style="border:0">Jabatan</td><td style="border:0">: ${esc(x.p.jabatan || '')}</td><td style="border:0">Rekening</td><td style="border:0">: ${esc((x.p.bank || '') + ' ' + (x.p.noRek || '-'))}${x.p.atasNama ? ' a.n. ' + esc(x.p.atasNama) : ''}</td></tr></table>
+    <table><tr><th style="text-align:left">Penerimaan</th><th style="width:28%">Jumlah</th></tr>
+    <tr><td>Upah pokok: ${x.hd} hari × ${fmtRp(x.p.upah)}</td><td class="n">${fmtRp(x.pok)}</td></tr>
+    <tr><td>Lembur: ${x.jl} jam × ${fmtRp(x.tl)}</td><td class="n">${fmtRp(x.lem)}</td></tr>
+    <tr><td>Tunjangan</td><td class="n">${fmtRp(x.tun)}</td></tr><tr><td>Uang makan</td><td class="n">${fmtRp(x.mkn)}</td></tr>
+    <tr><th style="text-align:left">Jumlah penerimaan</th><th class="n">${fmtRp(x.bruto)}</th></tr>
+    <tr><td>Potongan / kasbon${x.r.ket ? ' — ' + esc(x.r.ket) : ''}</td><td class="n">(${fmtRp(x.pot)})</td></tr>
+    <tr><th style="text-align:left;background:#dfe8f3">DITERIMA</th><th class="n" style="background:#dfe8f3;font-size:12px">${fmtRp(x.net)}</th></tr></table>
+    <div style="font-size:9.5px;margin-top:3px">Terbilang: <i>${terbilang(x.net)}</i> · Kehadiran: H ${x.hd}, izin ${x.iz}, sakit ${x.sk}, alpa ${x.al}${per.tglBayar ? ' · Dibayar ' + fD(per.tglBayar) : ''}</div>
+    <div class="ttd" style="margin-top:8px"><div>Finance,<div class="ln" style="margin-top:36px">${esc(namaPeran('FIN') || '')}</div>PT. Avindo Energi Nusantara</div><div>Penerima,<div class="ln" style="margin-top:36px">${esc(x.p.nama)}</div>${esc(x.p.jabatan || '')}</div></div></div>`;
+  const hal = []; for (let i = 0; i < L.length; i += 2) hal.push(L.slice(i, i + 2));
+  return hal.map(g => `<div class="slip-hal">${g.map(satu).join('<div class="potong">- - - - - - - - - - - - gunting di sini - - - - - - - - - - - -</div>')}</div>`).join('');
+}
+function pilihSlip(s, e, D) {
+  if (!D.length) return toast('Tidak ada pekerja pada periode ini', 'err');
+  const m = modal('Cetak slip gaji', `<p class="small mut">Dua slip per halaman A4. Pilih pekerja:</p><div class="objlist">${D.map(x => `<label><input type="checkbox" value="${esc(x.p.id)}" checked>${esc(x.p.nama)} <span class="mut">${fmtRp(x.net)}</span></label>`).join('')}</div><div class="row end" style="margin-top:10px"><button class="btn acc" id="slGo">Cetak</button></div>`, { wide: true });
+  $('#slGo', m).onclick = () => { const ids = $$('.objlist input', m).filter(c => c.checked).map(c => c.value); if (!ids.length) return toast('Pilih minimal satu', 'err'); tutupModal(); cetak(docSlip(D.filter(x => ids.includes(x.p.id)), s, e), 'Slip Gaji ' + fD(s) + ' - ' + fD(e)); };
+}
+let UPTAB = 'rekap';
+function upahTabs() { return `<h1>Upah & Payroll</h1><div class="tabs">${[['rekap', 'Rekap upah & lembur'], ['payroll', 'Payroll & slip gaji']].map(([k, l]) => `<button class="${UPTAB === k ? 'on' : ''}" data-uptab="${k}">${l}</button>`).join('')}</div>`; }
+function pasangUpahTabs() { $$('[data-uptab]').forEach(b => b.onclick = () => { UPTAB = b.dataset.uptab; render(); }); }
+function vUpahMenu() { UPTAB === 'payroll' ? vPayroll() : vUpah(); }
+
+/* ---- laporan bulanan ---- */
+function dataBulan(bln) {
+  const [y, m] = bln.split('-').map(Number), s = bln + '-01', e = dstr(new Date(y, m, 0));
+  const hari = []; for (let d = s; d <= e; d = addD(d, 1)) hari.push(d);
+  return { s, e, hari };
+}
+function docBulanan(bln, k) {
+  const { s, e, hari } = dataBulan(bln), p = cfg('proyek'), B = cfg('bobot');
+  const pmE = progMap(e), pmS = progMap(addD(s, -1));
+  const [y, m] = bln.split('-').map(Number);
+  const judulBln = BLN_P[m - 1] + ' ' + y;
+  const obj = objAll().filter(hitung);
+  const selesai = obj.filter(o => objPctB(o, pmE, B) >= 99.99 && objPctB(o, pmS, B) < 99.99);
+  const mpH = hari.map(d => manpowerHari(d)), hk = mpH.filter(x => x.tot).length;
+  const mdPek = mpH.reduce((a, x) => a + x.pek, 0), mdStaf = mpH.reduce((a, x) => a + x.staf, 0), jl = mpH.reduce((a, x) => a + x.jamL, 0);
+  const hujan = rows('harian').filter(r => r.tgl >= s && r.tgl <= e && /Hujan/.test([r.pagi, r.siang, r.sore].join(' '))).length;
+  const tbm = rows('tbm').filter(r => r.tgl >= s && r.tgl <= e), pmt = rows('permit').filter(r => r.tgl >= s && r.tgl <= e), tem = rows('hse').filter(r => r.tgl >= s && r.tgl <= e);
+  const kep = rows('keputusan').filter(r => r.tgl >= s && r.tgl <= e);
+  let h = kop(k) + `<div class="jd">LAPORAN BULANAN — ${judulBln.toUpperCase()}<br><span style="font-size:11px;font-weight:400">${esc(p.pekerjaan)} · ${fD(s)} – ${fD(e)}</span></div>`;
+  h += `<h3>I. PROGRESS FISIK</h3><table><tr><th>Lingkup</th><th>Awal bulan</th><th>Akhir bulan</th><th>Naik</th><th>Rencana akhir bulan</th><th>Deviasi</th></tr>${['9', '8', '12', ''].map(pk => { const f = pk ? (o => o.paket === pk) : null, a = agregat(pmS, f), b = agregat(pmE, f), r = rencanaPct(e, pk || undefined); return `<tr><td>${pk ? 'Paket ' + pk : '<b>Total</b>'}</td><td class="n">${pct(a)}</td><td class="n">${pct(b)}</td><td class="n">${fmtN(b - a, 1)}%</td><td class="n">${pct(r)}</td><td class="n">${fmtN(b - r, 1)}%</td></tr>`; }).join('')}</table>`;
+  h += `<div style="margin:6px 0">${kurvaSVG(kurvaData(), { w: 700, h: 240 })}</div>`;
+  h += `<h3>II. TITIK / SEGMEN SELESAI BULAN INI (${selesai.length})</h3><p>${selesai.map(o => esc(o.no + ' ' + o.kode)).join(', ') || '-'}</p><p>Sedang dikerjakan: ${obj.filter(o => { const v = objPctB(o, pmE, B); return v > 0 && v < 99.99; }).length} · belum mulai: ${obj.filter(o => objPctB(o, pmE, B) === 0).length} dari ${obj.length}.</p>`;
+  h += `<h3>III. TENAGA KERJA & CUACA</h3><table><tr><th>Hari kerja</th><th>Man-day pekerja</th><th>Man-day staf</th><th>Rata-rata pekerja / hari</th><th>Jam lembur</th><th>Hari ada hujan</th></tr><tr><td class="n">${hk}</td><td class="n">${mdPek}</td><td class="n">${mdStaf}</td><td class="n">${hk ? fmtN(mdPek / hk, 1) : 0}</td><td class="n">${jl}</td><td class="n">${hujan}</td></tr></table>`;
+  h += `<h3>IV. HSE & K3</h3><table><tr><th>TBM / safety talk</th><th>Total peserta</th><th>E-Permit</th><th>Temuan / near miss</th><th>Insiden</th><th>Hari tanpa kecelakaan</th></tr><tr><td class="n">${tbm.length}</td><td class="n">${tbm.reduce((a, r) => a + jsonArr(r.peserta).length, 0)}</td><td class="n">${pmt.length}</td><td class="n">${tem.filter(r => !/Insiden/.test(r.jenis || '')).length}</td><td class="n">${tem.filter(r => /Insiden/.test(r.jenis || '')).length}</td><td class="n">${hariTanpaKecelakaan()}</td></tr></table>`;
+  if (lihatAnggaran()) {
+    const biayaBln = rows('kas').filter(r => isBiaya(r) && r.tgl >= s && r.tgl <= e), per = {};
+    biayaBln.forEach(r => per[r.kode || 'Lain-lain'] = (per[r.kode || 'Lain-lain'] || 0) + num(r.nominal));
+    const tb = biayaBln.reduce((a, r) => a + num(r.nominal), 0), kum = rows('kas').filter(r => isBiaya(r) && r.tgl <= e).reduce((a, r) => a + num(r.nominal), 0);
+    const nilai = num(p.nilai), hasil = nilai * agregat(pmE) / 100, ang = cfg('anggaran'), tA = Object.values(ang).reduce((a, v) => a + num(v), 0);
+    h += `<h3>V. KEUANGAN</h3><table><tr><th>Kode biaya</th><th>Biaya bulan ini</th></tr>${Object.entries(per).map(([kd, v]) => `<tr><td>${esc(kd)}</td><td class="n">${fmtRp(v)}</td></tr>`).join('') || '<tr><td colspan="2">-</td></tr>'}<tr><th>Total bulan ini</th><th class="n">${fmtRp(tb)}</th></tr></table>
+    <table><tr><th>Biaya kumulatif</th><th>Total anggaran</th><th>Nilai kontrak</th><th>Nilai hasil kerja</th><th>Margin berjalan</th></tr><tr><td class="n">${fmtRp(kum)}</td><td class="n">${fmtRp(tA)}</td><td class="n">${nilai ? fmtRp(nilai) : '-'}</td><td class="n">${nilai ? fmtRp(hasil) : '-'}</td><td class="n">${nilai ? fmtRp(hasil - kum) : '-'}</td></tr></table>`;
+  }
+  h += `<h3>${lihatAnggaran() ? 'VI' : 'V'}. KEPUTUSAN LAPANGAN</h3><table><tr><th>Tanggal</th><th>Kendala</th><th>Keputusan</th><th>Status</th><th>Dampak</th></tr>${kep.map(r => `<tr><td>${fD(r.tgl)}</td><td>${esc(r.kendala)}</td><td>${esc(r.keputusan || '')}</td><td>${esc(r.status || '')}</td><td>${esc(r.dampak || '')}</td></tr>`).join('') || '<tr><td colspan="5">-</td></tr>'}</table>`;
+  const ne = dstr(new Date(y, m + 1, 0));
+  h += `<h3>${lihatAnggaran() ? 'VII' : 'VI'}. TARGET BULAN BERIKUTNYA</h3><table><tr><th>Lingkup</th><th>Realisasi saat ini</th><th>Rencana akhir ${BLN_P[m % 12]}</th></tr>${['9', '8', '12', ''].map(pk => { const f = pk ? (o => o.paket === pk) : null; return `<tr><td>${pk ? 'Paket ' + pk : '<b>Total</b>'}</td><td class="n">${pct(agregat(pmE, f))}</td><td class="n">${pct(rencanaPct(ne, pk || undefined))}</td></tr>`; }).join('')}</table>`;
+  return h + `<div class="ttd"><div>Dibuat oleh,<div class="ln">${esc(namaPeran('PC') || 'Project Control')}</div>Project Control</div><div>Diketahui oleh,<div class="ln">${esc(namaPeran('SM') || 'Site Manager')}</div>Site Manager</div><div>Disetujui oleh,<div class="ln">${esc(namaPeran('DIR') || 'Direktur')}</div>Direktur</div></div>`;
+}
+
+/* ---- siapa sedang online ---- */
+let _hadirT = 0;
+function catatHadir(paksa) {
+  if (!ME || !S.cfg.url) return;
+  if (!paksa && Date.now() - _hadirT < 25000) return;
+  _hadirT = Date.now();
+  const r = { id: 'HD' + ME.id, uid: ME.id, nama: ME.nama, peran: ME.peran, menu: menuLabel(S.pref.menu || 'dash'), w: String(Date.now()), alat: /Mobi|Android|iPhone|iPad/.test(navigator.userAgent) ? 'HP' : 'Laptop' };
+  const L = TB_('hadir')[r.id];
+  TB_('hadir')[r.id] = Object.assign({}, L || {}, r, { _ubah: Date.now(), _oleh: ME.nama });
+  S.dirty['hadir|' + r.id] = 1; persist(); jadwalKirim();
+}
+function daftarOnline() { const t = Date.now(); return rows('hadir').filter(r => t - num(r.w) < 3 * 60e3).sort((a, b) => a.nama.localeCompare(b.nama)); }
+
+/* ---- struktur organisasi (dari file struktur_organisasi_proyek.html) ---- */
+const SO_DATA = {
+  perusahaan: "PT. Avindo Energi Nusantara",
+  proyek: "Pekerjaan Pondasi NaCl Bulk Storage — Paket 8, 9 & 12",
+  keterangan: "Site Bontang • 28 September – 27 November 2026",
+  peran: [
+    { id: "dir", jabatan: "Direktur", nama: "Victoryans R.", lokasi: "Kantor", warna: "#0f2342", row: 1, col: 2, induk: null, lv: 0,
+      tugasPokok: "Pengambil keputusan tertinggi proyek dan penanggung jawab akhir terhadap pemberi kerja.",
+      fungsi: ["Menetapkan target biaya, mutu, dan waktu proyek", "Menyetujui anggaran, pengeluaran besar, dan perubahan kontrak (Change Order / pekerjaan tambah-kurang)", "Mengevaluasi Laporan Performa Bulanan dari Project Control", "Memutuskan langkah strategis bila proyek terlambat atau melampaui anggaran", "Menandatangani dokumen resmi ke pemberi kerja (kontrak, BAPP, tagihan)"],
+      wewenang: ["Persetujuan akhir anggaran & Change Order", "Penunjukan dan penggantian personel kunci", "Keputusan penghentian / percepatan pekerjaan"],
+      output: ["Persetujuan anggaran & perubahan kontrak", "Tanda tangan dokumen ke pemberi kerja"], aplikasi: "Melihat semua menu (hanya lihat, tanpa input)." },
+    { id: "fin", jabatan: "Finance Manager", nama: "Ibu Vivi", lokasi: "Kantor", warna: "#d33a2c", row: 1, col: 1, induk: "dir", garis: "staf", lv: 1,
+      tugasPokok: "Mengelola arus kas (cash flow) proyek dan seluruh pembayaran.",
+      fungsi: ["Mencairkan dana operasional lapangan berdasarkan pengajuan yang sudah diverifikasi Project Control", "Memverifikasi nota / kuitansi pengeluaran dari Project Admin", "Melakukan pembayaran vendor, pemasok material, sewa alat, dan upah pekerja", "Menyusun rekap arus kas masuk–keluar proyek", "Memantau penerimaan pembayaran termin dari pemberi kerja"],
+      wewenang: ["Menahan pencairan bila bukti tidak lengkap", "Menetapkan jadwal pembayaran sesuai ketersediaan kas"],
+      output: ["Bukti transfer / pencairan dana", "Rekap arus kas proyek"], aplikasi: "Menu Pantauan, Tenaga Kerja, Biaya & Sumber Daya, serta Upah & Payroll." },
+    { id: "pc", jabatan: "Project Control", nama: "Ariel Chandra", lokasi: "Remote", warna: "#1f6fd1", row: 1, col: 3, induk: "dir", garis: "remote", lv: 1,
+      tugasPokok: "Mengendalikan performa proyek dari sisi Waktu, Biaya, dan Mutu secara berkala, dari luar lokasi.",
+      fungsi: ["Menyusun baseline jadwal (Kurva S) dan anggaran per kode biaya", "Memvalidasi laporan harian, progres, dan opname volume dari lapangan sebelum diteruskan ke Direktur", "Menganalisis deviasi rencana vs realisasi (Kurva S / Earned Value)", "Memberi peringatan dini (early warning) bila progres terlambat atau biaya membengkak", "Memverifikasi pengajuan dana & petty cash sebelum dicairkan Finance", "Menyusun strategi pemulihan bersama Site Manager", "Menyiapkan data tagihan / BAPP dan Laporan Performa Bulanan", "Mengelola aplikasi proyek: pengguna, hak akses, dan PIN"],
+      wewenang: ["Menolak / mengembalikan laporan & pengajuan yang tidak valid", "Meminta data tambahan dari lapangan", "Menetapkan format pelaporan proyek"],
+      output: ["Kurva S & analisis deviasi mingguan", "Laporan Performa Bulanan", "Early warning report"], aplikasi: "Akses penuh, termasuk Pengaturan, hak akses, dan penggantian PIN." },
+    { id: "sm", jabatan: "Site Manager", nama: "Firimus Api", lokasi: "Lapangan", warna: "#1f9d57", row: 2, col: 2, induk: "dir", garis: "garis", lv: 1,
+      tugasPokok: "Memimpin dan bertanggung jawab penuh atas seluruh pelaksanaan fisik pekerjaan di lokasi.",
+      fungsi: ["Mengatur rencana kerja harian & mingguan sesuai jadwal", "Mengoordinasikan tenaga kerja, alat, material, dan subkontraktor", "Menyelesaikan masalah teknis dan non-teknis di lapangan", "Menjadi penghubung utama dengan wakil pemberi kerja di lapangan", "Menjadi mitra utama Project Control dalam rapat progres dan rencana pemulihan", "Memastikan pekerjaan berjalan sesuai aturan K3 bersama Safety Officer"],
+      wewenang: ["Mengatur penempatan tenaga kerja & alat", "Menghentikan pekerjaan yang tidak sesuai gambar/spesifikasi", "Mengajukan kebutuhan dana, material, dan personel"],
+      output: ["Rencana kerja mingguan", "Laporan kendala & usulan solusi"], aplikasi: "Input nota kas & petty cash; melihat HSE tanpa input; rekap biaya hanya kode biaya + aktual." },
+    { id: "mpj", jabatan: "Pemberi Kerja", nama: "PT. Mega Perkasa Jaya", lokasi: "Eksternal", warna: "#6b7689", row: 2, col: 4, induk: "sm", garis: "koordinasi", lv: 1, eksternal: true,
+      tugasPokok: "Pihak pemberi kerja paket pekerjaan (rantai: KIE → Mucoindo Prakasa → MPJ → AEN).",
+      fungsi: ["Menerima laporan harian dan progres dari pelaksana", "Menyetujui izin kerja, izin masuk material & alat", "Melakukan opname / verifikasi volume bersama pelaksana", "Menandatangani BAPP sebagai dasar tagihan"],
+      wewenang: [], output: [], aplikasi: "Bukan pengguna aplikasi." },
+    { id: "spv", jabatan: "Supervisor Sipil", nama: "Fery Padly", lokasi: "Lapangan", warna: "#1f9d57", row: 3, col: 1, induk: "sm", garis: "garis", lv: 2,
+      tugasPokok: "Mengawasi mutu dan metode kerja agar sesuai gambar kerja (IFC / shop drawing) dan spesifikasi teknis.",
+      fungsi: ["Mengatur metode kerja harian mandor & tukang", "Memeriksa material masuk sesuai spesifikasi (besi, beton, bekisting, dsb.)", "Mengawasi tahapan galian, pembesian, bekisting, dan pengecoran per titik", "Menghitung volume opname dan progres per titik pondasi", "Mencatat pemakaian alat & BBM", "Menyiapkan data inspeksi & dokumentasi foto untuk laporan"],
+      wewenang: ["Menolak material / pekerjaan yang tidak sesuai spesifikasi", "Meminta perbaikan pekerjaan (rework)"],
+      output: ["Progres harian per titik", "Data opname volume", "Catatan alat & BBM"], aplikasi: "Input progres, Master Titik (tambah/ubah/hapus), serta Alat & BBM." },
+    { id: "hse", jabatan: "Safety Officer (HSE)", nama: "Habel", lokasi: "Lapangan", warna: "#d9861c", row: 3, col: 2, induk: "sm", garis: "garis", lv: 2,
+      tugasPokok: "Menjamin keselamatan, kesehatan kerja, dan lingkungan di area proyek (target zero accident).",
+      fungsi: ["Memimpin Tool Box Meeting / safety briefing harian dan mencatat kehadiran", "Mengurus E-Permit / izin kerja, izin masuk material & alat", "Memastikan APD lengkap dan layak; mengajukan kebutuhan APD", "Mengidentifikasi bahaya dan melakukan inspeksi K3 rutin", "Mengelola MCU & tes narkoba pekerja", "Mencatat dan melaporkan temuan, near miss, dan insiden"],
+      wewenang: ["Menghentikan pekerjaan yang tidak aman (stop work authority)", "Melarang pekerja tanpa APD / izin masuk area"],
+      output: ["Laporan TBM & absensi harian", "Laporan temuan / insiden", "Rekap izin kerja"], aplikasi: "Input seluruh menu HSE & K3." },
+    { id: "adm", jabatan: "Project Admin", nama: "Hiskia", lokasi: "Lapangan", warna: "#1f9d57", row: 3, col: 3, induk: "sm", garis: "garis", lv: 2,
+      tugasPokok: "Mengelola administrasi, dokumen, logistik, dan keuangan kecil di lapangan.",
+      fungsi: ["Merekap laporan harian dari Supervisor dan HSE menjadi laporan harian/mingguan", "Mengelola absensi dan data tenaga kerja", "Mencatat keluar-masuk material dan logistik gudang", "Mengelola kas kecil (petty cash) lapangan dengan bukti nota lengkap", "Mengirim nota/kuitansi ke Finance melalui verifikasi Project Control", "Mengarsipkan surat-menyurat dan dokumen teknis"],
+      wewenang: ["Meminta kelengkapan bukti pengeluaran dari tim lapangan"],
+      output: ["Laporan harian & mingguan", "Rekap petty cash + nota", "Catatan stok material"], aplikasi: "Input nota kas & petty cash; rekap biaya hanya kode biaya + aktual." },
+    { id: "tk", jabatan: "Mandor & Tenaga Kerja", nama: "Tukang besi, tukang kayu, operator, pekerja", lokasi: "Lapangan", warna: "#1f9d57", row: 4, col: 1, induk: "spv", garis: "garis", lv: 3,
+      tugasPokok: "Melaksanakan pekerjaan fisik sesuai arahan Supervisor dan aturan K3.",
+      fungsi: ["Mandor membagi tugas regu dan melaporkan hasil kerja ke Supervisor", "Melaksanakan galian, pembesian, bekisting, dan pengecoran", "Mengikuti Tool Box Meeting dan memakai APD lengkap", "Melakukan absensi (scan QR) masuk & pulang"],
+      wewenang: [], output: ["Hasil kerja harian"], aplikasi: "Absensi melalui kartu QR." }
+  ],
+  alur: [
+    { judul: "Harian", warna: "#1f9d57", siapa: "Lapangan → Project Control → Pemberi Kerja", langkah: ["Safety Officer memimpin Tool Box Meeting dan mencatat kehadiran", "Supervisor mengisi progres per titik, alat & BBM di aplikasi", "Project Admin merekap laporan harian, logistik, dan petty cash (sebelum pukul 20.00)", "Project Control memeriksa kewajaran data dan memberi catatan bila ada selisih", "Site Manager mengirim laporan harian ke pemberi kerja"] },
+    { judul: "Mingguan", warna: "#1f6fd1", siapa: "Rapat online Project Control – Site Manager – Supervisor", langkah: ["Mencocokkan progres fisik vs rencana di Kurva S", "Membahas kendala, kebutuhan material, alat, dan tenaga kerja", "Menyepakati rencana kerja minggu berikutnya", "Project Control menerbitkan early warning bila ada deviasi"] },
+    { judul: "Bulanan", warna: "#0f2342", siapa: "Project Control → Direktur & Finance Manager", langkah: ["Laporan Performa Proyek: progres, biaya, arus kas, risiko", "Evaluasi rencana pemulihan (bila terlambat)", "Rekomendasi keputusan: anggaran, Change Order, penambahan sumber daya", "Persiapan data tagihan / BAPP ke pemberi kerja"] },
+    { judul: "Alur Dana", warna: "#d33a2c", siapa: "Pengajuan → Verifikasi → Pencairan", langkah: ["Site Manager / Admin mengajukan kebutuhan dana sesuai kode biaya", "Project Control memverifikasi terhadap anggaran & progres", "Pengeluaran besar di atas batas kewenangan → persetujuan Direktur", "Finance Manager mencairkan dana", "Admin menyerahkan nota; Project Control & Finance mencocokkan realisasi"] }
+  ],
+  eskalasi: "Kondisi tidak aman dapat dihentikan langsung oleh Safety Officer tanpa menunggu persetujuan, lalu dilaporkan ke Site Manager dan Direktur. Deviasi progres atau pembengkakan biaya dilaporkan Project Control ke Direktur pada hari yang sama saat ditemukan.",
+  matriks: {
+    kolom: ["dir", "fin", "pc", "sm", "spv", "hse", "adm"],
+    baris: [["Rencana kerja & Kurva S (baseline)", ["S", "I", "P", "V", "I", "", "I"]], ["Laporan harian", ["I", "", "V", "S", "P", "P", "P"]], ["Progres & opname volume per titik", ["I", "", "V", "S", "P", "", "I"]], ["Izin kerja, TBM & K3", ["I", "", "I", "V", "I", "P", ""]], ["Pengajuan dana & petty cash", ["S", "V", "V", "P", "", "", "P"]], ["Pembayaran vendor & upah", ["S", "P", "V", "I", "", "", "I"]], ["Change Order / pekerjaan tambah-kurang", ["S", "I", "P", "V", "I", "", ""]], ["Laporan Performa Bulanan", ["I", "I", "P", "V", "", "", ""]], ["BAPP & dokumen tagihan", ["S", "I", "P", "V", "V", "", "P"]]]
+  }
+};
+let _soResize = null;
+function vStruktur() {
+  $('#main').innerHTML = '<div class="so-wrap" id="soApp" style="padding:0;max-width:1120px"></div>';
+  const D = SO_DATA, app = $('#soApp');
+  const byId = Object.fromEntries(D.peran.map(p => [p.id, p]));
+  const badge = l => `<span class="so-badge ${l === "Remote" ? "remote" : l === "Lapangan" ? "site" : ""}">${esc(l)}</span>`;
+  const list = a => a && a.length ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<ul><li>—</li></ul>`;
+  const detailHTML = p => `<div class="so-tp"><b>Tugas Pokok:</b> ${esc(p.tugasPokok)}</div><div class="so-cols"><div><h4>Fungsi</h4>${list(p.fungsi)}</div>${p.wewenang.length ? `<div><h4>Wewenang</h4>${list(p.wewenang)}</div>` : ""}${p.output.length ? `<div><h4>Hasil / Laporan</h4>${list(p.output)}</div>` : ""}</div>${p.aplikasi ? `<div class="so-app"><b>Di aplikasi:</b> ${esc(p.aplikasi)}</div>` : ""}`;
+  const induk = p => p.induk ? byId[p.induk] : null;
+  app.innerHTML = `<div class="so-head"><small>${esc(D.perusahaan)}</small><h1>Struktur Organisasi & Tupoksi</h1><p>${esc(D.proyek)}<br>${esc(D.keterangan)}</p></div>
+    <div class="so-tabs"><button class="so-tab on" data-t="bagan">Bagan Organisasi</button><button class="so-tab" data-t="tupoksi">Tupoksi Lengkap</button><button class="so-tab" data-t="alur">Alur Koordinasi</button><button class="so-tab" data-t="matriks">Matriks Tanggung Jawab</button></div>
+    <section class="so-pane on" data-p="bagan"><div class="so-chartbox"><div class="so-chart" id="soChart"><svg class="so-svg" id="soSvg"></svg>
+      ${D.peran.map(p => `<div class="so-card${p.eksternal ? " ext" : ""}" data-id="${p.id}" style="--c:${p.warna};--lv:${p.lv};grid-row:${p.row};grid-column:${p.col}"><div class="j">${esc(p.jabatan)}</div><div class="n">${esc(p.nama)}</div>${badge(p.lokasi)}${induk(p) ? `<div class="so-uplink">↳ ${p.garis === "koordinasi" ? "koordinasi dengan" : p.garis === "garis" ? "melapor ke" : "staf"} ${esc(induk(p).jabatan)}</div>` : ""}</div>`).join("")}
+      </div><div class="so-legend"><span><i></i> Garis komando</span><span><i class="d"></i> Staf kontrol (remote)</span><span><i class="o"></i> Koordinasi</span></div><div class="so-hint">Klik kotak jabatan untuk melihat tupoksinya.</div></div><div class="so-detail" id="soDetail"></div></section>
+    <section class="so-pane" data-p="tupoksi"><div class="so-acc">${D.peran.filter(p => !p.eksternal).map((p, i) => `<details style="--c:${p.warna}" ${i === 0 ? "open" : ""}><summary><span>${esc(p.jabatan)}</span><em>${esc(p.nama)} • ${esc(p.lokasi)}</em></summary><div class="body">${detailHTML(p)}</div></details>`).join("")}</div></section>
+    <section class="so-pane" data-p="alur"><div class="so-flow">${D.alur.map(a => `<div class="so-fcard" style="--c:${a.warna}"><h3><span>${esc(a.judul)}</span></h3><div class="who">${esc(a.siapa)}</div><ol class="so-steps">${a.langkah.map(l => `<li>${esc(l)}</li>`).join("")}</ol></div>`).join("")}</div><div class="so-note"><b>Eskalasi:</b> ${esc(D.eskalasi)}</div></section>
+    <section class="so-pane" data-p="matriks"><div class="so-tblwrap"><table class="so-tbl"><thead><tr><th>Kegiatan</th>${D.matriks.kolom.map(k => `<th>${esc(byId[k].jabatan)}</th>`).join("")}</tr></thead><tbody>${D.matriks.baris.map(([keg, v]) => `<tr><td>${esc(keg)}</td>${v.map(x => `<td>${x ? `<span class="so-k k-${x}">${x}</span>` : ""}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <div class="so-klist"><span><span class="so-k k-P">P</span> Pelaksana / penyusun</span><span><span class="so-k k-V">V</span> Verifikasi / periksa</span><span><span class="so-k k-S">S</span> Menyetujui</span><span><span class="so-k k-I">I</span> Menerima informasi</span></div></section>`;
+  const chart = $('#soChart', app), svg = $('#soSvg', app), det = $('#soDetail', app);
+  function drawLines() {
+    if (!document.body.contains(svg) || getComputedStyle(svg).display === "none") return;
+    const cb = chart.getBoundingClientRect(); if (!cb.width) return;
+    const box = id => { const r = chart.querySelector(`[data-id="${id}"]`).getBoundingClientRect(); return { l: r.left - cb.left, r: r.right - cb.left, t: r.top - cb.top, b: r.bottom - cb.top, cx: (r.left + r.right) / 2 - cb.left, cy: (r.top + r.bottom) / 2 - cb.top }; };
+    const st = { garis: 'stroke="#1b3764" stroke-width="2"', remote: 'stroke="#1f6fd1" stroke-width="2" stroke-dasharray="7 5"', staf: 'stroke="#1b3764" stroke-width="2"', koordinasi: 'stroke="#6b7689" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round"' };
+    let out = ""; const path = (d, g) => out += `<path d="${d}" fill="none" ${st[g]}/>`;
+    const anak = {}; D.peran.forEach(p => { if (p.induk && p.garis === "garis") (anak[p.induk] = anak[p.induk] || []).push(p); });
+    Object.entries(anak).forEach(([pid, kids]) => { const a = box(pid), ks = kids.map(k => box(k.id)); const midY = (a.b + Math.min(...ks.map(k => k.t))) / 2; path(`M${a.cx},${a.b} V${midY}`, "garis"); const xs = ks.map(k => k.cx).concat([a.cx]); path(`M${Math.min(...xs)},${midY} H${Math.max(...xs)}`, "garis"); ks.forEach(k => path(`M${k.cx},${midY} V${k.t}`, "garis")); });
+    D.peran.forEach(p => { if (!p.induk || p.garis === "garis") return; const a = box(p.induk), b = box(p.id); if (b.cx < a.cx) path(`M${a.l},${a.cy} H${b.r}`, p.garis); else path(`M${a.r},${a.cy} H${b.l}`, p.garis); });
+    const pc = box("pc"), sm = box("sm"); path(`M${pc.cx},${pc.b} V${sm.cy} H${sm.r}`, "koordinasi");
+    svg.setAttribute("viewBox", `0 0 ${cb.width} ${cb.height}`); svg.innerHTML = out;
+  }
+  function show(id) { const p = byId[id]; $$('.so-card', app).forEach(c => c.classList.toggle("sel", c.dataset.id === id)); det.style.setProperty("--c", p.warna); det.innerHTML = `<h2>${esc(p.jabatan)}</h2><div class="sub">${esc(p.nama)} • ${esc(p.lokasi)}${induk(p) ? ` • ${p.garis === "koordinasi" ? "koordinasi dengan" : "melapor ke"} ${esc(induk(p).jabatan)}` : ""}</div>${detailHTML(p)}`; }
+  $$('.so-tab', app).forEach(b => b.onclick = () => { $$('.so-tab', app).forEach(x => x.classList.toggle("on", x === b)); $$('.so-pane', app).forEach(x => x.classList.toggle("on", x.dataset.p === b.dataset.t)); if (b.dataset.t === "bagan") drawLines(); });
+  $$('.so-card', app).forEach(c => c.onclick = () => show(c.dataset.id));
+  const peranKe = { PC: 'pc', SM: 'sm', SPV: 'spv', ADM: 'adm', FIN: 'fin', DIR: 'dir', HSE: 'hse' };
+  show(peranKe[ME.peran] || 'pc');
+  if (_soResize) window.removeEventListener('resize', _soResize);
+  _soResize = drawLines; window.addEventListener('resize', _soResize);
+  requestAnimationFrame(drawLines);
 }
 
 </script></body></html>
