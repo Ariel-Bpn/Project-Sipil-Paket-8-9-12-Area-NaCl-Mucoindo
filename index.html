@@ -993,7 +993,7 @@ function viewTabel(t, o = {}) {
 }
 
 // Kolom rekening di daftar pekerja hanya untuk Project Control, Finance, Direktur, Admin Project
-(() => { const dasar = SK.pekerja.kol.slice(); Object.defineProperty(SK.pekerja, 'kol', { get() { const L = dasar.slice(); if (ME && ['PC', 'FIN', 'DIR', 'ADM', 'SM'].includes(ME.peran)) L.splice(L.indexOf('lembur') + 1, 0, '_rek'); return L; } }); })();
+(() => { const dasar = SK.pekerja.kol.slice(); Object.defineProperty(SK.pekerja, 'kol', { get() { let L = dasar.slice(); if (ME && ME.peran === 'HSE') return L.filter(k => k !== 'upah' && k !== 'lembur'); if (ME && ['PC', 'FIN', 'DIR', 'ADM', 'SM'].includes(ME.peran)) L.splice(L.indexOf('lembur') + 1, 0, '_rek'); return L; } }); })();
 SK.pekerja.cek = n => { if (n.noRek && !/^[\d\s.-]{5,25}$/.test(n.noRek)) return 'No. rekening hanya boleh angka'; return ''; };
 
 /* ================= KEUANGAN (skema) ================= */
