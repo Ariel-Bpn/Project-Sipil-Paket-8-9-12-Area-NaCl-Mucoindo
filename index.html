@@ -160,6 +160,10 @@ const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const num = v => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) ? n : 0; };
 const fmtN = (v, d = 0) => num(v).toLocaleString('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d });
 const fmtRp = v => 'Rp ' + Math.round(num(v)).toLocaleString('id-ID');
+// Rupiah diketik gaya Indonesia (1.250.000 atau 1250000); titik = pemisah ribuan, koma = sen (dibuang)
+const parseRp = v => { const s = String(v ?? '').split(',')[0].replace(/[^\d]/g, ''); return s ? Number(s) : ''; };
+const fmtRibu = v => { const n = parseRp(v); return n === '' ? '' : n.toLocaleString('id-ID'); };
+function pasangRp(root) { $$('input[data-rp]', root).forEach(i => { i.oninput = () => { const pos = i.value.length - i.selectionStart; const [bulat, ...sen] = i.value.split(','); i.value = fmtRibu(bulat) + (sen.length ? ',' + sen.join('').replace(/\D/g, '').slice(0, 2) : ''); const p = Math.max(0, i.value.length - pos); try { i.setSelectionRange(p, p); } catch (e) { } }; }); }
 const pct = (v, d = 1) => fmtN(v, d) + '%';
 const BLN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -780,7 +784,8 @@ function formTabel(t, row, preset = {}, after) {
     else if (f.t === 'foto') h += `<div class="row">${v ? `<img class="thumb" src="${fotoSrc(v, 120)}">` : ''}<input id="${id}" type="file" accept="image/*" capture="${f.cap || 'environment'}" style="max-width:220px">${v ? `<label class="small"><input type="checkbox" id="${id}_x"> hapus foto</label>` : ''}</div>`;
     else if (f.t === 'multi') { const sel = jsonArr(v); const oo = typeof f.o === 'function' ? f.o(r) : f.o; const lain = sel.filter(x => !oo.includes(x)); h += `<div id="${id}" class="objlist" style="max-height:none">${oo.map(o => `<label><input type="checkbox" value="${esc(o)}" ${sel.includes(o) ? 'checked' : ''}>${esc(o)}</label>`).join('')}<input class="inp sm" data-lain placeholder="Lainnya (pisah koma)" value="${esc(lain.join(', '))}" style="margin-top:4px;width:100%"></div>`; }
     else if (f.t === 'baris' || f.t === 'peserta') h += `<div id="${id}"></div>`;
-    else h += `<input id="${id}" type="${f.t === 'date' ? 'date' : f.t === 'time' ? 'time' : (f.t === 'num' || f.t === 'rp') ? 'number' : 'text'}" ${f.t === 'num' ? 'step="any"' : ''} ${f.t === 'rp' ? 'step="1"' : ''} value="${esc(v)}" placeholder="${esc(f.ph || '')}">`;
+    else if (f.t === 'rp') h += `<div style="position:relative"><span style="position:absolute;left:9px;top:8px;color:var(--mut)">Rp</span><input id="${id}" data-rp type="text" inputmode="numeric" style="padding-left:34px;text-align:right" value="${esc(v === '' ? '' : Math.round(num(v)).toLocaleString('id-ID'))}" placeholder="${esc(f.ph || 'contoh: 1.250.000')}"></div>`;
+    else h += `<input id="${id}" type="${f.t === 'date' ? 'date' : f.t === 'time' ? 'time' : f.t === 'num' ? 'number' : 'text'}" ${f.t === 'num' ? 'step="any"' : ''} value="${esc(v)}" placeholder="${esc(f.ph || '')}">`;
     h += '</div>';
   }
   h += '</div><div class="row end" style="margin-top:6px">' + (baru ? '' : '<span class="small mut" style="flex:1">' + (num(r._ubah) < 1e10 ? 'Data awal dari drawing' : 'Terakhir diubah ' + esc(fW(r._ubah)) + ' oleh ' + esc(r._oleh || '-')) + '</span>') + '<button class="btn" data-a="batal">Batal</button><button class="btn pri" data-a="simpan">Simpan</button></div>';
@@ -790,6 +795,7 @@ function formTabel(t, row, preset = {}, after) {
     if (f.t === 'baris') komp[f.k] = editorBaris($('#f_' + f.k, el), f.kol, jsonArr(r[f.k]));
     if (f.t === 'peserta') komp[f.k] = editorPeserta($('#f_' + f.k, el), jsonArr(r[f.k]), f.opt || {});
   }
+  pasangRp(el);
   if (sk.siap) sk.siap(el, r, komp);
   $('[data-a=batal]', el).onclick = tutupModal;
   let sibuk = false;
@@ -807,7 +813,7 @@ function formTabel(t, row, preset = {}, after) {
         if (inp.files && inp.files[0]) { try { n[f.k] = await simpanFotoBaru(inp.files[0], t, n.id, f.k, n.tgl); } catch (e) { toast('Foto gagal dibaca', 'err'); } }
         continue;
       }
-      n[f.k] = inp.value.trim();
+      n[f.k] = f.t === 'rp' ? String(parseRp(inp.value)) : inp.value.trim();
       if (f.req && !n[f.k]) { gagal('Isian "' + f.l + '" wajib diisi'); inp.focus(); return; }
     }
     if (sk.cek) { const e = sk.cek(n); if (e) return gagal(e); }
@@ -1397,14 +1403,24 @@ function vKas() {
   if (KS.tab === 'Rekap per kode') return kasRekap();
   if (KS.tab === 'Bukti nota') return kasNota();
   const buku = KS.tab;
-  let rs = rows('kas').filter(r => r.buku === buku).sort((a, b) => a.tgl < b.tgl ? -1 : a.tgl > b.tgl ? 1 : String(a.noTrx).localeCompare(String(b.noTrx)));
+  // Urutan buku kas: tanggal → dana masuk lebih dulu dari pengeluaran di hari yang sama → nomor transaksi
+  const ubahSaldo = r => isMasuk(r) ? num(r.nominal) : (r.jenis === 'Bayar langsung kantor (biaya)' ? 0 : -num(r.nominal));
+  let rs = rows('kas').filter(r => r.buku === buku).sort((a, b) => a.tgl < b.tgl ? -1 : a.tgl > b.tgl ? 1 : (isMasuk(b) - isMasuk(a)) || String(a.noTrx).localeCompare(String(b.noTrx), 'id', { numeric: true }));
   let saldo = 0; const run = new Map();
-  rs.forEach(r => { saldo += isMasuk(r) ? num(r.nominal) : (r.jenis === 'Bayar langsung kantor (biaya)' ? 0 : -num(r.nominal)); run.set(r.id, saldo); });
-  if (KS.dari) rs = rs.filter(r => r.tgl >= KS.dari); if (KS.sampai) rs = rs.filter(r => r.tgl <= KS.sampai); if (KS.kode) rs = rs.filter(r => r.kode === KS.kode);
+  rs.forEach(r => { saldo += ubahSaldo(r); run.set(r.id, saldo); });
+  const saldoAkhir = saldo;
+  const curiga = rs.filter(r => num(r.nominal) > 0 && num(r.nominal) < 1000);
+  let saldoAwal = 0;
+  if (KS.dari) { rs.filter(r => r.tgl < KS.dari).forEach(r => saldoAwal += ubahSaldo(r)); rs = rs.filter(r => r.tgl >= KS.dari); }
+  if (KS.sampai) rs = rs.filter(r => r.tgl <= KS.sampai); if (KS.kode) rs = rs.filter(r => r.kode === KS.kode);
+  const tMasuk = rs.filter(isMasuk).reduce((a, r) => a + num(r.nominal), 0), tKeluar = rs.filter(r => !isMasuk(r)).reduce((a, r) => a + num(r.nominal), 0);
   let b = `<p class="small mut">${buku === 'Kas Proyek' ? 'Dana masuk menambah saldo. "Bayar langsung kantor" dicatat sebagai biaya tanpa mengubah saldo. "Transfer ke Petty Cash" otomatis menjadi dana masuk di Petty Cash (bukan biaya).' : 'Petty cash dipisah dari kas proyek. Isi ulang lewat transfer dari Kas Proyek atau dana masuk langsung.'}</p>
   <div class="row" style="margin-bottom:10px"><span class="small mut">dari</span><input type="date" class="inp sm" id="kD1" value="${KS.dari}"><span class="small mut">s/d</span><input type="date" class="inp sm" id="kD2" value="${KS.sampai}"><select class="inp sm" id="kKode"><option value="">Semua kode</option>${cfg('kodeBiaya').map(x => `<option ${KS.kode === x ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select><span style="flex:1"></span><button class="btn" id="kXl">Excel (audit)</button>${ed ? '<button class="btn pri" id="kAdd">+ Transaksi</button>' : ''}</div>
+  ${curiga.length ? `<div class="alert warn"><b>${curiga.length} transaksi bernominal di bawah Rp 1.000</b> (${curiga.map(r => esc(r.noTrx) + ' = ' + fmtRp(r.nominal)).join(', ')}). Kemungkinan dulu diketik dengan titik (mis. 733.000) dan terbaca 733. Ketuk Ubah pada baris bertanda <span class="b bad">cek nominal</span>, ketik ulang nominalnya, lalu Simpan — sekarang titik sudah dibaca sebagai pemisah ribuan.</div>` : ''}
+  <div class="kpis" style="grid-template-columns:repeat(auto-fill,minmax(170px,1fr))">${KS.dari ? `<div class="kpi"><div class="l">Saldo awal ${fD(KS.dari)}</div><div class="v" style="font-size:17px">${fmtRp(saldoAwal)}</div></div>` : ''}<div class="kpi"><div class="l">Total masuk${KS.dari || KS.sampai || KS.kode ? ' (sesuai saringan)' : ''}</div><div class="v" style="font-size:17px;color:var(--ok)">${fmtRp(tMasuk)}</div></div><div class="kpi"><div class="l">Total keluar${KS.dari || KS.sampai || KS.kode ? ' (sesuai saringan)' : ''}</div><div class="v" style="font-size:17px;color:var(--bad)">${fmtRp(tKeluar)}</div></div><div class="kpi ${saldoAkhir < 0 ? 'bad' : ''}"><div class="l">Saldo ${esc(buku)} sekarang</div><div class="v" style="font-size:17px">${fmtRp(saldoAkhir)}</div><div class="s">total masuk − total keluar</div></div></div>
   <div class="tw tall"><table class="t"><thead><tr><th>No.</th><th>Tanggal</th><th>Jenis</th><th>Kode biaya</th><th>Uraian</th><th>Pihak</th><th class="n">Masuk</th><th class="n">Keluar</th><th class="n">Saldo</th><th>Nota</th><th>Oleh</th>${ed ? '<th></th>' : ''}</tr></thead><tbody>`;
-  b += rs.map(r => `<tr><td class="small nw">${esc(r.noTrx || '')}</td><td class="nw">${fD(r.tgl)}</td><td class="small">${esc(r.jenis)}${r.lnk ? ' <span class="b info">otomatis</span>' : ''}</td><td class="small">${esc(r.kode || '')}</td><td>${esc(r.uraian)}</td><td class="small">${esc(r.pihak || '')}</td><td class="n">${isMasuk(r) ? fmtRp(r.nominal) : ''}</td><td class="n">${isMasuk(r) ? '' : fmtRp(r.nominal)}</td><td class="n">${fmtRp(run.get(r.id))}</td><td>${r.foto ? `<img class="thumb" src="${fotoSrc(r.foto, 120)}" onclick="lihatFoto('${esc(r.foto)}')">` : '<span class="b warn">belum</span>'}</td><td class="small mut">${esc(r._oleh || '')}</td>${ed ? `<td style="white-space:nowrap">${r.lnk || !jenisBoleh(r.buku).includes(r.jenis) ? '' : `<button class="btn sm" data-ed="${esc(r.id)}">Ubah</button> <button class="btn sm del" data-del="${esc(r.id)}">Hapus</button>`}</td>` : ''}</tr>`).join('') || '<tr><td colspan="12" class="mut">Belum ada transaksi.</td></tr>';
+  b += rs.map(r => `<tr><td class="small nw">${esc(r.noTrx || '')}</td><td class="nw">${fD(r.tgl)}</td><td class="small">${esc(r.jenis)}${r.lnk ? ' <span class="b info">otomatis</span>' : ''}</td><td class="small">${esc(r.kode || '')}</td><td>${esc(r.uraian)}</td><td class="small">${esc(r.pihak || '')}</td><td class="n">${isMasuk(r) ? fmtRp(r.nominal) : ''}${num(r.nominal) < 1000 && isMasuk(r) ? '<br><span class="b bad">cek nominal</span>' : ''}</td><td class="n">${isMasuk(r) ? '' : fmtRp(r.nominal)}${num(r.nominal) < 1000 && !isMasuk(r) ? '<br><span class="b bad">cek nominal</span>' : ''}</td><td class="n" style="${run.get(r.id) < 0 ? 'color:var(--bad);font-weight:700' : ''}">${fmtRp(run.get(r.id))}</td><td>${r.foto ? `<img class="thumb" src="${fotoSrc(r.foto, 120)}" onclick="lihatFoto('${esc(r.foto)}')">` : '<span class="b warn">belum</span>'}</td><td class="small mut">${esc(r._oleh || '')}</td>${ed ? `<td style="white-space:nowrap">${r.lnk || !jenisBoleh(r.buku).includes(r.jenis) ? '' : `<button class="btn sm" data-ed="${esc(r.id)}">Ubah</button> <button class="btn sm del" data-del="${esc(r.id)}">Hapus</button>`}</td>` : ''}</tr>`).join('') || '<tr><td colspan="12" class="mut">Belum ada transaksi.</td></tr>';
+  if (rs.length) b += `</tbody><tfoot><tr><td colspan="6">Jumlah${KS.dari || KS.sampai || KS.kode ? ' (sesuai saringan)' : ''}</td><td class="n">${fmtRp(tMasuk)}</td><td class="n">${fmtRp(tKeluar)}</td><td class="n">${KS.kode ? '' : fmtRp(saldoAwal + rs.reduce((x, r) => x + ubahSaldo(r), 0))}</td><td colspan="${ed ? 3 : 2}"></td></tr></tfoot><tbody>`;
   $('#ksBox').innerHTML = b + '</tbody></table></div>';
   $('#kD1').onchange = e => { KS.dari = e.target.value; vKas(); }; $('#kD2').onchange = e => { KS.sampai = e.target.value; vKas(); }; $('#kKode').onchange = e => { KS.kode = e.target.value; vKas(); };
   $('#kXl').onclick = kasExcel;
@@ -1427,10 +1443,10 @@ function kasRekap() {
   const tot = agregat(progMap(today())), nilai = num(p.nilai), hasil = nilai * tot / 100;
   let h = `<div class="kpis"><div class="kpi"><div class="l">Nilai kontrak</div><div class="v" style="font-size:17px">${nilai ? fmtRp(nilai) : '—'}</div></div><div class="kpi"><div class="l">Total anggaran biaya</div><div class="v" style="font-size:17px">${fmtRp(tA)}</div></div><div class="kpi"><div class="l">Biaya aktual</div><div class="v" style="font-size:17px">${fmtRp(k.biaya)}</div></div><div class="kpi"><div class="l">Nilai hasil kerja (${pct(tot)})</div><div class="v" style="font-size:17px">${nilai ? fmtRp(hasil) : '—'}</div></div><div class="kpi ${hasil - k.biaya < 0 ? 'bad' : 'ok'}"><div class="l">Margin berjalan</div><div class="v" style="font-size:17px">${nilai ? fmtRp(hasil - k.biaya) : '—'}</div></div></div>
   <div class="row" style="margin-bottom:8px"><span class="small mut" style="flex:1">Anggaran per kode ${edA ? 'bisa diisi langsung di kolom Anggaran lalu tekan Simpan anggaran.' : 'diisi oleh Project Control / Finance.'}</span>${edA ? '<button class="btn pri" id="aSv">Simpan anggaran</button>' : ''}<button class="btn" id="kXl">Excel (audit)</button></div>
-  <div class="tw"><table class="t"><thead><tr><th>Kode biaya</th><th class="n">Anggaran</th><th class="n">Aktual</th><th class="n">Sisa</th><th>Terpakai</th></tr></thead><tbody>${all.map(x => { const a = num(ang[x]), b = k.perKode[x] || 0, pp = a ? b / a * 100 : 0; return `<tr><td>${esc(x)}</td><td class="n">${edA ? `<input type="number" class="inp sm" style="width:140px;text-align:right" data-ang="${esc(x)}" value="${a || ''}">` : fmtRp(a)}</td><td class="n">${fmtRp(b)}</td><td class="n" style="color:${a && a - b < 0 ? 'var(--bad)' : ''}">${a ? fmtRp(a - b) : ''}</td><td style="min-width:120px">${a ? barH(pp) + `<span class="small">${fmtN(pp, 0)}%</span>` : ''}</td></tr>`; }).join('')}</tbody><tfoot><tr><td>Total</td><td class="n">${fmtRp(tA)}</td><td class="n">${fmtRp(k.biaya)}</td><td class="n">${fmtRp(tA - k.biaya)}</td><td></td></tr></tfoot></table></div>`;
+  <div class="tw"><table class="t"><thead><tr><th>Kode biaya</th><th class="n">Anggaran</th><th class="n">Aktual</th><th class="n">Sisa</th><th>Terpakai</th></tr></thead><tbody>${all.map(x => { const a = num(ang[x]), b = k.perKode[x] || 0, pp = a ? b / a * 100 : 0; return `<tr><td>${esc(x)}</td><td class="n">${edA ? `<input type="text" inputmode="numeric" data-rp class="inp sm" style="width:150px;text-align:right" data-ang="${esc(x)}" value="${a ? Math.round(a).toLocaleString('id-ID') : ''}">` : fmtRp(a)}</td><td class="n">${fmtRp(b)}</td><td class="n" style="color:${a && a - b < 0 ? 'var(--bad)' : ''}">${a ? fmtRp(a - b) : ''}</td><td style="min-width:120px">${a ? barH(pp) + `<span class="small">${fmtN(pp, 0)}%</span>` : ''}</td></tr>`; }).join('')}</tbody><tfoot><tr><td>Total</td><td class="n">${fmtRp(tA)}</td><td class="n">${fmtRp(k.biaya)}</td><td class="n">${fmtRp(tA - k.biaya)}</td><td></td></tr></tfoot></table></div>`;
   $('#ksBox').innerHTML = h;
-  $('#kXl').onclick = kasExcel;
-  if (edA) $('#aSv').onclick = () => { const a = cfg('anggaran'); $$('[data-ang]').forEach(i => a[i.dataset.ang] = num(i.value)); setCfg('anggaran', a); toast('Anggaran tersimpan'); vKas(); };
+  $('#kXl').onclick = kasExcel; pasangRp($('#ksBox'));
+  if (edA) $('#aSv').onclick = () => { const a = cfg('anggaran'); $$('[data-ang]').forEach(i => a[i.dataset.ang] = num(parseRp(i.value))); setCfg('anggaran', a); toast('Anggaran tersimpan'); vKas(); };
 }
 function kasNota() {
   const rs = rows('kas').filter(r => r.foto && !r.lnk).sort((a, b) => a.tgl < b.tgl ? 1 : -1);
