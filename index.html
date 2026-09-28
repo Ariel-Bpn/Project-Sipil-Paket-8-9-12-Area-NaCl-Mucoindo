@@ -240,6 +240,14 @@ table.t tfoot td{font-weight:700;background:#f6f8fb}
 .doc .slip{border:1px solid #1F3A5F;border-radius:4px;padding:8px 10px;page-break-inside:avoid;margin-bottom:4px}
 .doc .potong{text-align:center;font-size:8px;color:#999;margin:6px 0 8px;page-break-after:auto}
 .doc .slip-hal{page-break-after:always}.doc .slip-hal:last-child{page-break-after:auto}
+
+.ftx{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:0;background:var(--bad,#c0392b);color:#fff;font-size:13px;line-height:20px;padding:0;cursor:pointer}
+.doc .dokf{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.doc .dokf figure{margin:0;border:1px solid #999;page-break-inside:avoid;break-inside:avoid}
+.doc .dokf img{width:100%;height:62mm;object-fit:cover;display:block}
+.doc .dokf figcaption{font-size:8.5pt;padding:1.5mm 2mm;line-height:1.3}
+.hsgal figure{position:relative}
+.hsgal .jn{position:absolute;top:5px;left:5px;background:rgba(31,58,95,.85);color:#fff;font-size:10px;padding:1px 6px;border-radius:9px}
 </style></head>
 <body>
 <div id="login" class="hidden"></div>
@@ -394,7 +402,7 @@ const EDIT = {
   PC: '*', SM: 'pekerja,kas,keputusan,surat,inspeksi,foto',
   SPV: 'titik,tb,progres,rencana,harian,foto,cor,alat,material,inspeksi,keputusan',
   ADM: 'absen,absenfoto,pekerja,kas,inventaris', FIN: 'kas,anggaran,payroll', DIR: '',
-  HSE: 'hse,permit,tbm,izin,apd,mcu,dokhse'
+  HSE: 'hse,permit,tbm,izin,apd,mcu,dokhse,inspalat,hsefoto'
 };
 function bisaLihat(m) { if (!ME) return false; const v = VIEW[ME.peran] || ''; const l = v.split(','); if (l.includes('-' + m)) return false; return l.includes('*') || l.includes(m); }
 // Anggaran, sisa anggaran, nilai kontrak & margin hanya untuk Project Control, Finance, Direktur
@@ -489,6 +497,7 @@ async function unggahFoto() {
     const j = await api('foto', { nama: p.nama || key + '.jpg', mime: m[1], data: m[2], bulan: (p.tgl || today()).slice(0, 7) }, 120000);
     const r = TB_(p.t)[p.id];
     if (r && r[p.f] === 'pend:' + key) { r[p.f] = 'drive:' + j.id; put(p.t, r, { noAudit: true }); }
+    else if (r && String(r[p.f] || '').startsWith('[') && String(r[p.f]).includes('pend:' + key)) { r[p.f] = JSON.stringify(fotoArr(r[p.f]).map(x => x === 'pend:' + key ? 'drive:' + j.id : x)); put(p.t, r, { noAudit: true }); }
     delete S.pend[key]; persist();
   }
 }
@@ -571,6 +580,8 @@ function fotoSrc(v, w = 400) {
   if (v.startsWith('data:') || v.startsWith('http')) return v;
   return '';
 }
+const fotoArr = v => !v ? [] : String(v).trim().startsWith('[') ? jsonArr(v).filter(Boolean) : [String(v)];
+function thumbs(v, max = 3) { const L = fotoArr(v); if (!L.length) return ''; return L.slice(0, max).map(x => `<img class="thumb" src="${fotoSrc(x, 120)}" onclick="lihatFoto('${esc(x)}')">`).join(' ') + (L.length > max ? ` <span class="small mut">+${L.length - max}</span>` : ''); }
 function lihatFoto(v, ket) { modal('Foto', `<img src="${fotoSrc(v, 1600)}" style="width:100%;border-radius:8px"><p class="small mut">${esc(ket || '')}</p>${v.startsWith('drive:') ? `<a target="_blank" href="https://drive.google.com/file/d/${v.slice(6)}/view">Buka di Google Drive</a>` : '<span class="b warn">Belum terunggah ke server</span>'}`, { wide: true }); }
 function kompres(file, max = 1280, q = .8) {
   return new Promise((ok, no) => {
@@ -754,7 +765,7 @@ const SK = {
       { k: 'noPermit', l: 'No. permit', t: 'text' }, { k: 'berlaku', l: 'Permit berlaku s/d', t: 'date' },
       { k: 'tindakan', l: 'Tindakan', t: 'area', w: 1 },
       { k: 'status', l: 'Status', t: 'sel', o: ['Terbuka', 'Selesai'], def: 'Selesai' },
-      { k: 'foto', l: 'Foto', t: 'foto' }
+      { k: 'foto', l: 'Foto (sebelum / sesudah, bisa beberapa)', t: 'fotos' }
     ], kol: ['tgl', 'jenis', 'uraian', 'peserta', 'noPermit', 'berlaku', 'tindakan', 'status', 'foto']
   },
   surat: {
@@ -857,6 +868,7 @@ function selNilai(t, k, r) {
   if (f.t === 'num') return v === '' || v == null ? '' : fmtN(v, 2).replace(/,00$/, '');
   if (f.t === 'obj') return esc(objLbl(v));
   if (f.t === 'foto') return v ? `<img class="thumb" src="${fotoSrc(v, 120)}" onclick="lihatFoto('${esc(v)}')">` : '';
+  if (f.t === 'fotos') return thumbs(v);
   if (f.t === 'area') return esc(String(v || '')).slice(0, 220).replace(/\n/g, '<br>');
   if (k === 'status' || k === 'hasil' || k === 'kondisi' || k === 'posisi' || k === 'beban') {
     const c = /Aktif|AKTIF|Disetujui|Diterima|Selesai|Baik|Ya$/.test(v) ? 'ok' : /Menunggu|KONFIRMASI|Belum|Terbuka|Draft|Rusak ringan|Di /.test(v) ? 'warn' : /Ditolak|Rusak|Hilang|BATAL|Resign|Keluar|Dikembalikan|Tidak/.test(v) ? 'bad' : 'gr';
@@ -883,6 +895,7 @@ function nilaiPolos(t, k, r) {
   if (!f) return v ?? '';
   if (f.t === 'obj') return objLbl(v);
   if (f.t === 'rp' || f.t === 'num') return v === '' || v == null ? '' : num(v);
+  if (f.t === 'fotos') return fotoArr(v).map(x => x.startsWith('drive:') ? 'https://drive.google.com/file/d/' + x.slice(6) + '/view' : 'belum terunggah').join(' ');
   if (f.t === 'foto') return v && v.startsWith('drive:') ? 'https://drive.google.com/file/d/' + v.slice(6) + '/view' : (v ? 'belum terunggah' : '');
   if (f.t === 'date') return fD(v);
   return v ?? '';
@@ -918,6 +931,7 @@ function formTabel(t, row, preset = {}, after) {
     else if (f.t === 'selx') { const oo = typeof f.o === 'function' ? f.o(r) : f.o; h += `<input id="${id}" list="dl_${f.k}" value="${esc(v)}"><datalist id="dl_${f.k}">${oo.map(o => `<option value="${esc(o)}">`).join('')}</datalist>`; }
     else if (f.t === 'obj') h += `<select id="${id}">${opsiObj(v)}</select>`;
     else if (f.t === 'foto') h += `<div class="row">${v ? `<img class="thumb" src="${fotoSrc(v, 120)}">` : ''}<input id="${id}" type="file" accept="image/*" capture="${f.cap || 'environment'}" style="max-width:220px">${v ? `<label class="small"><input type="checkbox" id="${id}_x"> hapus foto</label>` : ''}</div>`;
+    else if (f.t === 'fotos') { const L = fotoArr(v); h += `<div id="${id}_box" class="row" style="gap:6px">${L.map((x, i) => `<span class="fts" data-i="${i}" style="position:relative;display:inline-block"><img class="thumb" style="width:64px;height:64px" src="${fotoSrc(x, 150)}"><button type="button" class="ftx" data-fx="${i}" title="Hapus foto">×</button></span>`).join('')}</div><input id="${id}" type="file" accept="image/*" multiple style="max-width:260px;margin-top:6px"><div class="small mut">${esc(f.ket || 'Bisa pilih beberapa foto sekaligus. Foto langsung tersimpan di Google Drive server.')}</div>`; }
     else if (f.t === 'multi') { const sel = jsonArr(v); const oo = typeof f.o === 'function' ? f.o(r) : f.o; const lain = sel.filter(x => !oo.includes(x)); h += `<div id="${id}" class="objlist" style="max-height:none">${oo.map(o => `<label><input type="checkbox" value="${esc(o)}" ${sel.includes(o) ? 'checked' : ''}>${esc(o)}</label>`).join('')}<input class="inp sm" data-lain placeholder="Lainnya (pisah koma)" value="${esc(lain.join(', '))}" style="margin-top:4px;width:100%"></div>`; }
     else if (f.t === 'baris' || f.t === 'peserta') h += `<div id="${id}"></div>`;
     else if (f.t === 'rp') h += `<div style="position:relative"><span style="position:absolute;left:9px;top:8px;color:var(--mut)">Rp</span><input id="${id}" data-rp type="text" inputmode="numeric" style="padding-left:34px;text-align:right" value="${esc(v === '' ? '' : Math.round(num(v)).toLocaleString('id-ID'))}" placeholder="${esc(f.ph || 'contoh: 1.250.000')}"></div>`;
@@ -932,6 +946,8 @@ function formTabel(t, row, preset = {}, after) {
     if (f.t === 'peserta') komp[f.k] = editorPeserta($('#f_' + f.k, el), jsonArr(r[f.k]), f.opt || {});
   }
   pasangRp(el);
+  const fotoHapus = {};
+  for (const f of sk.f) if (f.t === 'fotos') { fotoHapus[f.k] = new Set(); $$('#f_' + f.k + '_box [data-fx]', el).forEach(b => b.onclick = () => { const i = +b.dataset.fx, s = fotoHapus[f.k]; if (s.has(i)) { s.delete(i); b.parentNode.style.opacity = 1; } else { s.add(i); b.parentNode.style.opacity = .3; } }); }
   if (sk.siap) sk.siap(el, r, komp);
   $('[data-a=batal]', el).onclick = tutupModal;
   let sibuk = false;
@@ -945,6 +961,14 @@ function formTabel(t, row, preset = {}, after) {
       const inp = $('#f_' + f.k, el);
       if (f.t === 'multi') { const a = $$('input[type=checkbox]', inp).filter(c => c.checked).map(c => c.value).concat($('[data-lain]', inp).value.split(',').map(x => x.trim()).filter(Boolean)); n[f.k] = JSON.stringify(a); if (f.req && !a.length) return gagal('Pilih minimal satu "' + f.l + '"'); continue; }
       if (f.t === 'baris' || f.t === 'peserta') { const a = komp[f.k](); n[f.k] = JSON.stringify(a); if (f.req && !a.length) return gagal('Isi minimal satu baris "' + f.l + '"'); continue; }
+      if (f.t === 'fotos') {
+        const L = fotoArr(r[f.k]).filter((x, i) => !fotoHapus[f.k].has(i));
+        const fs = inp.files ? [...inp.files] : [];
+        for (let i = 0; i < fs.length; i++) { tb.textContent = 'Mengunggah foto ' + (i + 1) + '/' + fs.length + '…'; try { L.push(await simpanFotoBaru(fs[i], t, n.id, f.k, n.tgl)); } catch (e) { toast('Satu foto gagal dibaca', 'err'); } }
+        n[f.k] = L.length ? JSON.stringify(L) : '';
+        if (f.req && !L.length) return gagal('Tambahkan minimal satu foto "' + f.l + '"');
+        continue;
+      }
       if (f.t === 'foto') {
         if ($('#f_' + f.k + '_x', el)?.checked) n[f.k] = '';
         if (inp.files && inp.files[0]) { try { n[f.k] = await simpanFotoBaru(inp.files[0], t, n.id, f.k, n.tgl); } catch (e) { toast('Foto gagal dibaca', 'err'); } }
@@ -1310,7 +1334,7 @@ function dataHarian(d) {
   const pm = progMap(d), B = cfg('bobot');
   const pg = rows('progres').filter(r => r.tgl === d).sort((a, b) => String(objGet(a.obj)?.urut || objGet(a.obj)?.no || '').localeCompare(String(objGet(b.obj)?.urut || objGet(b.obj)?.no || ''), 'id', { numeric: true }));
   const rcB = rows('rencana').filter(r => r.tgl === addD(d, 1)), rcH = rows('rencana').filter(r => r.tgl === d);
-  return { pm, B, pg, rcB, rcH, H: get('harian', 'H' + d) || {}, mp: manpowerHari(d), alat: rows('alat').filter(r => r.tgl === d), cor: rows('cor').filter(r => r.tgl === d), kep: rows('keputusan').filter(r => r.tgl === d), ft: rows('foto').filter(r => r.tgl === d), mat: rows('material').filter(r => r.tgl === d), hse: rows('hse').filter(r => r.tgl === d), tbm: rows('tbm').filter(r => r.tgl === d), permit: rows('permit').filter(r => r.tgl === d) };
+  return { d, pm, B, pg, rcB, rcH, H: get('harian', 'H' + d) || {}, mp: manpowerHari(d), alat: rows('alat').filter(r => r.tgl === d), cor: rows('cor').filter(r => r.tgl === d), kep: rows('keputusan').filter(r => r.tgl === d), ft: rows('foto').filter(r => r.tgl === d), mat: rows('material').filter(r => r.tgl === d), hse: rows('hse').filter(r => r.tgl === d), tbm: rows('tbm').filter(r => r.tgl === d), permit: rows('permit').filter(r => r.tgl === d) };
 }
 function vHarian() {
   HD = HD || today(); const d = HD, D = dataHarian(d), p = cfg('proyek');
@@ -1363,7 +1387,7 @@ function teksWA(d) {
   const L = [`*LAPORAN HARIAN — PONDASI NaCl PAKET 8, 9, 12*`, `${fDH(d)} (hari ke-${diffD(p.mulai, d) + 1} dari ${diffD(p.mulai, p.selesai) + 1})`, ''];
   L.push(`Cuaca: pagi ${D.H.pagi || '-'}, siang ${D.H.siang || '-'}, sore ${D.H.sore || '-'}${D.H.jamHujan ? ' (hujan ' + D.H.jamHujan + ')' : ''}`);
   L.push(`Manpower: ${D.mp.pek} pekerja + ${D.mp.staf} staf (rencana ${mpRencana(d)} pekerja)`);
-  L.push(`HSE: ${D.tbm.length ? D.tbm.map(r => (r.jenis || 'TBM') + ' ' + jsonArr(r.peserta).length + ' org').join(', ') : 'TBM belum dicatat'}${D.permit.length ? ' · Permit: ' + [...new Set(D.permit.flatMap(r => jsonArr(r.jenis)))].join(', ') : ''}`);
+  L.push(`HSE: ${D.tbm.length ? D.tbm.map(r => (r.jenis || 'TBM') + ' ' + jsonArr(r.peserta).length + ' org').join(', ') : 'TBM belum dicatat'}${D.permit.length ? ' · Permit: ' + [...new Set(D.permit.flatMap(r => jsonArr(r.jenis)))].join(', ') : ''}${(() => { const L = rows('inspalat').filter(r => r.tgl === D.d); return L.length ? ' · Inspeksi alat ' + L.reduce((a, r) => a + jsonArr(r.item).reduce((b, x) => b + (num(x.jml) || 1), 0), 0) + ' unit' : ''; })()}`);
   L.push('', '*Progress hari ini:*');
   if (D.pg.length) D.pg.forEach(r => { const o = objGet(r.obj) || {}; L.push(`• ${o.no || ''} ${o.kode || r.obj} — ${tahapNama(r.tahap)} ${fmtN(r.pct, 0)}%${r.org ? ' (' + r.org + ' org)' : ''}${r.ket ? ' — ' + r.ket : ''}`); }); else L.push('• -');
   L.push('', `*Kumulatif:* ${pct(tot)} (rencana ${pct(ren)}, deviasi ${fmtN(tot - ren, 1)}%)`);
@@ -1379,7 +1403,7 @@ function docHarian(d, kopJ) {
   const D = dataHarian(d), p = cfg('proyek'), tot = agregat(D.pm), ren = rencanaPct(d);
   let h = kop(kopJ) + `<div class="jd">LAPORAN HARIAN (DAILY REPORT)</div>
   <table><tr><td style="width:18%">Proyek</td><td>${esc(p.nama)}</td><td style="width:14%">Tanggal</td><td style="width:22%">${fDH(d)}</td></tr><tr><td>Pekerjaan</td><td>${esc(p.pekerjaan)}</td><td>Hari ke</td><td>${diffD(p.mulai, d) + 1} dari ${diffD(p.mulai, p.selesai) + 1}</td></tr><tr><td>No. kontrak</td><td>${esc(p.noKontrak)}</td><td>Cuaca</td><td>Pagi ${esc(D.H.pagi || '-')}, siang ${esc(D.H.siang || '-')}, sore ${esc(D.H.sore || '-')}${D.H.jamHujan ? '<br>Hujan ' + esc(D.H.jamHujan) : ''}</td></tr></table>`;
-  h += `<h3>I. MANPOWER</h3><table><tr><th>Jabatan</th><th style="width:15%">Jumlah</th></tr>${Object.entries(D.mp.per).map(([j, n]) => `<tr><td>${esc(j)}</td><td class="n">${n}</td></tr>`).join('') || '<tr><td colspan="2">-</td></tr>'}<tr><th>Total (pekerja ${D.mp.pek} + staf ${D.mp.staf}; rencana ${mpRencana(d)} pekerja)</th><th class="n">${D.mp.tot}</th></tr></table><p>HSE: ${D.tbm.length ? D.tbm.map(r => esc(r.jenis || 'TBM') + ' — ' + jsonArr(r.peserta).length + ' peserta, topik: ' + esc(r.topik || '-')).join('; ') : 'TBM belum dicatat'}${D.permit.length ? ' · E-Permit: ' + esc([...new Set(D.permit.flatMap(r => jsonArr(r.jenis)))].join(', ')) + ' (' + esc(D.permit.map(r => r.status).join(', ')) + ')' : ''}</p>`;
+  h += `<h3>I. MANPOWER</h3><table><tr><th>Jabatan</th><th style="width:15%">Jumlah</th></tr>${Object.entries(D.mp.per).map(([j, n]) => `<tr><td>${esc(j)}</td><td class="n">${n}</td></tr>`).join('') || '<tr><td colspan="2">-</td></tr>'}<tr><th>Total (pekerja ${D.mp.pek} + staf ${D.mp.staf}; rencana ${mpRencana(d)} pekerja)</th><th class="n">${D.mp.tot}</th></tr></table><p>HSE: ${D.tbm.length ? D.tbm.map(r => esc(r.jenis || 'TBM') + ' — ' + jsonArr(r.peserta).length + ' peserta, topik: ' + esc(r.topik || '-')).join('; ') : 'TBM belum dicatat'}${D.permit.length ? ' · E-Permit: ' + esc([...new Set(D.permit.flatMap(r => jsonArr(r.jenis)))].join(', ')) + ' (' + esc(D.permit.map(r => r.status).join(', ')) + ')' : ''}${(() => { const L = rows('inspalat').filter(r => r.tgl === D.d); return L.length ? ' · Inspeksi alat: ' + esc(L.map(r => jsonArr(r.item).map(x => x.nama + ' (' + (x.jml || 1) + ')').join(', ')).join('; ')) : ''; })()}</p>`;
   h += `<h3>II. PROGRESS HARI INI</h3><table><tr><th>No.</th><th>Kode titik</th><th>Paket</th><th>Tahap pekerjaan</th><th>S/d hari ini</th><th>Org</th><th>Keterangan</th></tr>${D.pg.map(r => { const o = objGet(r.obj) || {}; return `<tr><td>${esc(o.no || '')}</td><td>${esc(o.kode || '')}</td><td>${esc(o.paket || '')}</td><td>${esc(tahapNama(r.tahap))}</td><td class="n">${fmtN(r.pct, 0)}%</td><td class="n">${esc(r.org || '')}</td><td>${esc(r.ket || '')}</td></tr>`; }).join('') || '<tr><td colspan="7">-</td></tr>'}</table>`;
   h += `<h3>III. PROGRESS KUMULATIF</h3><table><tr><th>Lingkup</th><th>Rencana</th><th>Realisasi</th><th>Deviasi</th></tr>${['9', '8', '12'].map(pk => { const a = agregat(D.pm, o => o.paket === pk), r = rencanaPct(d, pk); return `<tr><td>Paket ${pk}</td><td class="n">${pct(r)}</td><td class="n">${pct(a)}</td><td class="n">${fmtN(a - r, 1)}%</td></tr>`; }).join('')}<tr><th>Total</th><th class="n">${pct(ren)}</th><th class="n">${pct(tot)}</th><th class="n">${fmtN(tot - ren, 1)}%</th></tr></table>`;
   h += `<h3>IV. ALAT & PENGECORAN</h3><table><tr><th>Alat</th><th>Pemilik</th><th>Jam</th><th>BBM (L)</th><th>Keterangan</th></tr>${D.alat.map(r => `<tr><td>${esc(r.alat)}</td><td>${esc(r.pemilik || '')}</td><td class="n">${esc(r.jam || '')}</td><td class="n">${esc(r.bbm || '')}</td><td>${esc(r.ket || '')}</td></tr>`).join('') || '<tr><td colspan="5">-</td></tr>'}</table>`;
@@ -1965,7 +1989,7 @@ SK.tbm = {
     { k: 'pemateri', l: 'Pemateri', t: 'text', def: () => ME && ME.peran === 'HSE' ? ME.nama + ' (Safety Officer)' : '' },
     { k: 'topik', l: 'Topik / materi', t: 'area', req: 1, w: 1 },
     { k: 'peserta', l: 'Daftar hadir peserta (AEN, MPJ, MP, tamu)', t: 'peserta', req: 1, w: 1 },
-    { k: 'fotoAbsen', l: 'Foto lembar absensi bertanda tangan', t: 'foto' }, { k: 'foto', l: 'Foto kegiatan', t: 'foto' },
+    { k: 'fotoAbsen', l: 'Foto lembar absensi bertanda tangan (bisa beberapa halaman)', t: 'fotos' }, { k: 'foto', l: 'Foto kegiatan TBM / safety talk (bisa beberapa)', t: 'fotos', w: 1 },
     { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }
   ], kol: [], sebelum: nomorHook('tbm', 'TBM')
 };
@@ -2005,6 +2029,34 @@ SK.mcu = {
     { k: 'status', l: 'Status', t: 'sel', o: ['Diajukan', 'Dijadwalkan', 'Selesai', 'Dibatalkan'], def: 'Diajukan' },
     { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }, { k: 'foto', l: 'Foto surat / hasil', t: 'foto' }
   ], kol: [], sebelum: nomorHook('mcu', 'MCU')
+};
+
+const JENIS_INSP = ['Peralatan kerja / power tools', 'Alat berat', 'Peralatan listrik & panel', 'Alat angkat & lifting gear', 'Scaffolding', 'APAR / alat pemadam', 'Kendaraan', 'Lainnya'];
+const ALAT_UMUM = ['Hand drill', 'Grinder', 'Electric concrete vibrator', 'Bar bending machine', 'Bar cutter machine', 'Mesin las', 'Genset', 'Concrete mixer', 'Stamper / tamping rammer', 'Pompa air', 'Kabel roll / extension', 'Excavator', 'Dump truck', 'Crane', 'Forklift', 'Wheel loader', 'Vibro roller', 'APAR'];
+SK.inspalat = {
+  judul: 'Inspeksi Alat & Stiker', f: [
+    { k: 'no', l: 'No. (otomatis)', t: 'text', ph: 'otomatis' },
+    { k: 'tgl', l: 'Tanggal', t: 'date', req: 1, def: () => today() },
+    { k: 'jenis', l: 'Jenis alat', t: 'sel', o: JENIS_INSP, req: 1, def: 'Peralatan kerja / power tools' },
+    { k: 'kegiatan', l: 'Kegiatan', t: 'sel', o: ['Inspeksi & pemasangan stiker inspection tag', 'Inspeksi saja', 'Pemasangan / penggantian stiker', 'Re-inspeksi (setelah perbaikan)', 'Inspeksi alat berat masuk lokasi'], def: 'Inspeksi & pemasangan stiker inspection tag', req: 1 },
+    { k: 'periode', l: 'Periode / warna stiker', t: 'selx', o: () => [...new Set(rows('inspalat').map(r => r.periode).filter(Boolean))].concat(['Hijau', 'Kuning', 'Biru', 'Merah', 'Putih']) },
+    { k: 'lokasi', l: 'Lokasi', t: 'text', def: 'Area NaCl Bulk Storage — Paket 8, 9, 12' },
+    { k: 'pemeriksa', l: 'Diperiksa oleh', t: 'text', def: () => ME && ME.peran === 'HSE' ? ME.nama + ' (Safety Officer AEN)' : '' },
+    { k: 'pendamping', l: 'Pendamping / saksi (MPJ / MP / operator)', t: 'text' },
+    { k: 'item', l: 'Daftar alat yang diperiksa', t: 'baris', req: 1, w: 1, kol: [{ k: 'nama', l: 'Nama alat', o: ALAT_UMUM, w: 180 }, { k: 'jml', l: 'Jumlah', t: 'num', w: 60 }, { k: 'seri', l: 'No. unit / seri / nopol', w: 130 }, { k: 'pemilik', l: 'Pemilik', o: ['AEN', 'MPJ', 'MP', 'Rental'], w: 80 }, { k: 'hasil', l: 'Hasil', o: ['Layak', 'Tidak layak', 'Perlu perbaikan'], w: 110 }, { k: 'tag', l: 'No. tag / stiker', w: 100 }, { k: 'sd', l: 'Berlaku s/d', w: 100 }] },
+    { k: 'catatan', l: 'Catatan / temuan', t: 'area', w: 1 },
+    { k: 'foto', l: 'Foto dokumentasi inspeksi & pemasangan stiker', t: 'fotos', w: 1, req: 1 }
+  ], kol: [], sebelum: nomorHook('inspalat', 'INS')
+};
+const KEG_HSE = ['Safety patrol', 'Housekeeping', 'Inspeksi APD', 'Inspeksi alat', 'Pemasangan stiker / rambu', 'Safety induction', 'Safety meeting', 'Simulasi / drill', 'Kunjungan HSE MPJ / MP / KIE', 'Lainnya'];
+SK.hsefoto = {
+  judul: 'Dokumentasi Kegiatan HSE', f: [
+    { k: 'tgl', l: 'Tanggal', t: 'date', req: 1, def: () => today() },
+    { k: 'kegiatan', l: 'Kegiatan', t: 'selx', o: KEG_HSE, req: 1 },
+    { k: 'lokasi', l: 'Lokasi', t: 'text' },
+    { k: 'ket', l: 'Keterangan', t: 'area', w: 1 },
+    { k: 'foto', l: 'Foto kegiatan', t: 'fotos', req: 1, w: 1 }
+  ], kol: []
 };
 
 /* ---- teks WhatsApp ---- */
@@ -2048,7 +2100,7 @@ function docTbm(r, k) {
   return kop(k) + `<div class="jd">ABSENSI ${esc(String(r.jenis || 'Tool Box Meeting').toUpperCase())}</div><table>
   <tr><th style="width:25%;text-align:left">Nama kontraktor</th><td>${esc(r.kontraktor || '')}</td></tr><tr><th style="text-align:left">Jenis pekerjaan</th><td>${esc(r.pekerjaan || '')}</td></tr><tr><th style="text-align:left">Hari / tanggal / jam</th><td>${fDH(r.tgl)} · ${esc(r.jam || '')}</td></tr><tr><th style="text-align:left">Cuaca</th><td>${esc(r.cuaca || '')}</td></tr><tr><th style="text-align:left">Topik</th><td>${esc(r.topik || '').replace(/\n/g, '<br>')}</td></tr><tr><th style="text-align:left">Pemateri</th><td>${esc(r.pemateri || '')}</td></tr></table>
   <table><tr><th style="width:6%">No</th><th>Nama</th><th style="width:14%">Perusahaan</th><th style="width:22%">Jabatan</th><th style="width:20%">Tanda tangan</th></tr>${isi.map((p, i) => `<tr style="height:24px"><td class="n">${i + 1}</td><td>${esc(p.nama || '')}</td><td>${esc(p.perusahaan || '')}</td><td>${esc(p.jabatan || '')}</td><td></td></tr>`).join('')}</table>
-  <p>POB: ${rek.map(([c, n]) => c + ' ' + n + ' orang').join(', ') || '-'} · Total ${L.length} orang</p>` + ttd3(['Pemateri', r.pemateri || namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Mengetahui', '', 'HSE MPJ / MP']);
+  <p>POB: ${rek.map(([c, n]) => c + ' ' + n + ' orang').join(', ') || '-'} · Total ${L.length} orang</p>` + ttd3(['Pemateri', r.pemateri || namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Mengetahui', '', 'HSE MPJ / MP']) + dokFoto(fotoArr(r.foto).map((v, i) => ({ v, ket: `Foto kegiatan ${i + 1} — ${esc(r.jenis || 'TBM')}, ${fD(r.tgl)}` })).concat(fotoArr(r.fotoAbsen).map((v, i) => ({ v, ket: `Lembar absensi ${i + 1}` }))), 'DOKUMENTASI FOTO');
 }
 function docIzin(r, k) {
   const it = jsonArr(r.item);
@@ -2068,9 +2120,25 @@ function docMcu(r, k) {
   return kop(k) + `<div class="jd">PENGAJUAN ${esc(String(r.jenis || '').toUpperCase())}<br><span style="font-size:11px;font-weight:400">No. ${esc(r.no || '')} · ${fDH(r.tgl)}</span></div><p>Tempat: ${esc(r.klinik || '-')} · Pelaksanaan: ${fDH(r.tglPel) || '-'}</p>
   <table><tr><th style="width:6%">No</th><th>Nama</th><th>Perusahaan</th><th>Jabatan</th><th>Hasil MCU</th><th>Tes narkoba</th><th>Berlaku s/d</th></tr>${L.map((p, i) => `<tr><td class="n">${i + 1}</td><td>${esc(p.nama)}</td><td>${esc(p.perusahaan || '')}</td><td>${esc(p.jabatan || '')}</td><td>${esc(p.mcu || '')}</td><td>${esc(p.narkoba || '')}</td><td>${fD(p.berlaku)}</td></tr>`).join('')}</table>` + ttd3(['Diajukan oleh', namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Disetujui', '', 'MPJ / MP']);
 }
+function waInsp(r) {
+  const it = jsonArr(r.item), bad = it.filter(x => x.hasil && x.hasil !== 'Layak');
+  return `*${String(r.kegiatan || 'Inspeksi alat').toUpperCase()}*\n_${NAMA_PT.AEN}_ *(AEN)*\nNo : ${r.no || '-'}\nHari/tanggal : ${HARI[pd(r.tgl).getDay()]}, ${fTglPanjang(r.tgl)}\nJenis : ${r.jenis || '-'}${r.periode ? '\nStiker : ' + r.periode : ''}\nLokasi : ${r.lokasi || '-'}\n\n${it.map((x, i) => `${i + 1}. ${x.nama} (${x.jml || 1} unit)${x.hasil && x.hasil !== 'Layak' ? ' — ' + x.hasil.toUpperCase() : ''}`).join('\n')}\n\nTotal = ${it.reduce((a, x) => a + (num(x.jml) || 1), 0)} unit${bad.length ? ' · ' + bad.length + ' item tidak layak / perlu perbaikan' : ' · semua layak'}${r.catatan ? '\nCatatan : ' + r.catatan : ''}\n\nDiperiksa : ${r.pemeriksa || namaHSE()}`;
+}
+function dokFoto(L, judul) {
+  L = L.filter(x => x.v); if (!L.length) return '';
+  return `<h3 style="page-break-before:auto">${esc(judul || 'DOKUMENTASI FOTO')}</h3><div class="dokf">${L.map(x => `<figure><img src="${fotoSrc(x.v, 900)}"><figcaption>${x.ket || ''}</figcaption></figure>`).join('')}</div>`;
+}
+function docInsp(r, k) {
+  const it = jsonArr(r.item);
+  return kop(k) + `<div class="jd">LAPORAN ${esc(String(r.kegiatan || 'Inspeksi alat').toUpperCase())}<br><span style="font-size:11px;font-weight:400">No. ${esc(r.no || '')} · ${fDH(r.tgl)}</span></div>
+  <table>${[['Jenis alat', r.jenis], ['Periode / warna stiker', r.periode], ['Lokasi', r.lokasi], ['Diperiksa oleh', r.pemeriksa], ['Pendamping / saksi', r.pendamping]].map(([a, b]) => `<tr><th style="width:28%;text-align:left">${a}</th><td>${esc(b || '-')}</td></tr>`).join('')}</table>
+  <table><tr><th style="width:5%">No</th><th>Nama alat</th><th style="width:7%">Jml</th><th>No. unit / seri</th><th style="width:9%">Pemilik</th><th style="width:13%">Hasil</th><th>No. tag / stiker</th><th style="width:11%">Berlaku s/d</th></tr>${it.map((x, i) => `<tr><td class="n">${i + 1}</td><td>${esc(x.nama)}</td><td class="n">${esc(x.jml || '1')}</td><td>${esc(x.seri || '')}</td><td>${esc(x.pemilik || '')}</td><td>${esc(x.hasil || '')}</td><td>${esc(x.tag || '')}</td><td>${esc(x.sd || '')}</td></tr>`).join('')}<tr><th colspan="2">Total</th><th class="n">${it.reduce((a, x) => a + (num(x.jml) || 1), 0)}</th><th colspan="5"></th></tr></table>
+  ${r.catatan ? '<p>Catatan / temuan: ' + esc(r.catatan).replace(/\n/g, '<br>') + '</p>' : ''}` + ttd3(['Diperiksa oleh', namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Mengetahui', '', 'HSE MPJ / MP']) + dokFoto(fotoArr(r.foto).map((v, i) => ({ v, ket: `Foto ${i + 1} — ${esc(r.kegiatan || '')}, ${fD(r.tgl)}` })), 'DOKUMENTASI FOTO');
+}
 const DOK = {
   permit: { tab: 'E-Permit', wa: waPermit, doc: docPermit, dup: 1, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Jam', r => esc((r.jamMulai || '') + '–' + (r.jamSelesai || ''))], ['Jenis permit', r => esc(jsonArr(r.jenis).join(', '))], ['Kegiatan', r => esc(baris(r.kegiatan).join(', '))], ['POB', r => esc(r.pob || '')], ['Status', r => statusB(r.status)], ['Foto', r => r.foto ? `<img class="thumb" src="${fotoSrc(r.foto, 120)}" onclick="lihatFoto('${esc(r.foto)}')">` : '']] },
-  tbm: { tab: 'Tool Box Meeting', wa: waTbm, doc: docTbm, dup: 1, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl) + ' ' + esc(r.jam || '')], ['Jenis', r => esc(r.jenis || '')], ['Topik', r => esc(String(r.topik || '').slice(0, 80))], ['Peserta', r => { const L = jsonArr(r.peserta); return `<b>${L.length}</b> <span class="small mut">${PERUSAHAAN.map(c => [c, L.filter(p => p.perusahaan === c).length]).filter(x => x[1]).map(x => x.join(' ')).join(' · ')}</span>`; }], ['Pemateri', r => esc(r.pemateri || '')], ['Absen', r => r.fotoAbsen ? `<img class="thumb" src="${fotoSrc(r.fotoAbsen, 120)}" onclick="lihatFoto('${esc(r.fotoAbsen)}')">` : '<span class="b warn">belum</span>']] },
+  tbm: { tab: 'Tool Box Meeting', wa: waTbm, doc: docTbm, dup: 1, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl) + ' ' + esc(r.jam || '')], ['Jenis', r => esc(r.jenis || '')], ['Topik', r => esc(String(r.topik || '').slice(0, 80))], ['Peserta', r => { const L = jsonArr(r.peserta); return `<b>${L.length}</b> <span class="small mut">${PERUSAHAAN.map(c => [c, L.filter(p => p.perusahaan === c).length]).filter(x => x[1]).map(x => x.join(' ')).join(' · ')}</span>`; }], ['Pemateri', r => esc(r.pemateri || '')], ['Absen', r => thumbs(r.fotoAbsen, 1) || '<span class="b warn">belum</span>'], ['Foto kegiatan', r => thumbs(r.foto) || '<span class="b warn">belum</span>']] },
+  inspalat: { tab: 'Inspeksi Alat & Stiker', wa: waInsp, doc: docInsp, dup: 1, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Jenis / kegiatan', r => esc(r.jenis || '') + '<div class="small mut">' + esc(r.kegiatan || '') + '</div>'], ['Alat', r => esc(jsonArr(r.item).map(x => x.nama + ' (' + (x.jml || 1) + ')').join(', ').slice(0, 110))], ['Unit', r => String(jsonArr(r.item).reduce((a, x) => a + (num(x.jml) || 1), 0))], ['Hasil', r => { const b = jsonArr(r.item).filter(x => x.hasil && x.hasil !== 'Layak').length; return b ? `<span class="b bad">${b} tidak layak</span>` : '<span class="b ok">Layak</span>'; }], ['Stiker', r => esc(r.periode || '')], ['Foto', r => thumbs(r.foto) || '<span class="b warn">belum</span>']] },
   izin: { tab: 'Izin Masuk Material & Alat', wa: waIzin, doc: docIzin, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Jenis', r => esc((r.jenis || '') + ' · ' + (r.arah || ''))], ['Item', r => esc(jsonArr(r.item).map(x => x.nama + ' ' + (x.jml || '') + ' ' + (x.sat || '')).join(', ').slice(0, 90))], ['Vendor / kendaraan', r => esc([r.vendor, r.kendaraan].filter(Boolean).join(' · '))], ['Status', r => statusB(r.status)]] },
   apd: { tab: 'Pengajuan APD', wa: waApd, doc: docApd, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Keperluan', r => esc(r.keperluan || '')], ['APD', r => esc(jsonArr(r.item).map(x => x.apd + ' ' + (x.jml || '')).join(', ').slice(0, 90))], ['Jumlah', r => String(jsonArr(r.item).reduce((a, x) => a + num(x.jml), 0))], ['Status', r => statusB(r.status)]] },
   mcu: { tab: 'MCU & Narkoba', wa: waMcu, doc: docMcu, kol: [['No', r => esc(r.no || '')], ['Tanggal', r => fD(r.tgl)], ['Jenis', r => esc(r.jenis || '')], ['Pelaksanaan', r => esc([fD(r.tglPel), r.klinik].filter(Boolean).join(' · '))], ['Peserta', r => { const L = jsonArr(r.peserta); const u = L.filter(p => p.mcu === 'Unfit').length, ps = L.filter(p => p.narkoba === 'Positif').length, blm = L.filter(p => !p.mcu && !p.narkoba).length; return `<b>${L.length}</b> ${blm ? `<span class="b warn">${blm} belum ada hasil</span>` : ''}${u ? ` <span class="b bad">${u} unfit</span>` : ''}${ps ? ` <span class="b bad">${ps} positif</span>` : ''}`; }], ['Status', r => statusB(r.status)]] }
@@ -2079,12 +2147,13 @@ const DOK = {
 /* ---- halaman HSE ---- */
 let HS = { tab: 'ringkas', q: '', dari: '', sampai: '' };
 function vHSE() {
-  const tabs = [['ringkas', 'Ringkasan']].concat(Object.entries(DOK).map(([k, d]) => [k, d.tab]), [['temuan', 'Temuan & Insiden'], ['dokumen', 'Dokumen & Surat']]);
+  const tabs = [['ringkas', 'Ringkasan']].concat(Object.entries(DOK).map(([k, d]) => [k, d.tab]), [['temuan', 'Temuan & Insiden'], ['galeri', 'Dokumentasi Foto'], ['dokumen', 'Dokumen & Surat']]);
   $('#main').innerHTML = `<h1>HSE & K3</h1><div class="tabs">${tabs.map(([k, l]) => `<button class="${HS.tab === k ? 'on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div><div id="hsBox"></div>`;
   $$('[data-tab]').forEach(b => b.onclick = () => { HS.tab = b.dataset.tab; HS.q = ''; vHSE(); });
   if (HS.tab === 'ringkas') return hseRingkas();
   if (HS.tab === 'temuan') return viewTabel('hse', { box: $('#hsBox'), noJudul: true });
   if (HS.tab === 'dokumen') return hseDokumen();
+  if (HS.tab === 'galeri') return hseGaleri();
   hseDaftar(HS.tab);
 }
 function hariTanpaKecelakaan() {
@@ -2107,8 +2176,9 @@ function hseRingkas() {
     <div class="kpi ${izinT.length ? 'warn' : ''}"><div class="l">Izin masuk menunggu</div><div class="v">${izinT.length}</div></div>
     <div class="kpi ${apdT.length ? 'warn' : ''}"><div class="l">Pengajuan APD berjalan</div><div class="v">${apdT.length}</div></div>
     <div class="kpi ${mcuT.length ? 'warn' : ''}"><div class="l">MCU / narkoba berjalan</div><div class="v">${mcuT.length}</div></div>
+    <div class="kpi"><div class="l">Alat diinspeksi bulan ini</div><div class="v">${rows('inspalat').filter(r => r.tgl.slice(0, 7) === t.slice(0, 7)).reduce((a, r) => a + jsonArr(r.item).reduce((b, x) => b + (num(x.jml) || 1), 0), 0)}</div><div class="s">${rows('inspalat').filter(r => r.tgl.slice(0, 7) === t.slice(0, 7)).length} kali inspeksi</div></div>
     <div class="kpi ${temuan.length ? 'bad' : ''}"><div class="l">Temuan terbuka</div><div class="v">${temuan.length}</div></div></div>`;
-  if (['permit', 'tbm', 'izin', 'apd', 'mcu'].some(ed)) h += `<div class="card"><h2>Input cepat</h2><div class="row">${[['tbm', '+ Tool Box Meeting'], ['permit', '+ E-Permit'], ['izin', '+ Izin masuk material / alat'], ['apd', '+ Pengajuan APD'], ['mcu', '+ MCU / tes narkoba'], ['hse', '+ Temuan / insiden']].filter(([k]) => ed(k)).map(([k, l]) => `<button class="btn ${k === 'tbm' ? 'pri' : ''}" data-baru="${k}">${l}</button>`).join('')}</div></div>`;
+  if (['permit', 'tbm', 'izin', 'apd', 'mcu', 'inspalat', 'hsefoto'].some(ed)) h += `<div class="card"><h2>Input cepat</h2><div class="row">${[['tbm', '+ Tool Box Meeting'], ['inspalat', '+ Inspeksi alat & stiker'], ['hsefoto', '+ Foto kegiatan HSE'], ['permit', '+ E-Permit'], ['izin', '+ Izin masuk material / alat'], ['apd', '+ Pengajuan APD'], ['mcu', '+ MCU / tes narkoba'], ['hse', '+ Temuan / insiden']].filter(([k]) => ed(k)).map(([k, l]) => `<button class="btn ${k === 'tbm' ? 'pri' : ''}" data-baru="${k}">${l}</button>`).join('')}</div></div>`;
   h += `<div class="card"><h2>7 hari terakhir</h2><div class="tw"><table class="t"><thead><tr><th>Tanggal</th><th>TBM / safety talk</th><th class="n">Peserta</th><th>E-Permit</th><th class="n">Temuan</th></tr></thead><tbody>${hari.map(d => { const tb = rows('tbm').filter(r => r.tgl === d), pm = rows('permit').filter(r => r.tgl === d); return `<tr><td>${fDH(d)}</td><td>${tb.length ? esc(tb.map(r => r.jenis).join(', ')) : '<span class="b warn">belum</span>'}</td><td class="n">${tb.reduce((a, r) => a + jsonArr(r.peserta).length, 0) || ''}</td><td>${pm.length ? pm.map(r => statusB(r.status) + ' ' + esc(jsonArr(r.jenis).join(', '))).join('<br>') : '<span class="mut">—</span>'}</td><td class="n">${rows('hse').filter(r => r.tgl === d).length || ''}</td></tr>`; }).join('')}</tbody></table></div></div>`;
   const tunggu = [].concat(izinT.map(r => ['Izin masuk', r]), apdT.map(r => ['APD', r]), mcuT.map(r => ['MCU / narkoba', r]));
   if (tunggu.length) h += `<div class="card"><h2>Masih berjalan</h2><div class="tw"><table class="t"><tbody>${tunggu.map(([j, r]) => `<tr><td>${esc(j)}</td><td>${esc(r.no || '')}</td><td>${fD(r.tgl)}</td><td>${statusB(r.status)}</td></tr>`).join('')}</tbody></table></div></div>`;
@@ -2127,6 +2197,7 @@ function hseDaftar(t) {
   $('#hsQ').onchange = e => { HS.q = e.target.value; hseDaftar(t); };
   $('#hsD1').onchange = e => { HS.dari = e.target.value; hseDaftar(t); }; $('#hsD2').onchange = e => { HS.sampai = e.target.value; hseDaftar(t); };
   $('#hsXl').onclick = () => unduhExcel(d.tab.replace(/\W+/g, '_') + '_' + today(), [[d.tab, [d.kol.map(k => k[0]).concat(['Diinput oleh', 'Waktu'])].concat(rs.map(r => d.kol.map(k => k[1](r).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()).concat([r._oleh || '', fW(r._ubah)])))]].concat(t === 'tbm' || t === 'mcu' ? [['Peserta', [['No dokumen', 'Tanggal', 'Nama', 'Perusahaan', 'Jabatan'].concat(t === 'mcu' ? ['Hasil MCU', 'Tes narkoba', 'Berlaku s/d'] : [])].concat(rs.flatMap(r => jsonArr(r.peserta).map(p => [r.no, fD(r.tgl), p.nama, p.perusahaan, p.jabatan].concat(t === 'mcu' ? [p.mcu || '', p.narkoba || '', fD(p.berlaku)] : []))))]] : []));
+  if (t === 'inspalat') $('#hsXl').onclick = () => unduhExcel('Inspeksi_Alat_' + today(), [['Inspeksi alat', [['No', 'Tanggal', 'Jenis', 'Kegiatan', 'Stiker', 'Nama alat', 'Jumlah', 'No. unit / seri', 'Pemilik', 'Hasil', 'No. tag', 'Berlaku s/d', 'Diperiksa', 'Foto']].concat(rs.flatMap(r => jsonArr(r.item).map(x => [r.no, fD(r.tgl), r.jenis, r.kegiatan, r.periode || '', x.nama, num(x.jml) || 1, x.seri || '', x.pemilik || '', x.hasil || '', x.tag || '', x.sd || '', r.pemeriksa || '', fotoArr(r.foto).length])))]]);
   $$('[data-wa]').forEach(b => b.onclick = () => { const txt = d.wa(get(t, b.dataset.wa)); navigator.clipboard?.writeText(txt).then(() => toast('Teks disalin — tempel di WhatsApp'), () => { }); modal('Teks WhatsApp', `<textarea class="inp" style="height:360px">${esc(txt)}</textarea><div class="row end" style="margin-top:8px"><a class="btn acc" target="_blank" href="https://wa.me/?text=${encodeURIComponent(txt)}">Buka WhatsApp</a></div>`); });
   $$('[data-pr]').forEach(b => b.onclick = () => { const r = get(t, b.dataset.pr); pilihKop(k => cetak(d.doc(r, k), d.tab + ' ' + (r.no || ''))); });
   if (ed) {
@@ -2206,6 +2277,42 @@ function formDokumen(r, jenis) {
       n.judul = $('#dkN', el).value.trim() || n.judul || String(n.namaFile || '').replace(/\.[^.]+$/, '');
       put('dokhse', n); tutupModal(); toast('Dokumen tersimpan'); hseDokumen();
     } catch (e) { toast(e.message || 'Unggah gagal', 'err'); b.disabled = false; b.textContent = baru ? 'Unggah' : 'Simpan'; }
+  };
+}
+
+
+/* ---- Dokumentasi foto HSE: semua foto kegiatan HSE di satu tempat ---- */
+let HG = { bln: '', jenis: '' };
+function fotoHSE() {
+  const L = [];
+  const tambah = (sumber, r, arr, judul, ket) => fotoArr(arr).forEach((v, i) => L.push({ v, tgl: r.tgl, sumber, judul, ket: i ? '' : ket, id: r.id, oleh: r._oleh || '', urut: i }));
+  rows('tbm').forEach(r => { tambah('Tool Box Meeting', r, r.foto, (r.jenis || 'TBM') + (r.no ? ' ' + r.no : ''), String(r.topik || '').slice(0, 80)); tambah('Absensi TBM', r, r.fotoAbsen, 'Absensi ' + (r.no || ''), ''); });
+  rows('inspalat').forEach(r => tambah('Inspeksi Alat & Stiker', r, r.foto, (r.kegiatan || 'Inspeksi') + (r.no ? ' ' + r.no : ''), jsonArr(r.item).map(x => x.nama + ' (' + (x.jml || 1) + ')').join(', ')));
+  rows('hsefoto').forEach(r => tambah('Kegiatan HSE', r, r.foto, r.kegiatan || 'Kegiatan HSE', [r.lokasi, r.ket].filter(Boolean).join(' — ')));
+  rows('hse').forEach(r => tambah('Temuan & Insiden', r, r.foto, r.jenis || 'Temuan', String(r.uraian || '').slice(0, 80)));
+  [['permit', 'E-Permit'], ['izin', 'Izin Masuk'], ['apd', 'APD'], ['mcu', 'MCU']].forEach(([t, n]) => rows(t).forEach(r => tambah(n, r, r.foto, n + ' ' + (r.no || ''), '')));
+  return L.sort((a, b) => a.tgl < b.tgl ? 1 : a.tgl > b.tgl ? -1 : a.urut - b.urut);
+}
+function hseGaleri() {
+  if (!HG.bln) HG.bln = today().slice(0, 7);
+  const semua = fotoHSE(), jenisAda = [...new Set(semua.map(x => x.sumber))];
+  const L = semua.filter(x => (!HG.bln || x.tgl.slice(0, 7) === HG.bln) && (!HG.jenis || x.sumber === HG.jenis));
+  const ed = bisaEdit('hsefoto');
+  let h = `<p class="small mut">Semua foto kegiatan HSE: Tool Box Meeting, inspeksi alat & pemasangan stiker, safety patrol, temuan, dll. Foto tersimpan di Google Drive server; di sini hanya pratinjau.</p>
+  <div class="row" style="margin-bottom:10px"><input type="month" class="inp sm" id="hgB" value="${HG.bln}"><select class="inp sm" id="hgJ"><option value="">Semua kegiatan</option>${jenisAda.map(j => `<option ${j === HG.jenis ? 'selected' : ''}>${esc(j)}</option>`).join('')}</select><span class="small mut">${L.length} foto</span><span style="flex:1"></span>
+  ${ed ? '<button class="btn pri" id="hgAdd">+ Foto kegiatan HSE</button>' : ''}${bisaEdit('inspalat') ? '<button class="btn" id="hgIns">+ Inspeksi alat & stiker</button>' : ''}<button class="btn acc" id="hgPr">Cetak dokumentasi</button></div>`;
+  const perTgl = {}; L.forEach(x => (perTgl[x.tgl] = perTgl[x.tgl] || []).push(x));
+  h += Object.entries(perTgl).map(([d, g]) => `<div class="card"><h2>${fDH(d)} <span class="small mut">(${g.length} foto)</span></h2><div class="gal hsgal">${g.map(x => `<figure><span class="jn">${esc(x.sumber)}</span><img src="${fotoSrc(x.v, 300)}" onclick="lihatFoto('${esc(x.v)}','${esc((x.judul + ' — ' + fD(x.tgl)).replace(/'/g, ''))}')"><figcaption><b>${esc(x.judul)}</b>${x.ket ? '<div class="small mut">' + esc(x.ket) + '</div>' : ''}${x.v.startsWith('pend:') ? ' <span class="b warn">menunggu unggah</span>' : ''}${x.sumber === 'Kegiatan HSE' && ed && x.urut === 0 ? ` <a href="#" data-hfe="${esc(x.id)}">ubah</a>` : ''}</figcaption></figure>`).join('')}</div></div>`).join('') || '<div class="card mut">Belum ada foto pada bulan ini.</div>';
+  $('#hsBox').innerHTML = h;
+  $('#hgB').onchange = e => { HG.bln = e.target.value; hseGaleri(); };
+  $('#hgJ').onchange = e => { HG.jenis = e.target.value; hseGaleri(); };
+  if ($('#hgAdd')) $('#hgAdd').onclick = () => formTabel('hsefoto', null, {}, () => hseGaleri());
+  if ($('#hgIns')) $('#hgIns').onclick = () => formTabel('inspalat', null, {}, () => hseGaleri());
+  $$('[data-hfe]').forEach(a => a.onclick = e => { e.preventDefault(); const r = get('hsefoto', a.dataset.hfe); const m = modal('Kegiatan HSE', `<div class="row end"><button class="btn del" id="hfX">Hapus</button><button class="btn pri" id="hfE">Ubah / tambah foto</button></div>`); $('#hfE', m).onclick = () => { tutupModal(); formTabel('hsefoto', r, {}, () => hseGaleri()); }; $('#hfX', m).onclick = () => { if (yakin('Hapus kegiatan & fotonya dari daftar?')) { hapus('hsefoto', r.id); tutupModal(); hseGaleri(); } }; });
+  $('#hgPr').onclick = () => {
+    if (!L.length) return toast('Tidak ada foto untuk dicetak', 'err');
+    const [y, m] = (HG.bln || today().slice(0, 7)).split('-').map(Number);
+    pilihKop(k => cetak(kop(k) + `<div class="jd">DOKUMENTASI KEGIATAN HSE & K3${HG.jenis ? ' — ' + esc(HG.jenis.toUpperCase()) : ''}<br><span style="font-size:11px;font-weight:400">${BLN_P[m - 1]} ${y} · ${L.length} foto</span></div>` + dokFoto(L.slice().reverse().map(x => ({ v: x.v, ket: `<b>${esc(fD(x.tgl))} — ${esc(x.judul)}</b>${x.ket ? '<br>' + esc(x.ket) : ''}` })), '') + ttd3(['Dibuat oleh', namaHSE(), 'Safety Officer AEN'], ['Diketahui', cfg('ttd').diketahui, 'Site Manager AEN'], ['Mengetahui', '', 'HSE MPJ / MP']), 'Dokumentasi HSE ' + BLN_P[m - 1] + ' ' + y));
   };
 }
 
@@ -2334,7 +2441,7 @@ function docBulanan(bln, k) {
   h += `<div style="margin:6px 0">${kurvaSVG(kurvaData(), { w: 700, h: 240 })}</div>`;
   h += `<h3>II. TITIK / SEGMEN SELESAI BULAN INI (${selesai.length})</h3><p>${selesai.map(o => esc(o.no + ' ' + o.kode)).join(', ') || '-'}</p><p>Sedang dikerjakan: ${obj.filter(o => { const v = objPctB(o, pmE, B); return v > 0 && v < 99.99; }).length} · belum mulai: ${obj.filter(o => objPctB(o, pmE, B) === 0).length} dari ${obj.length}.</p>`;
   h += `<h3>III. TENAGA KERJA & CUACA</h3><table><tr><th>Hari kerja</th><th>Man-day pekerja</th><th>Man-day staf</th><th>Rata-rata pekerja / hari</th><th>Jam lembur</th><th>Hari ada hujan</th></tr><tr><td class="n">${hk}</td><td class="n">${mdPek}</td><td class="n">${mdStaf}</td><td class="n">${hk ? fmtN(mdPek / hk, 1) : 0}</td><td class="n">${jl}</td><td class="n">${hujan}</td></tr></table>`;
-  h += `<h3>IV. HSE & K3</h3><table><tr><th>TBM / safety talk</th><th>Total peserta</th><th>E-Permit</th><th>Temuan / near miss</th><th>Insiden</th><th>Hari tanpa kecelakaan</th></tr><tr><td class="n">${tbm.length}</td><td class="n">${tbm.reduce((a, r) => a + jsonArr(r.peserta).length, 0)}</td><td class="n">${pmt.length}</td><td class="n">${tem.filter(r => !/Insiden/.test(r.jenis || '')).length}</td><td class="n">${tem.filter(r => /Insiden/.test(r.jenis || '')).length}</td><td class="n">${hariTanpaKecelakaan()}</td></tr></table>`;
+  h += `<h3>IV. HSE & K3</h3><table><tr><th>TBM / safety talk</th><th>Total peserta</th><th>E-Permit</th><th>Inspeksi alat (unit)</th><th>Temuan / near miss</th><th>Insiden</th><th>Hari tanpa kecelakaan</th></tr><tr><td class="n">${tbm.length}</td><td class="n">${tbm.reduce((a, r) => a + jsonArr(r.peserta).length, 0)}</td><td class="n">${pmt.length}</td><td class="n">${rows('inspalat').filter(r => r.tgl >= s && r.tgl <= e).reduce((a, r) => a + jsonArr(r.item).reduce((b, x) => b + (num(x.jml) || 1), 0), 0)}</td><td class="n">${tem.filter(r => !/Insiden/.test(r.jenis || '')).length}</td><td class="n">${tem.filter(r => /Insiden/.test(r.jenis || '')).length}</td><td class="n">${hariTanpaKecelakaan()}</td></tr></table>`;
   if (lihatAnggaran()) {
     const biayaBln = rows('kas').filter(r => isBiaya(r) && r.tgl >= s && r.tgl <= e), per = {};
     biayaBln.forEach(r => per[r.kode || 'Lain-lain'] = (per[r.kode || 'Lain-lain'] || 0) + num(r.nominal));
