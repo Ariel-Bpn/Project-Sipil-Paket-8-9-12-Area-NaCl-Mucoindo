@@ -248,6 +248,9 @@ table.t tfoot td{font-weight:700;background:#f6f8fb}
 .doc .dokf figcaption{font-size:8.5pt;padding:1.5mm 2mm;line-height:1.3}
 .hsgal figure{position:relative}
 .hsgal .jn{position:absolute;top:5px;left:5px;background:rgba(31,58,95,.85);color:#fff;font-size:10px;padding:1px 6px;border-radius:9px}
+
+.bbmt tr.st-bad td{background:#fdecea}
+.bbmt tr.st-warn td{background:#fff6de}
 </style></head>
 <body>
 <div id="login" class="hidden"></div>
@@ -387,21 +390,21 @@ const MENU = [
   ['Pantauan', [['dash', 'Dashboard'], ['peta', 'Peta Titik'], ['kurva', 'Progress & Kurva S'], ['struktur', 'Struktur Organisasi']]],
   ['Lapangan', [['harian', 'Laporan Harian'], ['mingguan', 'Laporan Mingguan & Bulanan'], ['keputusan', 'Keputusan Lapangan'], ['inspeksi', 'Inspeksi & Approval'], ['cor', 'Log Pengecoran'], ['foto', 'Dokumentasi Foto']]],
   ['Tenaga kerja', [['absen', 'Absensi & Lembur'], ['pekerja', 'Pekerja & ID Badge'], ['upah', 'Upah & Payroll']]],
-  ['Biaya & sumber daya', [['kas', 'Keuangan'], ['alat', 'Alat & BBM'], ['material', 'Material'], ['inventaris', 'Inventaris Tools']]],
+  ['Biaya & sumber daya', [['kas', 'Keuangan'], ['alat', 'Alat & BBM'], ['bbmk', 'BBM Kendaraan Operasional'], ['material', 'Material'], ['inventaris', 'Inventaris Tools']]],
   ['Administrasi', [['hse', 'HSE & K3'], ['surat', 'Surat & Dokumen']]],
   ['Sistem', [['master', 'Master Titik & Tie Beam'], ['atur', 'Pengaturan'], ['audit', 'Jejak Audit']]]
 ];
 const VIEW = {
   PC: '*', SM: '*,-atur,-audit,-upah', DIR: '*,-atur',
-  FIN: 'dash,peta,kurva,struktur,absen,pekerja,upah,kas,alat,material,inventaris',
-  SPV: 'dash,peta,kurva,struktur,harian,mingguan,keputusan,inspeksi,cor,foto,alat,material,master',
-  ADM: 'dash,struktur,absen,pekerja,kas,inventaris,mingguan',
+  FIN: 'dash,peta,kurva,struktur,absen,pekerja,upah,kas,alat,bbmk,material,inventaris',
+  SPV: 'dash,peta,kurva,struktur,harian,mingguan,keputusan,inspeksi,cor,foto,alat,bbmk,material,master',
+  ADM: 'dash,struktur,absen,pekerja,kas,bbmk,inventaris,mingguan',
   HSE: 'dash,peta,struktur,harian,mingguan,hse,pekerja,absen'
 };
 const EDIT = {
-  PC: '*', SM: 'pekerja,kas,keputusan,surat,inspeksi,foto',
-  SPV: 'titik,tb,progres,rencana,harian,foto,cor,alat,material,inspeksi,keputusan',
-  ADM: 'absen,absenfoto,pekerja,kas,inventaris', FIN: 'kas,anggaran,payroll', DIR: '',
+  PC: '*', SM: 'pekerja,kas,keputusan,surat,inspeksi,foto,bbmk,kendaraan',
+  SPV: 'titik,tb,progres,rencana,harian,foto,cor,alat,material,inspeksi,keputusan,bbmk',
+  ADM: 'absen,absenfoto,pekerja,kas,inventaris,bbmk', FIN: 'kas,anggaran,payroll', DIR: '',
   HSE: 'hse,permit,tbm,izin,apd,mcu,dokhse,inspalat,hsefoto'
 };
 function bisaLihat(m) { if (!ME) return false; const v = VIEW[ME.peran] || ''; const l = v.split(','); if (l.includes('-' + m)) return false; return l.includes('*') || l.includes(m); }
@@ -2444,7 +2447,7 @@ function docBulanan(bln, k) {
     const tb = biayaBln.reduce((a, r) => a + num(r.nominal), 0), kum = rows('kas').filter(r => isBiaya(r) && r.tgl <= e).reduce((a, r) => a + num(r.nominal), 0);
     const nilai = num(p.nilai), hasil = nilai * agregat(pmE) / 100, ang = cfg('anggaran'), tA = Object.values(ang).reduce((a, v) => a + num(v), 0);
     h += `<h3>V. KEUANGAN</h3><table><tr><th>Kode biaya</th><th>Biaya bulan ini</th></tr>${Object.entries(per).map(([kd, v]) => `<tr><td>${esc(kd)}</td><td class="n">${fmtRp(v)}</td></tr>`).join('') || '<tr><td colspan="2">-</td></tr>'}<tr><th>Total bulan ini</th><th class="n">${fmtRp(tb)}</th></tr></table>
-    <table><tr><th>Biaya kumulatif</th><th>Total anggaran</th><th>Nilai kontrak</th><th>Nilai hasil kerja</th><th>Margin berjalan</th></tr><tr><td class="n">${fmtRp(kum)}</td><td class="n">${fmtRp(tA)}</td><td class="n">${nilai ? fmtRp(nilai) : '-'}</td><td class="n">${nilai ? fmtRp(hasil) : '-'}</td><td class="n">${nilai ? fmtRp(hasil - kum) : '-'}</td></tr></table>`;
+    <table><tr><th>Biaya kumulatif</th><th>Total anggaran</th><th>Nilai kontrak</th><th>Nilai hasil kerja</th><th>Margin berjalan</th></tr><tr><td class="n">${fmtRp(kum)}</td><td class="n">${fmtRp(tA)}</td><td class="n">${nilai ? fmtRp(nilai) : '-'}</td><td class="n">${nilai ? fmtRp(hasil) : '-'}</td><td class="n">${nilai ? fmtRp(hasil - kum) : '-'}</td></tr></table>${(() => { const T = ringkasBbm(dataBbm(bln)); return T.n ? `<p>BBM kendaraan operasional: ${T.n} kali pengisian, ${fmtN(T.liter, 1)} liter, ${fmtRp(T.biaya)}, jarak ${fmtN(T.km)} km, rata-rata ${T.rata == null ? '-' : fmtN(T.rata, 2) + ' km/L'}${T.boros ? ', <b>' + T.boros + ' pengisian perlu diperiksa</b>' : ''}.</p>` : ''; })()}`;
   }
   h += `<h3>${lihatAnggaran() ? 'VI' : 'V'}. KEPUTUSAN LAPANGAN</h3><table><tr><th>Tanggal</th><th>Kendala</th><th>Keputusan</th><th>Status</th><th>Dampak</th></tr>${kep.map(r => `<tr><td>${fD(r.tgl)}</td><td>${esc(r.kendala)}</td><td>${esc(r.keputusan || '')}</td><td>${esc(r.status || '')}</td><td>${esc(r.dampak || '')}</td></tr>`).join('') || '<tr><td colspan="5">-</td></tr>'}</table>`;
   const ne = dstr(new Date(y, m + 1, 0));
@@ -2567,5 +2570,161 @@ function vStruktur() {
   _soResize = drawLines; window.addEventListener('resize', _soResize);
   requestAnimationFrame(drawLines);
 }
+
+/* ================= KONTROL BBM KENDARAAN OPERASIONAL ================= */
+const JENIS_BBM = ['Pertalite', 'Pertamax', 'Solar', 'Dexlite', 'Pertamina Dex'];
+SK.kendaraan = {
+  judul: 'Kendaraan Operasional', f: [
+    { k: 'nopol', l: 'No. polisi', t: 'text', req: 1, ph: 'contoh: KT 1234 AB' },
+    { k: 'jenis', l: 'Unit kendaraan', t: 'text', req: 1, ph: 'contoh: Daihatsu Gran Max Pickup' },
+    { k: 'bbm', l: 'Jenis BBM', t: 'sel', o: JENIS_BBM, def: 'Pertalite' },
+    { k: 'standar', l: 'Standar konsumsi wajar (km/liter)', t: 'num', req: 1, def: '9' },
+    { k: 'driver', l: 'Driver tetap', t: 'text' },
+    { k: 'kepemilikan', l: 'Kepemilikan', t: 'sel', o: ['Milik AEN', 'Sewa', 'Pinjam MPJ', 'Pribadi (diganti BBM)'], def: 'Milik AEN' },
+    { k: 'status', l: 'Status', t: 'sel', o: ['Aktif', 'Tidak aktif'], def: 'Aktif' },
+    { k: 'catatan', l: 'Catatan', t: 'text', w: 1 }
+  ], kol: ['nopol', 'jenis', 'bbm', 'standar', 'driver', 'kepemilikan', 'status'],
+  sebelum: n => { n.nopol = String(n.nopol || '').toUpperCase().replace(/\s+/g, ' ').trim(); },
+  cek: n => { if (!(num(n.standar) > 0)) return 'Standar km/liter harus lebih dari 0'; if (rows('kendaraan').some(r => r.id !== n.id && String(r.nopol).toUpperCase().replace(/\s+/g, ' ') === String(n.nopol).toUpperCase().replace(/\s+/g, ' ').trim())) return 'No. polisi sudah terdaftar'; return ''; }
+};
+const kendAktif = () => rows('kendaraan').filter(r => r.status !== 'Tidak aktif').sort((a, b) => a.nopol.localeCompare(b.nopol));
+const kendDari = nopol => rows('kendaraan').find(r => r.nopol === nopol) || {};
+SK.bbmk = {
+  judul: 'Pengisian BBM Kendaraan', f: [
+    { k: 'tgl', l: 'Tanggal pengisian', t: 'date', req: 1, def: () => today() },
+    { k: 'nopol', l: 'Kendaraan (no. polisi)', t: 'sel', o: () => kendAktif().map(r => r.nopol), req: 1, def: () => (kendAktif()[0] || {}).nopol || '' },
+    { k: 'driver', l: 'Nama driver', t: 'selx', o: () => [...new Set(rows('kendaraan').map(r => r.driver).concat(rows('bbmk').map(r => r.driver)).filter(Boolean))], req: 1, def: () => (kendAktif()[0] || {}).driver || '' },
+    { k: 'odo', l: 'Odometer / KM di nota', t: 'num', req: 1, ph: 'angka odometer saat isi' },
+    { k: 'liter', l: 'Jumlah liter', t: 'num', req: 1 },
+    { k: 'total', l: 'Total biaya (Rp)', t: 'rp', req: 1 },
+    { k: 'bbm', l: 'Jenis BBM', t: 'sel', o: JENIS_BBM, def: () => (kendAktif()[0] || {}).bbm || 'Pertalite' },
+    { k: 'full', l: 'Isi penuh (full tank)?', t: 'sel', o: ['Ya', 'Tidak'], def: 'Ya' },
+    { k: 'spbu', l: 'SPBU / tempat isi', t: 'text' },
+    { k: 'keperluan', l: 'Keperluan / rute', t: 'text', ph: 'contoh: antar material, jemput pekerja' },
+    { k: 'catatan', l: 'Catatan', t: 'text', w: 1 },
+    { k: 'foto', l: 'Foto nota & odometer (bisa beberapa)', t: 'fotos', w: 1 }
+  ], kol: [],
+  siap: (el, r) => {
+    const s = $('#f_nopol', el); if (!s) return;
+    const isi = () => { const k = kendDari(s.value); const info = $('#bkInfo', el) || Object.assign(document.createElement('div'), { id: 'bkInfo', className: 'small mut' }); s.parentNode.appendChild(info); const L = rows('bbmk').filter(x => x.nopol === s.value && x.id !== r.id).sort(urutBbm); const t = L[L.length - 1]; info.innerHTML = (k.jenis ? esc(k.jenis) + ' · standar ' + fmtN(k.standar, 1) + ' km/L' : '') + (t ? '<br>Pengisian terakhir ' + fD(t.tgl) + ' · odometer <b>' + fmtN(t.odo) + '</b>' : '<br>Belum ada pengisian — ini jadi data awal'); };
+    s.addEventListener('change', () => { const k = kendDari(s.value); if (k.driver && !$('#f_driver', el).value) $('#f_driver', el).value = k.driver; if (k.bbm) $('#f_bbm', el).value = k.bbm; isi(); });
+    isi();
+  },
+  cek: n => {
+    if (!(num(n.liter) > 0)) return 'Jumlah liter harus lebih dari 0';
+    if (!(num(n.odo) > 0)) return 'Odometer harus diisi';
+    if (!(num(n.total) > 0)) return 'Total biaya harus diisi';
+    const hl = num(n.total) / num(n.liter); if (hl < 3000 || hl > 30000) return 'Harga per liter ' + fmtRp(hl) + ' tidak wajar — periksa liter & total biaya';
+    return '';
+  }
+};
+const urutBbm = (a, b) => (a.tgl < b.tgl ? -1 : a.tgl > b.tgl ? 1 : 0) || num(a.odo) - num(b.odo);
+
+/* ---- rumus: metode isi penuh ke isi penuh ---- */
+function hitungBbm(nopol) {
+  const std = num(kendDari(nopol).standar) || 9;
+  const L = rows('bbmk').filter(r => r.nopol === nopol).sort(urutBbm);
+  let prev = null, full = null, accL = 0, accRp = 0;
+  return L.map(r => {
+    const o = { r, std, liter: num(r.liter), total: num(r.total), hl: num(r.liter) ? num(r.total) / num(r.liter) : 0, jarak: null, rasio: null, rpkm: null, st: '', cls: 'gr' };
+    if (!prev) { o.st = 'Data awal'; if (r.full !== 'Tidak') full = r; prev = r; return o; }
+    o.jarak = num(r.odo) - num(prev.odo);
+    if (o.jarak <= 0) { o.st = 'Cek odometer'; o.cls = 'bad'; o.jarak = null; return o; }
+    o.rpkm = num(r.total) / o.jarak;
+    accL += o.liter; accRp += o.total;
+    if (r.full === 'Tidak' || !full) { o.st = r.full === 'Tidak' ? 'Isi sebagian' : 'Data awal (penuh)'; o.cls = 'gr'; if (r.full !== 'Tidak') { full = r; accL = 0; accRp = 0; } prev = r; return o; }
+    o.rasio = (num(r.odo) - num(full.odo)) / accL;
+    const p = o.rasio / std;
+    if (p >= 1) { o.st = 'Wajar'; o.cls = 'ok'; } else if (p >= 0.85) { o.st = 'Perhatian'; o.cls = 'warn'; } else { o.st = 'Boros — periksa'; o.cls = 'bad'; }
+    full = r; accL = 0; accRp = 0; prev = r; return o;
+  });
+}
+function dataBbm(bln, nopol) {
+  const K = nopol ? [nopol] : [...new Set(rows('kendaraan').map(r => r.nopol).concat(rows('bbmk').map(r => r.nopol)))].filter(Boolean).sort();
+  const L = K.flatMap(k => hitungBbm(k)).filter(o => !bln || o.r.tgl.slice(0, 7) === bln);
+  return L.sort((a, b) => a.r.tgl < b.r.tgl ? -1 : a.r.tgl > b.r.tgl ? 1 : num(a.r.odo) - num(b.r.odo));
+}
+function ringkasBbm(L) {
+  const R = L.filter(o => o.rasio != null), km = L.reduce((a, o) => a + (o.jarak > 0 ? o.jarak : 0), 0);
+  const lR = R.reduce((a, o) => a + o.liter, 0), kmR = R.reduce((a, o) => a + o.rasio * o.liter, 0);
+  const liter = L.reduce((a, o) => a + o.liter, 0), biaya = L.reduce((a, o) => a + o.total, 0);
+  return { n: L.length, liter, biaya, km, rata: lR ? kmR / lR : null, rpkm: km ? L.filter(o => o.jarak > 0).reduce((a, o) => a + o.total, 0) / km : null, hl: liter ? biaya / liter : 0, boros: L.filter(o => o.cls === 'bad').length, perhatian: L.filter(o => o.cls === 'warn').length };
+}
+
+/* ---- tampilan ---- */
+let BK = { tab: 'isi', bln: '', kend: '' };
+function vBbmk() {
+  if (!BK.bln) BK.bln = today().slice(0, 7);
+  const tabs = [['isi', 'Pengisian BBM'], ['rekap', 'Rekap & grafik'], ['kend', 'Kendaraan']];
+  $('#main').innerHTML = `<h1>Kontrol BBM Kendaraan Operasional</h1><p class="small mut" style="margin-top:-6px">Rasio km/liter dihitung dengan metode isi penuh ke isi penuh: jarak sejak pengisian penuh sebelumnya ÷ liter yang diisi. Status dibandingkan dengan standar konsumsi wajar tiap kendaraan.</p><div class="tabs">${tabs.map(([k, l]) => `<button class="${BK.tab === k ? 'on' : ''}" data-bk="${k}">${l}</button>`).join('')}</div><div id="bkBox"></div>`;
+  $$('[data-bk]').forEach(b => b.onclick = () => { BK.tab = b.dataset.bk; vBbmk(); });
+  if (BK.tab === 'kend') return viewTabel('kendaraan', { box: $('#bkBox'), noJudul: true });
+  if (BK.tab === 'rekap') return bbmRekap();
+  bbmIsi();
+}
+function filterBbm() {
+  const K = [...new Set(rows('kendaraan').map(r => r.nopol).concat(rows('bbmk').map(r => r.nopol)))].filter(Boolean).sort();
+  return `<input type="month" class="inp sm" id="bkB" value="${BK.bln}"><select class="inp sm" id="bkK"><option value="">Semua kendaraan</option>${K.map(k => `<option ${k === BK.kend ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select>`;
+}
+function pasangFilterBbm(f) { $('#bkB').onchange = e => { BK.bln = e.target.value; f(); }; $('#bkK').onchange = e => { BK.kend = e.target.value; f(); }; }
+const pctStd = o => o.rasio == null ? '' : Math.round(o.rasio / o.std * 100) + '%';
+function bbmIsi() {
+  const ed = bisaEdit('bbmk'), L = dataBbm(BK.bln, BK.kend), T = ringkasBbm(L);
+  const kpi = (l, v, s, c = '') => `<div class="kpi ${c}"><div class="l">${l}</div><div class="v">${v}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
+  let h = `<div class="row" style="margin-bottom:10px">${filterBbm()}<span style="flex:1"></span><button class="btn" id="bkXl">Excel</button><button class="btn" id="bkPr">Cetak</button>${ed ? '<button class="btn pri" id="bkAdd">+ Pengisian BBM</button>' : ''}</div>`;
+  if (!rows('kendaraan').length) h += `<div class="alert warn">Belum ada kendaraan. ${bisaEdit('kendaraan') ? 'Daftarkan dulu di tab <b>Kendaraan</b> (no. polisi, unit, standar km/liter).' : 'Minta Project Control / Site Manager mendaftarkan kendaraan.'}</div>`;
+  h += `<div class="kpis">${kpi('Total biaya BBM', fmtRp(T.biaya), T.n + ' kali pengisian')}${kpi('Total liter', fmtN(T.liter, 1) + ' L', 'rata-rata ' + fmtRp(T.hl) + '/L')}${kpi('Jarak tempuh', fmtN(T.km) + ' km', '')}${kpi('Rata-rata konsumsi', T.rata == null ? '-' : fmtN(T.rata, 2) + ' km/L', '', T.rata == null ? '' : T.rata >= (num(kendDari(BK.kend).standar) || 9) ? 'ok' : 'warn')}${kpi('Biaya per km', T.rpkm == null ? '-' : fmtRp(T.rpkm), '')}${kpi('Perlu diperiksa', T.boros, T.perhatian ? T.perhatian + ' perhatian' : 'boros / odometer salah', T.boros ? 'bad' : 'ok')}</div>`;
+  h += `<div class="tw tall"><table class="t bbmt"><thead><tr><th>Tanggal</th><th>No. polisi</th><th>Driver</th><th class="n">Odometer</th><th class="n">Jarak (km)</th><th class="n">Liter</th><th class="n">Total biaya</th><th class="n">Rp/liter</th><th class="n">Rasio km/L</th><th class="n">vs standar</th><th>Status kontrol</th><th>Foto / catatan</th>${ed ? '<th></th>' : ''}</tr></thead><tbody>${L.map(o => `<tr class="st-${o.cls}"><td class="nw">${fD(o.r.tgl)}</td><td class="nw"><b>${esc(o.r.nopol)}</b></td><td>${esc(o.r.driver || '')}</td><td class="n">${fmtN(o.r.odo)}</td><td class="n">${o.jarak == null ? '–' : fmtN(o.jarak)}</td><td class="n">${fmtN(o.liter, 2).replace(/,00$/, '')}</td><td class="n">${fmtRp(o.total)}</td><td class="n small">${fmtRp(o.hl)}</td><td class="n"><b>${o.rasio == null ? '–' : fmtN(o.rasio, 2)}</b></td><td class="n small">${pctStd(o)}</td><td><span class="b ${o.cls}">${esc(o.st)}</span>${o.r.full === 'Tidak' ? ' <span class="small mut">(sebagian)</span>' : ''}</td><td class="small">${thumbs(o.r.foto, 2)} ${esc([o.r.keperluan, o.r.catatan].filter(Boolean).join(' · '))}</td>${ed ? `<td class="nw"><button class="btn sm" data-bke="${esc(o.r.id)}">Ubah</button> <button class="btn sm del" data-bkx="${esc(o.r.id)}">Hapus</button></td>` : ''}</tr>`).join('') || `<tr><td colspan="13" class="mut">Belum ada pengisian pada bulan ini.</td></tr>`}</tbody>
+  ${L.length ? `<tfoot><tr><td colspan="4">Total ${T.n} pengisian</td><td class="n">${fmtN(T.km)}</td><td class="n">${fmtN(T.liter, 1)}</td><td class="n">${fmtRp(T.biaya)}</td><td class="n small">${fmtRp(T.hl)}</td><td class="n">${T.rata == null ? '–' : fmtN(T.rata, 2)}</td><td colspan="${ed ? 4 : 3}"></td></tr></tfoot>` : ''}</table></div>
+  <div class="small mut" style="margin-top:6px"><span class="b ok">Wajar</span> ≥ standar · <span class="b warn">Perhatian</span> 85–99% standar · <span class="b bad">Boros — periksa</span> &lt; 85% standar atau odometer tidak naik · <span class="b gr">Isi sebagian</span> rasio dihitung pada pengisian penuh berikutnya. Nota BBM tetap dicatat di menu Keuangan dengan kode biaya "Kendaraan operasional" / "Fuel / BBM".</div>`;
+  $('#bkBox').innerHTML = h;
+  pasangFilterBbm(bbmIsi);
+  if (ed) {
+    $('#bkAdd').onclick = () => { if (!kendAktif().length) return toast('Daftarkan kendaraan dulu di tab Kendaraan', 'err'); formTabel('bbmk', null, BK.kend ? { nopol: BK.kend, driver: kendDari(BK.kend).driver || '', bbm: kendDari(BK.kend).bbm || 'Pertalite' } : {}, () => vBbmk()); };
+    $$('[data-bke]').forEach(b => b.onclick = () => formTabel('bbmk', get('bbmk', b.dataset.bke), {}, () => vBbmk()));
+    $$('[data-bkx]').forEach(b => b.onclick = () => { if (yakin('Hapus data pengisian ini?')) { hapus('bbmk', b.dataset.bkx); vBbmk(); } });
+  }
+  $('#bkXl').onclick = () => unduhExcel('BBM_Kendaraan_' + (BK.bln || 'semua'), [['Pengisian BBM', [['Tanggal', 'No. polisi', 'Driver', 'Odometer', 'Jarak (km)', 'Liter', 'Total biaya (Rp)', 'Rp/liter', 'Rasio km/L', 'Standar km/L', '% standar', 'Status kontrol', 'Isi penuh', 'Jenis BBM', 'SPBU', 'Keperluan', 'Catatan', 'Foto']].concat(L.map(o => [fD(o.r.tgl), o.r.nopol, o.r.driver || '', num(o.r.odo), o.jarak == null ? '' : o.jarak, o.liter, o.total, Math.round(o.hl), o.rasio == null ? '' : +o.rasio.toFixed(2), o.std, pctStd(o), o.st, o.r.full || 'Ya', o.r.bbm || '', o.r.spbu || '', o.r.keperluan || '', o.r.catatan || '', fotoArr(o.r.foto).map(x => x.startsWith('drive:') ? 'https://drive.google.com/file/d/' + x.slice(6) + '/view' : '').join(' ')]), [['TOTAL', '', '', '', T.km, T.liter, T.biaya, Math.round(T.hl), T.rata == null ? '' : +T.rata.toFixed(2)]])]]);
+  $('#bkPr').onclick = () => pilihKop(k => cetak(docBbm(BK.bln, BK.kend, k), 'Kontrol BBM Kendaraan ' + (BK.bln || ''), { landscape: true }));
+}
+function grafikBbm(nopol) {
+  const L = hitungBbm(nopol).filter(o => o.rasio != null).slice(-20), std = num(kendDari(nopol).standar) || 9;
+  if (L.length < 1) return '<p class="small mut">Grafik muncul setelah ada minimal dua pengisian penuh.</p>';
+  const W = 720, H = 220, pl = 40, pr = 12, pt = 14, pb = 36, mx = Math.max(std * 1.3, ...L.map(o => o.rasio)) * 1.05, iw = W - pl - pr, ih = H - pt - pb;
+  const bw = Math.min(38, iw / L.length * 0.62), x = i => pl + iw / L.length * (i + 0.5), y = v => pt + ih - v / mx * ih;
+  const warna = { ok: '#2e8b57', warn: '#d99a1e', bad: '#c0392b' };
+  let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;font:11px sans-serif">`;
+  for (let v = 0; v <= mx; v += mx > 16 ? 4 : 2) s += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="#e3e7ee"/><text x="${pl - 5}" y="${y(v) + 4}" text-anchor="end" fill="#777">${v}</text>`;
+  L.forEach((o, i) => { s += `<rect x="${x(i) - bw / 2}" y="${y(o.rasio)}" width="${bw}" height="${pt + ih - y(o.rasio)}" rx="3" fill="${warna[o.cls] || '#8aa'}"><title>${fD(o.r.tgl)}: ${fmtN(o.rasio, 2)} km/L</title></rect><text x="${x(i)}" y="${y(o.rasio) - 4}" text-anchor="middle" fill="#333">${fmtN(o.rasio, 1)}</text><text x="${x(i)}" y="${H - pb + 14}" text-anchor="middle" fill="#666">${o.r.tgl.slice(8)}/${o.r.tgl.slice(5, 7)}</text>`; });
+  s += `<line x1="${pl}" x2="${W - pr}" y1="${y(std)}" y2="${y(std)}" stroke="#1F3A5F" stroke-width="2" stroke-dasharray="6 4"/><text x="${W - pr}" y="${y(std) - 5}" text-anchor="end" fill="#1F3A5F" font-weight="700">standar ${fmtN(std, 1)} km/L</text></svg>`;
+  return s;
+}
+function rekapBulanBbm(nopol) {
+  const K = nopol ? [nopol] : [...new Set(rows('bbmk').map(r => r.nopol))].sort();
+  const bln = [...new Set(rows('bbmk').filter(r => !nopol || r.nopol === nopol).map(r => r.tgl.slice(0, 7)))].sort().reverse();
+  const out = [];
+  bln.forEach(b => K.forEach(k => { const L = hitungBbm(k).filter(o => o.r.tgl.slice(0, 7) === b); if (L.length) out.push(Object.assign({ b, k, std: num(kendDari(k).standar) || 9 }, ringkasBbm(L))); }));
+  return out;
+}
+function bbmRekap() {
+  const R = rekapBulanBbm(BK.kend), K = BK.kend ? [BK.kend] : [...new Set(rows('bbmk').map(r => r.nopol))].sort();
+  const nb = b => { const [y, m] = b.split('-').map(Number); return BLN_P[m - 1] + ' ' + y; };
+  let h = `<div class="row" style="margin-bottom:10px">${filterBbm().replace(/<input type="month"[^>]*>/, '')}<span class="small mut">Rekap semua bulan</span><span style="flex:1"></span><button class="btn" id="bkRx">Excel rekap</button></div>`;
+  h += `<div class="card"><h2>Rekap beban BBM per bulan</h2><div class="tw"><table class="t"><thead><tr><th>Bulan</th><th>Kendaraan</th><th class="n">Pengisian</th><th class="n">Liter</th><th class="n">Biaya BBM</th><th class="n">Jarak (km)</th><th class="n">Rata-rata km/L</th><th class="n">Standar</th><th class="n">Rp/km</th><th>Kontrol</th></tr></thead><tbody>${R.map(x => `<tr><td class="nw">${nb(x.b)}</td><td><b>${esc(x.k)}</b><div class="small mut">${esc(kendDari(x.k).jenis || '')}</div></td><td class="n">${x.n}</td><td class="n">${fmtN(x.liter, 1)}</td><td class="n"><b>${fmtRp(x.biaya)}</b></td><td class="n">${fmtN(x.km)}</td><td class="n">${x.rata == null ? '–' : fmtN(x.rata, 2)}</td><td class="n">${fmtN(x.std, 1)}</td><td class="n">${x.rpkm == null ? '–' : fmtRp(x.rpkm)}</td><td>${x.boros ? `<span class="b bad">${x.boros} perlu diperiksa</span>` : x.perhatian ? `<span class="b warn">${x.perhatian} perhatian</span>` : x.rata == null ? '<span class="b gr">belum cukup data</span>' : '<span class="b ok">Wajar</span>'}</td></tr>`).join('') || '<tr><td colspan="10" class="mut">Belum ada data.</td></tr>'}</tbody>
+  ${R.length ? `<tfoot><tr><td colspan="2">Total</td><td class="n">${R.reduce((a, x) => a + x.n, 0)}</td><td class="n">${fmtN(R.reduce((a, x) => a + x.liter, 0), 1)}</td><td class="n">${fmtRp(R.reduce((a, x) => a + x.biaya, 0))}</td><td class="n">${fmtN(R.reduce((a, x) => a + x.km, 0))}</td><td colspan="4"></td></tr></tfoot>` : ''}</table></div></div>`;
+  h += K.map(k => `<div class="card"><h2>Konsumsi per pengisian — ${esc(k)} <span class="small mut">${esc(kendDari(k).jenis || '')}</span></h2>${grafikBbm(k)}<div class="small mut">Batang hijau = wajar, kuning = perhatian, merah = boros. Garis putus-putus = standar konsumsi wajar.</div></div>`).join('');
+  $('#bkBox').innerHTML = h;
+  $('#bkK').onchange = e => { BK.kend = e.target.value; bbmRekap(); };
+  $('#bkRx').onclick = () => unduhExcel('Rekap_BBM_Kendaraan', [['Rekap per bulan', [['Bulan', 'No. polisi', 'Unit', 'Pengisian', 'Liter', 'Biaya BBM (Rp)', 'Jarak (km)', 'Rata-rata km/L', 'Standar km/L', 'Rp/km', 'Perlu diperiksa']].concat(R.map(x => [nb(x.b), x.k, kendDari(x.k).jenis || '', x.n, +x.liter.toFixed(2), x.biaya, x.km, x.rata == null ? '' : +x.rata.toFixed(2), x.std, x.rpkm == null ? '' : Math.round(x.rpkm), x.boros]))]]);
+}
+function docBbm(bln, nopol, k) {
+  const L = dataBbm(bln, nopol), T = ringkasBbm(L), [y, m] = (bln || today().slice(0, 7)).split('-').map(Number);
+  const K = [...new Set(L.map(o => o.r.nopol))];
+  return kop(k) + `<div class="jd">SISTEM KONTROL DAN MONITORING BBM KENDARAAN OPERASIONAL<br><span style="font-size:11px;font-weight:400">${bln ? BLN_P[m - 1] + ' ' + y : 'Semua periode'}${nopol ? ' · ' + esc(nopol) : ''} · ${K.map(n => esc(n + ' — ' + (kendDari(n).jenis || '') + ' (standar ≥ ' + fmtN(kendDari(n).standar || 9, 1) + ' km/L)')).join('; ')}</span></div>
+  <table><tr><th>Tanggal</th><th>No. polisi</th><th>Driver</th><th>Odometer</th><th>Jarak (km)</th><th>Liter</th><th>Total biaya</th><th>Rp/liter</th><th>Rasio km/L</th><th>Status kontrol</th><th>Catatan</th></tr>${L.map(o => `<tr><td>${fD(o.r.tgl)}</td><td>${esc(o.r.nopol)}</td><td>${esc(o.r.driver || '')}</td><td class="n">${fmtN(o.r.odo)}</td><td class="n">${o.jarak == null ? '-' : fmtN(o.jarak)}</td><td class="n">${fmtN(o.liter, 2).replace(/,00$/, '')}</td><td class="n">${fmtRp(o.total)}</td><td class="n">${fmtRp(o.hl)}</td><td class="n">${o.rasio == null ? '-' : fmtN(o.rasio, 2)}</td><td style="${o.cls === 'bad' ? 'color:#b00;font-weight:700' : o.cls === 'warn' ? 'color:#a66b00;font-weight:700' : ''}">${esc(o.st)}</td><td>${esc([o.r.keperluan, o.r.catatan].filter(Boolean).join(' · '))}</td></tr>`).join('') || '<tr><td colspan="11">-</td></tr>'}
+  <tr><th colspan="4">TOTAL (${T.n} pengisian)</th><th class="n">${fmtN(T.km)}</th><th class="n">${fmtN(T.liter, 1)}</th><th class="n">${fmtRp(T.biaya)}</th><th class="n">${fmtRp(T.hl)}</th><th class="n">${T.rata == null ? '-' : fmtN(T.rata, 2)}</th><th colspan="2">Biaya per km: ${T.rpkm == null ? '-' : fmtRp(T.rpkm)} · perlu diperiksa: ${T.boros}</th></tr></table>
+  <p style="font-size:9pt">Metode: rasio km/liter = jarak sejak pengisian penuh sebelumnya ÷ liter yang diisi. Wajar ≥ standar; Perhatian 85–99% standar; Boros &lt; 85% standar atau odometer tidak naik.</p>` + (nopol ? `<div style="margin:4px 0">${grafikBbm(nopol)}</div>` : '') + `<div class="ttd"><div>Dibuat oleh,<div class="ln">${esc(namaPeran('ADM') || '')}</div>Admin Project</div><div>Diperiksa oleh,<div class="ln">${esc(namaPeran('PC') || '')}</div>Project Control</div><div>Diketahui oleh,<div class="ln">${esc(namaPeran('SM') || '')}</div>Site Manager</div></div>`;
+}
+VIEWS.bbmk = vBbmk;
 
 </script></body></html>
